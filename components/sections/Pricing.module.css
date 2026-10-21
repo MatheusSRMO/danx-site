@@ -1,0 +1,115 @@
+.box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: center;
+  padding: clamp(28px, 5vw, 72px);
+  border-radius: 36px;
+  background: #fff;
+}
+.media {
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #dcd7d1 0%, #e6e2dc 55%, #eeebe6 100%);
+}
+.media img {
+  width: min(420px, 100%);
+  height: auto;
+  mask-image: radial-gradient(70% 64% at 50% 50%, #000 72%, transparent 100%);
+  -webkit-mask-image: radial-gradient(70% 64% at 50% 50%, #000 72%, transparent 100%);
+}
+
+.kicker {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.name {
+  margin-top: 6px;
+  font-size: var(--t-2);
+}
+.price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 22px;
+  font-family: var(--f-display);
+  font-size: clamp(2rem, 3.6vw, 2.8rem);
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+.per {
+  color: var(--ink-2);
+}
+.lead {
+  margin-top: 16px;
+  color: var(--ink-2);
+  max-width: 34em;
+}
+
+.h3 {
+  margin-top: 32px;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.conditions {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.conditions li {
+  display: grid;
+  gap: 2px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+}
+.conditions b {
+  font-weight: 600;
+}
+.conditions span:not(:global(.tbc)) {
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+
+.includes {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.includes li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.includes svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 34px;
+}
+
+@media (max-width: 900px) {
+  .box {
+    grid-template-columns: 1fr;
+  }
+}

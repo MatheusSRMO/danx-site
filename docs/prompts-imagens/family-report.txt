@@ -1,0 +1,4 @@
+Use your built-in image generation tool to create ONE photorealistic image. Do not write code and do not draw with Python/PIL: the image must come from the image generation tool. Absolutely NO text, NO letters, NO numbers, NO logos, NO watermarks anywhere in the image.
+
+Scene: bright, warm editorial lifestyle photograph at home: a Brazilian mother in her late 30s and her 11-year-old son sit together at a light wooden kitchen table in soft morning daylight, smiling and looking at a smartphone she holds; the phone screen shows a clean white health report app with colorful rings and rounded bars (abstract, no readable characters). Authentic, natural, Apple commercial look, 35mm, shallow depth of field, soft natural color grading.
+Aspect ratio: landscape 3:2 (1536x1024). Save the final generated image to ./ap-family.png and reply with the path.

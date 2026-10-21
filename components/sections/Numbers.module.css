@@ -1,0 +1,39 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(40px, 6vw, 80px) clamp(24px, 4vw, 56px);
+  margin: clamp(48px, 7vw, 96px) 0 0;
+}
+.grid > div {
+  padding-top: 24px;
+  border-top: 1px solid #424245;
+}
+.k {
+  font-family: var(--f-display);
+  font-size: clamp(3rem, 6.4vw, 5.6rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  background: var(--grad-soft);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  white-space: nowrap;
+}
+.v {
+  margin: 14px 0 0;
+  max-width: 18em;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #a1a1a6;
+}
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

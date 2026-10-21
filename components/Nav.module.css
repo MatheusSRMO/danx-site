@@ -1,0 +1,135 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin-bottom: -52px;
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 52px;
+  max-width: calc(var(--maxw-wide) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(251, 251, 253, 0.8);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+.scrolled::before {
+  opacity: 1;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo {
+  width: 74px;
+  height: auto;
+  color: var(--ink);
+}
+.product {
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+  font-family: var(--f-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.links {
+  display: flex;
+  gap: 22px;
+  margin-left: auto;
+}
+.links a {
+  font-size: 0.78rem;
+  color: var(--ink-2);
+  transition: color 0.2s;
+}
+.links a:hover {
+  color: var(--ink);
+}
+
+.cta {
+  flex-shrink: 0;
+}
+
+.toggle {
+  display: none;
+  width: 32px;
+  height: 32px;
+  padding: 7px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.toggle svg {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.35s var(--ease);
+}
+.open .toggle svg {
+  transform: rotate(180deg);
+}
+
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 52px;
+  background: rgba(251, 251, 253, 0.96);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.sheet[hidden] {
+  display: none;
+}
+.sheet nav {
+  display: flex;
+  flex-direction: column;
+  padding: 8px var(--gutter) 20px;
+}
+.sheet a {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-2);
+  font-size: 1.05rem;
+}
+.sheet a:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 1040px) {
+  .links {
+    display: none;
+  }
+  .cta {
+    margin-left: auto;
+  }
+  .toggle {
+    display: block;
+  }
+}
+@media (max-width: 420px) {
+  .product {
+    display: none;
+  }
+}

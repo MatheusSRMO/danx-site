@@ -1,0 +1,8 @@
+node_modules
+.next
+out
+gen/*.log
+gen/*.last.txt
+*.tsbuildinfo
+next-env.d.ts
+.env*.local

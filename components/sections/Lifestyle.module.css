@@ -1,0 +1,37 @@
+.wrap {
+  margin-top: clamp(40px, 6vw, 72px);
+}
+.frame {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-2);
+}
+.frame img {
+  object-fit: cover;
+}
+.points {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 4vw, 56px);
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.points h3 {
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+}
+.points p {
+  margin-top: 8px;
+  color: var(--ink-2);
+}
+@media (max-width: 760px) {
+  .frame {
+    aspect-ratio: 4 / 5;
+  }
+  .points {
+    grid-template-columns: 1fr;
+  }
+}

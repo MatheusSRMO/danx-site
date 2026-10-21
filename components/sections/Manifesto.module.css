@@ -1,0 +1,75 @@
+.manifesto {
+  background: var(--bg);
+}
+
+.label {
+  color: var(--ink-2);
+}
+
+.text {
+  margin-top: 28px;
+  max-width: 24ch;
+  font-family: var(--f-display);
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  font-weight: 650;
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+  text-wrap: pretty;
+}
+.word {
+  display: inline;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(24px, 4vw, 64px);
+  margin-top: clamp(72px, 9vw, 130px);
+}
+
+.stat {
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.value {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-family: var(--f-display);
+  font-size: clamp(4rem, 9vw, 8rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.value small {
+  font-size: 0.5em;
+  letter-spacing: -0.02em;
+}
+
+.stat figcaption {
+  margin-top: 18px;
+  max-width: 28em;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+.stat cite {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+@media (max-width: 759px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}

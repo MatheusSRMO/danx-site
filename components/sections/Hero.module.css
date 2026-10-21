@@ -1,0 +1,111 @@
+.hero {
+  position: relative;
+  min-height: max(100svh, 680px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--bg-2);
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  transform-origin: 70% 60%;
+}
+.wide {
+  object-fit: cover;
+  object-position: 72% 50%;
+}
+.tall {
+  display: none;
+}
+/* Véu claro à esquerda: o texto escuro lê bem sobre a foto */
+.media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(251, 250, 248, 0.9) 0%, rgba(251, 250, 248, 0.62) 32%, rgba(251, 250, 248, 0) 56%);
+}
+
+.copy {
+  position: relative;
+  z-index: 2;
+  padding-top: 52px;
+}
+.copy > * {
+  max-width: 540px;
+}
+
+.product {
+  font-size: clamp(1.1rem, 1.6vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.title {
+  margin-top: 12px;
+  font-family: var(--f-display);
+  font-size: clamp(3.2rem, 7vw, 6.6rem);
+  font-weight: 650;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+.lead {
+  margin-top: 24px;
+  max-width: 24em;
+  color: #4a4741;
+}
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 32px;
+}
+.note {
+  margin-top: 26px;
+  font-size: 0.85rem;
+  color: #4a4741;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    padding-top: calc(52px + 36px);
+    text-align: center;
+  }
+  .copy {
+    order: 1;
+    padding-top: 0;
+  }
+  .copy > * {
+    margin-inline: auto;
+  }
+  .media {
+    position: relative;
+    order: 2;
+    margin-top: 24px;
+  }
+  .media::after {
+    background: linear-gradient(180deg, var(--bg-2) 0%, rgba(243, 241, 236, 0) 18%);
+  }
+  .wide {
+    display: none;
+  }
+  .tall {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .title {
+    font-size: clamp(2.8rem, 12vw, 4.4rem);
+  }
+  .ctas {
+    justify-content: center;
+  }
+  .note {
+    display: none;
+  }
+}

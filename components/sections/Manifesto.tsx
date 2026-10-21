@@ -1,0 +1,76 @@
+"use client";
+import { useRef } from "react";
+import { gsap, useGSAP } from "@/lib/gsap";
+import { manifesto } from "@/lib/content";
+import s from "./Manifesto.module.css";
+
+export default function Manifesto() {
+  const root = useRef<HTMLElement>(null);
+  const words = manifesto.text.split(" ");
+
+  useGSAP(
+    () => {
+      if (document.documentElement.classList.contains("reduced")) return;
+      const q = gsap.utils.selector(root);
+      gsap.fromTo(
+        q(`.${s.word}`),
+        { opacity: 0.18 },
+        {
+          opacity: 1,
+          stagger: 0.08,
+          ease: "none",
+          scrollTrigger: { trigger: q(`.${s.text}`)[0], start: "top 80%", end: "bottom 45%", scrub: true },
+        },
+      );
+      q("[data-stat]").forEach((el) => {
+        const node = el as HTMLElement;
+        const target = parseFloat(node.dataset.stat!);
+        const dec = parseInt(node.dataset.dec!, 10);
+        const o = { v: 0 };
+        gsap.to(o, {
+          v: target,
+          duration: 2,
+          ease: "power3.out",
+          scrollTrigger: { trigger: node, start: "top 85%", once: true },
+          onUpdate: () =>
+            void (node.textContent = o.v.toLocaleString("pt-BR", { minimumFractionDigits: dec, maximumFractionDigits: dec })),
+        });
+      });
+    },
+    { scope: root },
+  );
+
+  return (
+    <section ref={root} className={`section ${s.manifesto}`} aria-labelledby="manifesto-title">
+      <div className="container-wide">
+        <p className={`eyebrow ${s.label}`}>Por que agora</p>
+        <h2 id="manifesto-title" className="sr-only">
+          Por que avaliar a saúde dos alunos agora
+        </h2>
+        <p className={s.text}>
+          {words.map((w, i) => (
+            <span key={i} className={s.word}>
+              {w}{" "}
+            </span>
+          ))}
+        </p>
+        <div className={s.stats}>
+          {manifesto.stats.map((st) => (
+            <figure key={st.source} className={s.stat} data-reveal>
+              <p className={s.value}>
+                <span data-stat={st.value} data-dec={st.decimals}>
+                  {st.value.toLocaleString("pt-BR", { minimumFractionDigits: st.decimals })}
+                </span>
+                <small>{st.suffix}</small>
+              </p>
+              <figcaption>
+                <p>{st.label}</p>
+                <cite>Fonte: {st.source}</cite>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
