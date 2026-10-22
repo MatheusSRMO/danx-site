@@ -151,10 +151,10 @@ export function towerBodyGeometry(w: number, bottom: number, top: number, step: 
   return toCreasedNormals(g, Math.PI / 3);
 }
 
-/** Varredura de uma barra chata; eixos explícitos evitam torção da seção no cotovelo. */
+/** Tubo circular: montante reto, cotovelo tangente de 90° e trecho horizontal até a placa. */
 export function canopyBarGeometry(
   side: number,
-  c: { x: number; topX: number; z: number; rise: number; top: number; r: number; plateZ0: number },
+  c: { x: number; z: number; diameter: number; rise: number; top: number; r: number; plateZ0: number },
   bottom: number,
 ) {
   const start = bottom - 0.025;
@@ -171,12 +171,12 @@ export function canopyBarGeometry(
       y = c.rise + Math.sin(a) * c.r;
       z = c.z + c.r * (1 - Math.cos(a));
     } else { y = c.top; z = c.z + c.r + s - vertical - bend; }
-    const f = THREE.MathUtils.clamp((y - bottom) / (c.top - bottom), 0, 1);
-    const x = side * THREE.MathUtils.lerp(c.x, c.topX, f * f * f);
-    return new THREE.Vector3(x, y, z);
+    return new THREE.Vector3(side * c.x, y, z);
   };
-  const section = roundedOutline(0.016, 0.028, 0.003).getPoints(4);
-  section.pop();
+  const section = Array.from({ length: 24 }, (_, i) => {
+    const a = i / 24 * Math.PI * 2;
+    return new THREE.Vector2(Math.cos(a) * c.diameter / 2, Math.sin(a) * c.diameter / 2);
+  });
   const count = section.length, steps = 100;
   const positions: number[] = [], indices: number[] = [];
   for (let j = 0; j <= steps; j++) {

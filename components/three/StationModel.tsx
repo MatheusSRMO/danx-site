@@ -17,11 +17,11 @@ import type { StationState } from "./stationState";
 // Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
 const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.21, radius: 0.038 };
-const TOWER = { y0: 0.13, y1: 1.745, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.048 };
+const TOWER = { y0: 0.13, y1: 1.757, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.048 };
 const SCREEN = { w: 0.398, h: 0.708 };
 const CANOPY = {
-  x: 0.197, topX: 0.215, z: -0.005,
-  rise: 1.98, top: 2.085, r: 0.105,
+  x: 0.197, z: -0.005, diameter: 0.036,
+  rise: 1.967, top: 2.082, r: 0.115,
   plateZ0: 0.373, plateZ1: 0.503, w: 0.458,
   sensorZ: 0.466, sensorY: 2.0725,
 };
@@ -218,12 +218,12 @@ export default function StationModel({ state: station }: { state: StationState }
         </mesh>
       </group>
 
-      {/* Barras chatas que se abrem para cima e placa de sensor com cantos arredondados. */}
+      {/* Tubos paralelos com cotovelo circular; sensor somente na face inferior da placa. */}
       <group ref={canopy}>
         {geometry.bars.map((g, i) => <mesh key={i} geometry={g} material={m.canopy} />)}
         <mesh geometry={geometry.cap} material={m.canopy} position={[0, 2.1, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
-        <mesh geometry={geometry.underside} material={m.padGlass} position={[0, 2.077, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
-        <mesh position={[0, CANOPY.top - 0.011, CANOPY.sensorZ]} material={m.sensor}>
+        <mesh geometry={geometry.underside} material={m.canopy} position={[0, 2.077, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
+        <mesh position={[0, CANOPY.sensorY + 0.0015, CANOPY.sensorZ]} material={m.sensor}>
           <cylinderGeometry args={[0.014, 0.014, 0.003, 40]} />
         </mesh>
         <Ultrasound state={station} />
