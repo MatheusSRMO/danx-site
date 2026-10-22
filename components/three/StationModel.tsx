@@ -2,7 +2,13 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { canopyBarGeometry, electrodeGeometry, fairingGeometry, slabGeometry, towerBodyGeometry } from "./stationGeometry";
+import {
+  canopyBarGeometry,
+  electrodeGeometry,
+  fairingGeometry,
+  slabGeometry,
+  towerBodyGeometry,
+} from "./stationGeometry";
 import { drawScreen, SCREEN_COUNT } from "./screenUi";
 import type { StationState } from "./stationState";
 
@@ -11,9 +17,14 @@ import type { StationState } from "./stationState";
 // Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
 const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.21, radius: 0.038 };
-const TOWER = { y0: 0.14, y1: 1.76, w: 0.438, bodyW: 0.423, step: 0.745, screenMargin: 0.048 };
+const TOWER = { y0: 0.13, y1: 1.745, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.048 };
 const SCREEN = { w: 0.398, h: 0.708 };
-const CANOPY = { x: 0.198, topX: 0.217, z: -0.005, rise: 1.97, top: 2.085, r: 0.115, plateZ0: 0.392, plateZ1: 0.494, w: 0.462, sensorZ: 0.465, sensorY: 2.0725 };
+const CANOPY = {
+  x: 0.197, topX: 0.215, z: -0.005,
+  rise: 1.98, top: 2.085, r: 0.105,
+  plateZ0: 0.373, plateZ1: 0.503, w: 0.458,
+  sensorZ: 0.466, sensorY: 2.0725,
+};
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
   // x, z, largura (x), comprimento (z): para cada pé, dedos (maior, perto da torre) e calcanhar
@@ -29,9 +40,10 @@ function useMaterials() {
       glass: new THREE.MeshPhysicalMaterial({
         color: "#3d4249",
         metalness: 0,
-        roughness: 0.22,
-        clearcoat: 1,
-        clearcoatRoughness: 0.08,
+        roughness: 0.27,
+        envMapIntensity: 0.55,
+        clearcoat: 0.65,
+        clearcoatRoughness: 0.16,
       }),
       body: new THREE.MeshPhysicalMaterial({
         color: "#4d6375",
@@ -50,8 +62,8 @@ function useMaterials() {
         clearcoatRoughness: 0.12,
       }),
       steel: new THREE.MeshPhysicalMaterial({
-        color: "#f2f2ed",
-        metalness: 0.45,
+        color: "#f4f4ef",
+        metalness: 0.35,
         envMapIntensity: 1.2,
         roughness: 0.32,
         emissive: new THREE.Color("#2ec2c6"),

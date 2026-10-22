@@ -31,7 +31,20 @@ export function slabGeometry(w: number, d: number, r: number, h: number, bevel =
   });
   g.rotateX(Math.PI / 2);
   g.translate(0, -bevel, 0);
-  return flatPlateNormals(g, h);
+  // Normais analíticas evitam faixas verticais nos cantos arredondados do alumínio.
+  const p = g.getAttribute("position"), n = g.getAttribute("normal");
+  for (let i = 0; i < p.count; i++) {
+    const y = p.getY(i);
+    const ny = y > -bevel ? (y + bevel) / bevel : y < -h + bevel ? (y + h - bevel) / bevel : 0;
+    const vertical = THREE.MathUtils.clamp(ny, -1, 1);
+    const horizontal = Math.sqrt(1 - vertical * vertical);
+    const x = p.getX(i), z = p.getZ(i);
+    const nx = x - THREE.MathUtils.clamp(x, -w / 2 + r, w / 2 - r);
+    const nz = z - THREE.MathUtils.clamp(z, -d / 2 + r, d / 2 - r);
+    const length = Math.hypot(nx, nz) || 1;
+    n.setXYZ(i, nx / length * horizontal, vertical, nz / length * horizontal);
+  }
+  return g;
 }
 
 /** Mantém as faces ópticas planas, suavizando apenas os biséis e o perímetro. */
@@ -83,11 +96,11 @@ export function fairingGeometry(baseY: number, topWidth: number) {
   for (let j = 0; j <= rings; j++) {
     const t = j / rings;
     const w = THREE.MathUtils.lerp(topWidth, 0.478, t * t);
-    const back = THREE.MathUtils.lerp(-0.067, -0.155, t);
-    const front = THREE.MathUtils.lerp(0.050, 0.135, t);
+    const back = THREE.MathUtils.lerp(-0.067, -0.145, t);
+    const front = THREE.MathUtils.lerp(0.050, 0.120, t);
     const u = Math.max(0, (t - 0.7) / 0.3);
     const profile = t <= 0.7 ? 1 - t : 0.3 * (1 - u) ** 2 * (1 + u);
-    const y = baseY + 0.080 * profile;
+    const y = baseY + 0.070 * profile;
     const outline = roundedOutline(w, front - back, 0.008 + 0.01 * t).getPoints(10);
     outline.pop();
     count = outline.length;
