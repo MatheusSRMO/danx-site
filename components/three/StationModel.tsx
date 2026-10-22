@@ -10,24 +10,24 @@ import type { StationState } from "./stationState";
 // Medidas: 2,10 m de altura · base 0,48 × 0,935 m · tela de 32″ (0,398 × 0,708 m) na vertical.
 // Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
-const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.19, radius: 0.038 };
+const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.21, radius: 0.038 };
 const TOWER = { y0: 0.14, y1: 1.76, w: 0.43, step: 0.745, screenMargin: 0.048 };
 const SCREEN = { w: 0.398, h: 0.708 };
-const CANOPY = { x: 0.19, topX: 0.219, z: -0.02, rise: 1.97, top: 2.085, r: 0.115, plateZ0: 0.33, plateZ1: 0.49, w: 0.466, sensorZ: 0.445, sensorY: 2.0725 };
+const CANOPY = { x: 0.198, topX: 0.212, z: -0.005, rise: 1.97, top: 2.085, r: 0.115, plateZ0: 0.362, plateZ1: 0.502, w: 0.452, sensorZ: 0.467, sensorY: 2.0725 };
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
   // x, z, largura (x), comprimento (z): para cada pé, dedos (maior, perto da torre) e calcanhar
-  [-0.085, 0.405, 0.086, 0.16],
-  [0.085, 0.405, 0.086, 0.16],
-  [-0.085, 0.555, 0.086, 0.08],
-  [0.085, 0.555, 0.086, 0.08],
+  [-0.085, 0.385, 0.086, 0.16],
+  [0.085, 0.385, 0.086, 0.16],
+  [-0.085, 0.535, 0.086, 0.08],
+  [0.085, 0.535, 0.086, 0.08],
 ];
 
 function useMaterials() {
   return useMemo(
     () => ({
       glass: new THREE.MeshPhysicalMaterial({
-        color: "#2e3335",
+        color: "#3d4249",
         metalness: 0,
         roughness: 0.22,
         clearcoat: 1,
@@ -41,7 +41,7 @@ function useMaterials() {
         clearcoatRoughness: 0.5,
       }),
       top: new THREE.MeshPhysicalMaterial({ color: "#4b4944", metalness: 0.4, roughness: 0.32 }),
-      wedge: new THREE.MeshPhysicalMaterial({ color: "#48443f", metalness: 0.35, roughness: 0.38 }),
+      wedge: new THREE.MeshPhysicalMaterial({ color: "#35312d", metalness: 0.45, roughness: 0.4 }),
       padGlass: new THREE.MeshPhysicalMaterial({
         color: "#9fa5a4",
         metalness: 0,
@@ -50,8 +50,9 @@ function useMaterials() {
         clearcoatRoughness: 0.12,
       }),
       steel: new THREE.MeshPhysicalMaterial({
-        color: "#deded9",
-        metalness: 0.55,
+        color: "#f2f2ed",
+        metalness: 0.45,
+        envMapIntensity: 1.2,
         roughness: 0.32,
         emissive: new THREE.Color("#2ec2c6"),
         emissiveIntensity: 0,
@@ -189,7 +190,7 @@ export default function StationModel({ state: station }: { state: StationState }
         <mesh geometry={geometry.base} position={[0, BASE.h, BASE.z0 + BASE.d / 2]} material={m.body} />
         <mesh geometry={geometry.top} position={[0, BASE.h + 0.001, BASE.z0 + BASE.d / 2]} material={m.top} />
         <mesh geometry={geometry.fairing} material={fairingMaterials} />
-        <mesh geometry={geometry.padGlass} material={m.padGlass} position={[0, BASE.h + 0.003, 0.49]} />
+        <mesh geometry={geometry.padGlass} material={m.padGlass} position={[0, BASE.h + 0.003, 0.47]} />
         {PAD_POSITIONS.map(([x, z], i) => (
           <mesh key={i} geometry={geometry.pads[i]} material={m.steel} position={[x, BASE.h + 0.0045, z]} />
         ))}
