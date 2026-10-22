@@ -11,9 +11,9 @@ import type { StationState } from "./stationState";
 // Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
 const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.21, radius: 0.038 };
-const TOWER = { y0: 0.14, y1: 1.76, w: 0.43, step: 0.745, screenMargin: 0.048 };
+const TOWER = { y0: 0.14, y1: 1.76, w: 0.466, bodyW: 0.451, step: 0.745, screenMargin: 0.048 };
 const SCREEN = { w: 0.398, h: 0.708 };
-const CANOPY = { x: 0.198, topX: 0.212, z: -0.005, rise: 1.97, top: 2.085, r: 0.115, plateZ0: 0.362, plateZ1: 0.502, w: 0.452, sensorZ: 0.467, sensorY: 2.0725 };
+const CANOPY = { x: 0.214, topX: 0.225, z: -0.005, rise: 1.97, top: 2.085, r: 0.115, plateZ0: 0.362, plateZ1: 0.502, w: 0.478, sensorZ: 0.467, sensorY: 2.0725 };
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
   // x, z, largura (x), comprimento (z): para cada pé, dedos (maior, perto da torre) e calcanhar
@@ -124,12 +124,12 @@ export default function StationModel({ state: station }: { state: StationState }
   const geometry = useMemo(() => ({
     base: slabGeometry(BASE.w, BASE.d, BASE.radius, BASE.h, 0.003),
     top: slabGeometry(BASE.w - 0.002, BASE.d - 0.002, BASE.radius - 0.001, 0.003, 0.0008),
-    fairing: fairingGeometry(BASE.h + 0.001),
+    fairing: fairingGeometry(BASE.h + 0.001, TOWER.bodyW),
     padGlass: slabGeometry(0.4, 0.435, 0.027, 0.004, 0.0007),
     pads: PAD_POSITIONS.map(([, , w, d], i) => electrodeGeometry(w, d, i >= 2)),
-    body: towerBodyGeometry(0.415, TOWER.y0 - 0.012, TOWER.y1, TOWER.step),
+    body: towerBodyGeometry(TOWER.bodyW, TOWER.y0 - 0.012, TOWER.y1, TOWER.step),
     // Do plano x/z para a fachada x/y, com a espessura do vidro para trás.
-    glass: slabGeometry(TOWER.w, TOWER.y1 - TOWER.y0, 0.014, 0.01, 0.0015).rotateX(Math.PI / 2),
+    glass: slabGeometry(TOWER.w, TOWER.y1 - TOWER.y0, 0.018, 0.01, 0.0015).rotateX(Math.PI / 2),
     bars: [-1, 1].map((side) => canopyBarGeometry(side, CANOPY, TOWER.y1)),
     cap: slabGeometry(CANOPY.w, CANOPY.plateZ1 - CANOPY.plateZ0, 0.017, 0.024, 0.002),
     underside: slabGeometry(CANOPY.w - 0.022, CANOPY.plateZ1 - CANOPY.plateZ0 - 0.018, 0.012, 0.002, 0.0005),

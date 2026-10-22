@@ -75,14 +75,14 @@ export function electrodeGeometry(w: number, d: number, heel: boolean) {
 }
 
 /** Carenagem de uma peça: o perfil côncavo chega tangente ao tampo. */
-export function fairingGeometry(baseY: number) {
+export function fairingGeometry(baseY: number, topWidth: number) {
   const positions: number[] = [], indices: number[] = [];
   const rings = 24;
   let count = 0;
   const sides: boolean[] = [];
   for (let j = 0; j <= rings; j++) {
     const t = j / rings;
-    const w = THREE.MathUtils.lerp(0.416, 0.478, t * t);
+    const w = THREE.MathUtils.lerp(topWidth, 0.478, t * t);
     const back = THREE.MathUtils.lerp(-0.067, -0.155, t);
     const front = THREE.MathUtils.lerp(0.050, 0.135, t);
     const u = Math.max(0, (t - 0.7) / 0.3);
