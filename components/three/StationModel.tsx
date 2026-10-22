@@ -11,9 +11,9 @@ import type { StationState } from "./stationState";
 // Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
 const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.21, radius: 0.038 };
-const TOWER = { y0: 0.14, y1: 1.76, w: 0.466, bodyW: 0.451, step: 0.745, screenMargin: 0.048 };
+const TOWER = { y0: 0.14, y1: 1.76, w: 0.438, bodyW: 0.423, step: 0.745, screenMargin: 0.048 };
 const SCREEN = { w: 0.398, h: 0.708 };
-const CANOPY = { x: 0.214, topX: 0.225, z: -0.005, rise: 1.97, top: 2.085, r: 0.115, plateZ0: 0.362, plateZ1: 0.502, w: 0.478, sensorZ: 0.467, sensorY: 2.0725 };
+const CANOPY = { x: 0.198, topX: 0.217, z: -0.005, rise: 1.97, top: 2.085, r: 0.115, plateZ0: 0.392, plateZ1: 0.494, w: 0.462, sensorZ: 0.465, sensorY: 2.0725 };
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
   // x, z, largura (x), comprimento (z): para cada pé, dedos (maior, perto da torre) e calcanhar
