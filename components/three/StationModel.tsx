@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { RoundedBox } from "@react-three/drei";
+import { canopyBarGeometry, electrodeGeometry, fairingGeometry, slabGeometry, towerBodyGeometry } from "./stationGeometry";
 import { drawScreen, SCREEN_COUNT } from "./screenUi";
 import type { StationState } from "./stationState";
 
@@ -10,56 +10,56 @@ import type { StationState } from "./stationState";
 // Medidas: 2,10 m de altura · base 0,48 × 0,935 m · tela de 32″ (0,398 × 0,708 m) na vertical.
 // Cores amostradas do render oficial do produto.
 
-const BASE = { w: 0.48, d: 0.935, h: 0.075, z0: -0.13 };
-const TOWER = { y0: 0.11, y1: 1.78, w: 0.43 };
+const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.19, radius: 0.038 };
+const TOWER = { y0: 0.17, y1: 1.74, w: 0.43, step: 0.77, screenMargin: 0.048 };
 const SCREEN = { w: 0.398, h: 0.708 };
-const CANOPY = { x: 0.19, z: -0.015, rise: 1.985, top: 2.085, r: 0.1, plateZ0: 0.3, plateZ1: 0.48 };
+const CANOPY = { x: 0.19, topX: 0.226, z: -0.02, rise: 1.955, top: 2.085, r: 0.13, plateZ0: 0.33, plateZ1: 0.49, w: 0.476, sensorZ: 0.445 };
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
   // x, z, largura (x), comprimento (z): para cada pé, dedos (maior, perto da torre) e calcanhar
-  [-0.085, 0.47, 0.072, 0.13],
-  [0.085, 0.47, 0.072, 0.13],
-  [-0.085, 0.66, 0.072, 0.085],
-  [0.085, 0.66, 0.072, 0.085],
+  [-0.085, 0.405, 0.086, 0.16],
+  [0.085, 0.405, 0.086, 0.16],
+  [-0.085, 0.555, 0.086, 0.08],
+  [0.085, 0.555, 0.086, 0.08],
 ];
 
 function useMaterials() {
   return useMemo(
     () => ({
       glass: new THREE.MeshPhysicalMaterial({
-        color: "#222a35",
+        color: "#282d30",
         metalness: 0,
-        roughness: 0.32,
-        clearcoat: 0.55,
-        clearcoatRoughness: 0.22,
+        roughness: 0.18,
+        clearcoat: 1,
+        clearcoatRoughness: 0.08,
       }),
       body: new THREE.MeshPhysicalMaterial({
-        color: "#566b86",
+        color: "#4d6375",
         metalness: 0.3,
         roughness: 0.46,
         clearcoat: 0.2,
         clearcoatRoughness: 0.5,
       }),
-      top: new THREE.MeshPhysicalMaterial({ color: "#3d3f44", metalness: 0.5, roughness: 0.42 }),
-      wedge: new THREE.MeshPhysicalMaterial({ color: "#47413c", metalness: 0.5, roughness: 0.45 }),
+      top: new THREE.MeshPhysicalMaterial({ color: "#4b4944", metalness: 0.4, roughness: 0.32 }),
+      wedge: new THREE.MeshPhysicalMaterial({ color: "#48443f", metalness: 0.35, roughness: 0.38 }),
       padGlass: new THREE.MeshPhysicalMaterial({
-        color: "#a7adb4",
+        color: "#9fa5a4",
         metalness: 0,
         roughness: 0.2,
         clearcoat: 0.6,
         clearcoatRoughness: 0.12,
       }),
       steel: new THREE.MeshPhysicalMaterial({
-        color: "#f1f3f5",
-        metalness: 0.35,
+        color: "#deded9",
+        metalness: 0.55,
         roughness: 0.32,
         emissive: new THREE.Color("#2ec2c6"),
         emissiveIntensity: 0,
       }),
       canopy: new THREE.MeshPhysicalMaterial({
-        color: "#1d2026",
-        metalness: 0.75,
-        roughness: 0.24,
+        color: "#303334",
+        metalness: 0.5,
+        roughness: 0.3,
         clearcoat: 0.6,
         clearcoatRoughness: 0.15,
       }),
@@ -67,89 +67,6 @@ function useMaterials() {
     }),
     [],
   );
-}
-
-/** Placa fina de cantos arredondados (no plano x/z), para o vidro dos eletrodos e as placas de aço. */
-function plateGeometry(w: number, l: number, r: number, t: number) {
-  const s = new THREE.Shape();
-  const x = w / 2,
-    z = l / 2,
-    rr = Math.min(r, x, z);
-  s.moveTo(-x + rr, -z);
-  s.lineTo(x - rr, -z);
-  s.quadraticCurveTo(x, -z, x, -z + rr);
-  s.lineTo(x, z - rr);
-  s.quadraticCurveTo(x, z, x - rr, z);
-  s.lineTo(-x + rr, z);
-  s.quadraticCurveTo(-x, z, -x, z - rr);
-  s.lineTo(-x, -z + rr);
-  s.quadraticCurveTo(-x, -z, -x + rr, -z);
-  const g = new THREE.ExtrudeGeometry(s, {
-    depth: t,
-    bevelEnabled: true,
-    bevelSize: 0.0012,
-    bevelThickness: 0.0012,
-    bevelSegments: 2,
-    curveSegments: 16,
-  });
-  g.rotateX(Math.PI / 2);
-  return g;
-}
-
-function wedgeGeometry() {
-  // Cunha que recebe a torre: perfil desenhado no plano z/y e extrudado na largura (x)
-  const s = new THREE.Shape();
-  s.moveTo(BASE.z0 + 0.01, BASE.h);
-  s.lineTo(0.115, BASE.h);
-  s.lineTo(0.035, 0.155);
-  s.lineTo(BASE.z0 + 0.02, 0.155);
-  s.closePath();
-  const g = new THREE.ExtrudeGeometry(s, {
-    depth: 0.46,
-    bevelEnabled: true,
-    bevelSize: 0.003,
-    bevelThickness: 0.003,
-    bevelSegments: 2,
-  });
-  g.rotateY(-Math.PI / 2);
-  g.translate(0.23, 0, 0);
-  return g;
-}
-
-function barGeometry(x: number) {
-  // Barra chata do dossel: sobe da torre, curva para a frente e segue até a placa
-  const path = new THREE.CurvePath<THREE.Vector3>();
-  const { z, rise, top, r, plateZ0 } = CANOPY;
-  path.add(new THREE.LineCurve3(new THREE.Vector3(x, TOWER.y1 - 0.02, z), new THREE.Vector3(x, rise, z)));
-  const steps = 12;
-  for (let i = 0; i < steps; i++) {
-    const a0 = (i / steps) * (Math.PI / 2);
-    const a1 = ((i + 1) / steps) * (Math.PI / 2);
-    path.add(
-      new THREE.LineCurve3(
-        new THREE.Vector3(x, rise + Math.sin(a0) * r, z + r - Math.cos(a0) * r),
-        new THREE.Vector3(x, rise + Math.sin(a1) * r, z + r - Math.cos(a1) * r),
-      ),
-    );
-  }
-  path.add(new THREE.LineCurve3(new THREE.Vector3(x, top, z + r), new THREE.Vector3(x, top, plateZ0 + 0.06)));
-  // Seção retangular arredondada (0,026 × 0,02 m)
-  const w = 0.013,
-    h = 0.01,
-    rr = 0.004;
-  const shape = new THREE.Shape();
-  shape.moveTo(-w + rr, -h);
-  shape.lineTo(w - rr, -h);
-  shape.quadraticCurveTo(w, -h, w, -h + rr);
-  shape.lineTo(w, h - rr);
-  shape.quadraticCurveTo(w, h, w - rr, h);
-  shape.lineTo(-w + rr, h);
-  shape.quadraticCurveTo(-w, h, -w, h - rr);
-  shape.lineTo(-w, -h + rr);
-  shape.quadraticCurveTo(-w, -h, -w + rr, -h);
-  const pts = path.getSpacedPoints(160);
-  const curve = new THREE.CatmullRomCurve3(pts, false, "centripetal", 0);
-  return new THREE.ExtrudeGeometry(shape, { steps: 200, bevelEnabled: false, extrudePath: curve });
 }
 
 /** Ondas do ultrassom: anéis que descem do sensor do dossel, discretos, sem neon. */
@@ -178,7 +95,7 @@ function Ultrasound({ state }: { state: StationState }) {
     const t = st.clock.elapsedTime;
     g.children.forEach((c, i) => {
       const ph = (t * 0.45 + rings[i]) % 1;
-      c.position.y = THREE.MathUtils.lerp(CANOPY.top - 0.02, 1.05, ph);
+      c.position.y = THREE.MathUtils.lerp(CANOPY.top - 0.018, 1.05, ph);
       const r = 0.03 + ph * 0.24;
       c.scale.set(r, r, r);
       mats[i].opacity = w * Math.sin(ph * Math.PI) * 0.55;
@@ -187,7 +104,7 @@ function Ultrasound({ state }: { state: StationState }) {
   return (
     <group ref={group}>
       {rings.map((r, i) => (
-        <mesh key={r} rotation={[-Math.PI / 2, 0, 0]} position={[0, 2, 0.4]} material={mats[i]}>
+        <mesh key={r} rotation={[-Math.PI / 2, 0, 0]} position={[0, CANOPY.top - 0.018, CANOPY.sensorZ]} material={mats[i]}>
           <ringGeometry args={[0.9, 1, 64]} />
         </mesh>
       ))}
@@ -202,10 +119,20 @@ export default function StationModel({ state: station }: { state: StationState }
   const tower = useRef<THREE.Group>(null);
   const screenMat = useRef<THREE.MeshBasicMaterial>(null);
 
-  const wedge = useMemo(wedgeGeometry, []);
-  const padGlassGeo = useMemo(() => plateGeometry(0.4, 0.42, 0.02, 0.004), []);
-  const padGeos = useMemo(() => PAD_POSITIONS.map(([, , w, l]) => plateGeometry(w, l, 0.03, 0.002)), []);
-  const bars = useMemo(() => [barGeometry(-CANOPY.x), barGeometry(CANOPY.x)], []);
+  const geometry = useMemo(() => ({
+    base: slabGeometry(BASE.w, BASE.d, BASE.radius, BASE.h, 0.003),
+    top: slabGeometry(BASE.w - 0.002, BASE.d - 0.002, BASE.radius - 0.001, 0.003, 0.0008),
+    fairing: fairingGeometry(BASE.h + 0.001),
+    padGlass: slabGeometry(0.4, 0.435, 0.027, 0.004, 0.0007),
+    pads: PAD_POSITIONS.map(([, , w, d], i) => electrodeGeometry(w, d, i >= 2)),
+    body: towerBodyGeometry(0.415, TOWER.y0 - 0.012, TOWER.y1, TOWER.step),
+    // Rotation du plan x/z vers la façade x/y; le verre s'étend vers l'arrière.
+    glass: slabGeometry(TOWER.w, TOWER.y1 - TOWER.y0, 0.014, 0.01, 0.0015).rotateX(Math.PI / 2),
+    bars: [-1, 1].map((side) => canopyBarGeometry(side, CANOPY, TOWER.y1)),
+    cap: slabGeometry(CANOPY.w, CANOPY.plateZ1 - CANOPY.plateZ0, 0.017, 0.024, 0.002),
+    underside: slabGeometry(CANOPY.w - 0.022, CANOPY.plateZ1 - CANOPY.plateZ0 - 0.018, 0.012, 0.002, 0.0005),
+  }), []);
+  const fairingMaterials = useMemo(() => [m.wedge, m.body], [m]);
 
   // Telas (geradas após a fonte carregar, para o texto sair certo)
   const screens = useRef<THREE.CanvasTexture[]>([]);
@@ -254,77 +181,36 @@ export default function StationModel({ state: station }: { state: StationState }
     }
   });
 
-  const bodyTopH = TOWER.y1 - TOWER.y0;
-  const towerMidY = (TOWER.y0 + TOWER.y1) / 2;
-
   return (
     <group ref={root}>
-      {/* Base: bandeja de alumínio, tampo grafite, cunha, vidro claro e eletrodos */}
+      {/* Bandeja arredondada, carenagem côncava e vidro claro separado do tampo bronze. */}
       <group>
-        <RoundedBox
-          args={[BASE.w, BASE.h, BASE.d]}
-          radius={0.022}
-          smoothness={6}
-          position={[0, BASE.h / 2, BASE.z0 + BASE.d / 2]}
-          material={m.body}
-        />
-        <RoundedBox
-          args={[BASE.w - 0.02, 0.004, BASE.d - 0.02]}
-          radius={0.002}
-          smoothness={2}
-          position={[0, BASE.h + 0.001, BASE.z0 + BASE.d / 2]}
-          material={m.top}
-        />
-        <mesh geometry={wedge} material={m.wedge} />
-        <mesh geometry={padGlassGeo} material={m.padGlass} position={[0, BASE.h + 0.007, 0.565]} />
+        <mesh geometry={geometry.base} position={[0, BASE.h, BASE.z0 + BASE.d / 2]} material={m.body} />
+        <mesh geometry={geometry.top} position={[0, BASE.h + 0.001, BASE.z0 + BASE.d / 2]} material={m.top} />
+        <mesh geometry={geometry.fairing} material={fairingMaterials} />
+        <mesh geometry={geometry.padGlass} material={m.padGlass} position={[0, BASE.h + 0.003, 0.49]} />
         {PAD_POSITIONS.map(([x, z], i) => (
-          <mesh key={`${x}${z}`} geometry={padGeos[i]} material={m.steel} position={[x, BASE.h + 0.0105, z]} />
+          <mesh key={i} geometry={geometry.pads[i]} material={m.steel} position={[x, BASE.h + 0.0045, z]} />
         ))}
       </group>
 
-      {/* Torre: vidro preto na frente, corpo de alumínio atrás com degrau na metade de baixo */}
+      {/* Vidro preto contínuo; carcaça traseira com degrau de alumínio e ombro inclinado. */}
       <group ref={tower}>
-        <RoundedBox
-          args={[TOWER.w, bodyTopH, 0.014]}
-          radius={0.006}
-          smoothness={4}
-          position={[0, towerMidY, 0.033]}
-          material={m.glass}
-        />
-        <RoundedBox
-          args={[0.415, bodyTopH, 0.06]}
-          radius={0.01}
-          smoothness={4}
-          position={[0, towerMidY, -0.005]}
-          material={m.body}
-        />
-        <RoundedBox
-          args={[0.415, 0.7, 0.1]}
-          radius={0.012}
-          smoothness={4}
-          position={[0, TOWER.y0 + 0.35, -0.03]}
-          material={m.body}
-        />
-        <mesh position={[0, TOWER.y1 - 0.022 - SCREEN.h / 2, 0.0405]}>
+        <mesh geometry={geometry.body} material={m.body} />
+        <mesh geometry={geometry.glass} position={[0, (TOWER.y0 + TOWER.y1) / 2, 0.040]} material={m.glass} />
+        <mesh position={[0, TOWER.y1 - TOWER.screenMargin - SCREEN.h / 2, 0.0403]}>
           <planeGeometry args={[SCREEN.w, SCREEN.h]} />
           <meshBasicMaterial ref={screenMat} color="#e6e6e6" toneMapped={false} />
         </mesh>
       </group>
 
-      {/* Dossel: duas barras chatas e a placa frontal com o sensor ultrassônico */}
+      {/* Barras chatas que se abrem para cima e placa de sensor com cantos arredondados. */}
       <group ref={canopy}>
-        {bars.map((g, i) => (
-          <mesh key={i} geometry={g} material={m.canopy} />
-        ))}
-        <RoundedBox
-          args={[0.45, 0.02, CANOPY.plateZ1 - CANOPY.plateZ0]}
-          radius={0.008}
-          smoothness={4}
-          position={[0, CANOPY.top + 0.004, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]}
-          material={m.canopy}
-        />
-        <mesh position={[0, CANOPY.top - 0.008, 0.4]} material={m.sensor}>
-          <cylinderGeometry args={[0.02, 0.02, 0.006, 40]} />
+        {geometry.bars.map((g, i) => <mesh key={i} geometry={g} material={m.canopy} />)}
+        <mesh geometry={geometry.cap} material={m.canopy} position={[0, 2.1, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
+        <mesh geometry={geometry.underside} material={m.padGlass} position={[0, 2.077, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
+        <mesh position={[0, CANOPY.top - 0.011, CANOPY.sensorZ]} material={m.sensor}>
+          <cylinderGeometry args={[0.014, 0.014, 0.003, 40]} />
         </mesh>
         <Ultrasound state={station} />
       </group>
