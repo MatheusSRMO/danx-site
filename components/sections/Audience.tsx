@@ -35,7 +35,13 @@ export default function Audience() {
             </a>
           </div>
           <div className={s.bannerMedia}>
-            <Image src="/media/station-studio.webp" alt="Estação de Saúde DANX" width={1024} height={1536} sizes="(max-width: 900px) 70vw, 420px" />
+            <Image
+              src="/media/station-studio.webp"
+              alt=""
+              width={1024}
+              height={1536}
+              sizes="(max-width: 900px) 70vw, 420px"
+            />
           </div>
         </div>
       </div>

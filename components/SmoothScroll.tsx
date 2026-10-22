@@ -26,17 +26,19 @@ export default function SmoothScroll() {
 
     // Âncoras internas com rolagem suave (e foco acessível no destino).
     const onClick = (e: MouseEvent) => {
+      // Ctrl/Cmd/Shift-clique e botão do meio seguem o comportamento normal do navegador
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
       if (!a) return;
       const id = a.getAttribute("href")!;
       if (id.length < 2) return;
-      const el = document.querySelector<HTMLElement>(id);
+      const el = document.getElementById(decodeURIComponent(id.slice(1)));
       if (!el) return;
       e.preventDefault();
       if (lenis) lenis.scrollTo(el, { offset: 0, duration: 1.6 });
       else el.scrollIntoView();
-      history.replaceState(null, "", id);
-      el.setAttribute("tabindex", "-1");
+      if (location.hash !== id) history.pushState(null, "", id);
+      if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
       el.focus({ preventScroll: true });
     };
     document.addEventListener("click", onClick);

@@ -16,6 +16,8 @@ export function getTier(): Tier {
     const c = document.createElement("canvas");
     const gl = c.getContext("webgl2") || c.getContext("webgl");
     if (!gl) return (cached = "none");
+    // Libera o contexto de teste (o navegador limita quantos podem existir ao mesmo tempo)
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
   } catch {
     return (cached = "none");
   }
@@ -27,5 +29,4 @@ export function getTier(): Tier {
   return cached;
 }
 
-export const isTouch = () =>
-  typeof window !== "undefined" && window.matchMedia("(hover: none)").matches;
+export const isTouch = () => typeof window !== "undefined" && window.matchMedia("(hover: none)").matches;

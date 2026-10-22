@@ -17,7 +17,8 @@ Para testar os modos de desempenho, acrescente na URL `?tier=high`, `?tier=low` 
 
 | O quê | Onde |
 |---|---|
-| **Todo o texto do site** | `lib/content.ts` |
+| Textos compartilhados e listas (nav, FAQ, especificações, preço, documentos, públicos) | `lib/content.ts` |
+| Títulos e textos fixos de cada seção | no próprio componente em `components/sections/*.tsx` |
 | Seções da página (ordem) | `app/page.tsx` |
 | Cada seção | `components/sections/*.tsx` (+ `.module.css`) |
 | Estilos globais e cores | `app/globals.css` |
@@ -35,9 +36,11 @@ Itens com `tbc: true` (ou `true` no fim de uma linha da tabela de especificaçõ
 
 `POST /api/cotacao` valida os campos e:
 - se a variável `QUOTE_WEBHOOK_URL` estiver definida (Zapier, Make, n8n, endpoint próprio), repassa o pedido em JSON para ela;
-- se não estiver, só registra no log do servidor.
+- se não estiver: em produção responde 503 e o formulário oferece o WhatsApp (o pedido não se perde em log); em desenvolvimento, mostra o pedido no terminal.
 
-Se o envio falhar (ou no export estático), o formulário oferece enviar o pedido pelo WhatsApp, já preenchido.
+**Antes de divulgar o site, defina `QUOTE_WEBHOOK_URL` na Vercel**; sem ela, todo pedido vai para o WhatsApp.
+
+Se o envio falhar (ou no export estático), o formulário oferece enviar o pedido pelo WhatsApp, já preenchido com todos os dados, e um botão para tentar de novo sem perder o que foi digitado. A API aceita só os campos do formulário, com limite de tamanho, e exige o consentimento.
 
 ## Estrutura da página
 
@@ -52,7 +55,7 @@ Se o envio falhar (ou no export estático), o formulário oferece enviar o pedid
    - a estação volta inteira, com o botão de cotação.
 
    Dá para arrastar para girar. Sem WebGL, a seção vira fotos estáticas.
-4. Seis avaliações (cartões no estilo do app Saúde)
+4. Sete avaliações (cartões no estilo do app Saúde)
 5. Feita para a rotina da escola (foto que se abre com a rolagem)
 6. Relatório (celular)
 7. Em números
@@ -97,6 +100,10 @@ O modelo 3D foi construído com as medidas da apresentação (2,10 m de altura, 
 - **App e relatório**: confirmar que saem com a marca DANX.
 - **Fotos reais** do equipamento com a marca DANX, quando existirem. As atuais foram geradas por IA e **não mostram logotipo** no equipamento; confirmar onde a marca DANX vai aplicada (tela de abertura, dossel, base).
 - **Direito de uso das fotos do fabricante como referência** para gerar as imagens (nenhuma foto do fabricante é publicada no site).
+- **Painel da gestão**: confirmar que a plataforma agrega dados por escola, ano e turma (o painel do site é ilustrativo) e se a nuvem tem armazenamento ilimitado (marcado a confirmar).
+- **Relatório**: confirmar se traz sugestões de atividade física e de hábitos alimentares, impressão em rede e acesso por QR code.
+- **Aluno de exemplo**: o IMC 20,2 do relatório de exemplo (10 anos, 148 cm, 44,2 kg) fica acima da faixa de referência da OMS para a idade. O site não classifica o resultado; se a DANX tiver outro exemplo, vale trocar.
+- **Antes do lançamento**: revisar os itens "a confirmar", definir `QUOTE_WEBHOOK_URL` e só então deixar o domínio final ser indexado (hoje `robots.txt` libera tudo).
 
 ## Regras de conteúdo
 

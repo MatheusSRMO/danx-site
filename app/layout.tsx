@@ -7,7 +7,7 @@ import Reveals from "@/components/Reveals";
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.productSeo} | Avaliação corporal inteligente para escolas`,
+    default: `${site.product} | Triagem e avaliação corporal na escola`,
     template: `%s | DANX`,
   },
   description: site.description,
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "bioimpedância infantil",
     "avaliação postural escolar",
     "Programa Saúde na Escola",
-    "composição corporal crianças",
+    "composição corporal de crianças",
     "DANX",
   ],
   alternates: { canonical: "/" },
@@ -27,13 +27,20 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: site.url,
     siteName: "DANX",
-    title: `${site.productSeo}: saúde em alta definição`,
+    title: `${site.product}: saúde em alta definição`,
     description: site.description,
-    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Estação de Saúde DANX" }],
+    images: [
+      {
+        url: "/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Aluno sobre a Estação de Saúde DANX em um ginásio escolar, ao lado da professora, com o título Saúde em alta definição",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.productSeo}: saúde em alta definição`,
+    title: `${site.product}: saúde em alta definição`,
     description: site.description,
     images: ["/og.jpg"],
   },
@@ -58,7 +65,7 @@ const jsonLd = {
     },
     {
       "@type": "Product",
-      name: site.productSeo,
+      name: site.product,
       brand: { "@type": "Brand", name: "DANX" },
       description: site.description,
       image: `${site.url}/media/station-studio.webp`,
@@ -78,10 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "document.documentElement.classList.add('js');if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('reduced');",
           }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>
         <a className="skip-link" href="#conteudo">

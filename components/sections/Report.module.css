@@ -19,14 +19,14 @@
 .phoneCard {
   display: grid;
   place-items: center;
-  padding: 48px 24px;
+  padding: 48px clamp(12px, 4vw, 24px);
   border-radius: var(--radius);
   background: var(--bg-2);
 }
 
 .phone {
   position: relative;
-  width: 282px;
+  width: min(282px, 100%);
   aspect-ratio: 9 / 19.2;
   padding: 11px;
   border-radius: 48px;
@@ -193,7 +193,7 @@
 
 @media (max-width: 900px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .photo {
     min-height: 0;

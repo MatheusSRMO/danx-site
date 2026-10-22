@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import { nav } from "@/lib/content";
 import s from "./Nav.module.css";
@@ -7,6 +8,10 @@ import s from "./Nav.module.css";
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const header = useRef<HTMLElement>(null);
+  const toggle = useRef<HTMLButtonElement>(null);
+  // Fora da página inicial, as âncoras apontam para a página inicial
+  const base = usePathname() === "/" ? "" : "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -15,30 +20,48 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // O menu do celular fecha com Esc, com um toque fora dele ou ao rolar a página
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    if (!open) return;
+    const close = () => setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      close();
+      toggle.current?.focus();
+    };
+    const onDown = (e: PointerEvent) => !header.current?.contains(e.target as Node) && close();
+    const y0 = window.scrollY;
+    const onScroll = () => Math.abs(window.scrollY - y0) > 40 && close();
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
+    document.addEventListener("pointerdown", onDown);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [open]);
 
   return (
-    <header className={`${s.nav} ${scrolled || open ? s.scrolled : ""} ${open ? s.open : ""}`}>
+    <header ref={header} className={`${s.nav} ${scrolled || open ? s.scrolled : ""} ${open ? s.open : ""}`}>
       <div className={s.bar}>
-        <a href="#topo" className={s.brand} aria-label="DANX, voltar ao início">
+        <a href={base ? "/" : "#topo"} className={s.brand} aria-label="DANX, voltar ao início">
           <Logo className={s.logo} />
           <span className={s.product}>Estação de Saúde</span>
         </a>
         <nav className={s.links} aria-label="Principal">
           {nav.map((l) => (
-            <a key={l.href} href={l.href}>
+            <a key={l.href} href={base + l.href}>
               {l.label}
             </a>
           ))}
         </nav>
-        <a className={`btn btn-primary btn-sm ${s.cta}`} href="#cotacao">
+        <a className={`btn btn-primary btn-sm ${s.cta}`} href={`${base}#cotacao`}>
           Solicitar cotação
         </a>
         <button
+          ref={toggle}
+          type="button"
           className={s.toggle}
           aria-expanded={open}
           aria-controls="menu-local"
@@ -53,7 +76,7 @@ export default function Nav() {
       <div id="menu-local" className={s.sheet} hidden={!open}>
         <nav aria-label="Menu">
           {nav.map((l) => (
-            <a key={l.href} href={l.href} onClick={() => setOpen(false)}>
+            <a key={l.href} href={base + l.href} onClick={() => setOpen(false)}>
               {l.label}
             </a>
           ))}

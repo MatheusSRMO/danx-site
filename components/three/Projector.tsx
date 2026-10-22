@@ -24,6 +24,8 @@ export default function Projector({
   const v = useMemo(() => new THREE.Vector3(), []);
   const axis = useMemo(() => new THREE.Vector3(0, 1, 0), []);
   useFrame(() => {
+    // A câmera acabou de mudar neste quadro: atualiza a matriz antes de projetar (evita rótulos atrasados)
+    camera.updateMatrixWorld();
     const e = state.explodeSmooth;
     anchors.forEach((a) => {
       const el = nodes.current?.[a.id];

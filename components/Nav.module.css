@@ -24,7 +24,8 @@
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  opacity: 0;
+  /* Mesmo no topo há um véu leve: os links continuam legíveis sobre a foto do herói */
+  opacity: 0.55;
   transition: opacity 0.3s var(--ease);
 }
 .scrolled::before {
@@ -39,6 +40,7 @@
 .logo {
   width: 74px;
   height: auto;
+  flex-shrink: 0;
   color: var(--ink);
 }
 .product {
@@ -71,6 +73,7 @@
 
 .toggle {
   display: none;
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
   padding: 7px;
@@ -128,7 +131,7 @@
     display: block;
   }
 }
-@media (max-width: 420px) {
+@media (max-width: 520px) {
   .product {
     display: none;
   }

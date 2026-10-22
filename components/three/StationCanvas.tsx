@@ -39,7 +39,14 @@ function Rig({ state }: { state: StationState }) {
       cam.updateProjectionMatrix();
     }
     if (state.viewX || state.viewY) {
-      cam.setViewOffset(size.width, size.height, -size.width * state.viewX, size.height * state.viewY, size.width, size.height);
+      cam.setViewOffset(
+        size.width,
+        size.height,
+        -size.width * state.viewX,
+        size.height * state.viewY,
+        size.width,
+        size.height,
+      );
     } else if (cam.view) {
       cam.clearViewOffset();
     }
@@ -65,7 +72,13 @@ export default function StationCanvas({
       dpr={low ? [1, 1.25] : [1, 2]}
       frameloop={active ? "always" : "never"}
       camera={{ fov: 20, near: 0.1, far: 50, position: [0, 1.2, 8] }}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance", toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
+      gl={{
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMappingExposure: 1.05,
+      }}
       aria-hidden="true"
     >
       <Studio />

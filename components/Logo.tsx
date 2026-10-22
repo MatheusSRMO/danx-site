@@ -10,13 +10,7 @@ export const BOLT_PATH =
 
 export default function Logo({ className, title = "DANX" }: Props) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 1419.3228 299.9958"
-      role="img"
-      aria-label={title}
-      fill="currentColor"
-    >
+    <svg className={className} viewBox="0 0 1419.3228 299.9958" role="img" aria-label={title} fill="currentColor">
       {LOGO_PATHS.map((d) => (
         <path key={d.slice(0, 12)} d={d} />
       ))}

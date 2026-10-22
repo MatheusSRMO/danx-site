@@ -38,7 +38,7 @@ const CHAPTERS = [
   {
     at: 0.06,
     kicker: "Conheça a estação",
-    title: "Uma estação. Seis avaliações.",
+    title: "Uma estação. Sete avaliações.",
     text: "Torre de vidro temperado, tela de 32″, dossel de medição e plataforma de bioimpedância. Role para ver cada parte em ação.",
   },
   {
@@ -46,32 +46,32 @@ const CHAPTERS = [
     kicker: "Altura",
     title: "Sem régua, sem toque.",
     text: "O sensor ultrassônico no topo mede a altura em segundos. Cada avaliação vira um ponto na curva de crescimento.",
-    stat: { v: "148,0", u: "cm" },
+    stat: { v: "148", u: "cm" },
   },
   {
     at: 0.4,
     kicker: "Composição corporal",
     title: "Uma corrente que ninguém sente.",
     text: "Quatro eletrodos de aço inox 304 e corrente abaixo de 280 µA. A bioimpedância separa água, proteína, gordura e minerais.",
-    stat: { v: "21,3", u: "% de gordura" },
+    stat: { v: "21,3%", u: "de gordura" },
   },
   {
     at: 0.62,
     kicker: "A tela",
     title: "Cada teste, guiado na tela e por voz.",
-    text: "Postura com câmera de IA, equilíbrio, reação, fôlego e visão. O resultado aparece na hora, em 32 polegadas.",
+    text: "Postura por visão computacional, equilíbrio, reação, fôlego e visão. O resultado aparece na hora, na tela de 32 polegadas.",
   },
   {
     at: 0.84,
     kicker: "Instalação",
     title: "Chega desmontada. Montada no local.",
-    text: "Torre com tela, plataforma de medição e dossel ultrassônico se encaixam em poucos passos.",
+    text: "Torre com tela, plataforma de medição e dossel ultrassônico são montados no local.",
   },
   {
     at: 0.97,
     kicker: "Pronta para a escola",
     title: "Pequena no espaço. Grande no cuidado.",
-    text: "Base de 48 × 93,5 cm, funciona sem internet e guarda mais de 100 mil avaliações.",
+    text: "Ocupa uma base de 48 × 93,5 cm, funciona sem internet e guarda mais de 100 mil avaliações.",
     cta: true,
   },
 ];
@@ -103,7 +103,8 @@ function applyKeys(state: StationState, p: number) {
   state.ultra = L("ultra");
   state.camX = L("cx");
   // Na aproximação da tela, as telas se alternam: postura, equilíbrio, crescimento
-  state.screen = p > 0.5 && p < 0.79 ? 2 + Math.min(2, Math.floor(sm(p, 0.55, 0.76) * 3)) : p >= 0.37 && p <= 0.5 ? 1 : 0;
+  state.screen =
+    p > 0.5 && p < 0.79 ? 2 + Math.min(2, Math.floor(sm(p, 0.55, 0.76) * 3)) : p >= 0.37 && p <= 0.5 ? 1 : 0;
 }
 
 export default function ProductStory() {
@@ -120,47 +121,90 @@ export default function ProductStory() {
     setTouch(isTouch());
   }, []);
 
+  // A versão escolhida (3D ou estática) muda a altura da seção: as animações abaixo precisam remedir
+  useEffect(() => {
+    if (tier !== "pending") ScrollTrigger.refresh();
+  }, [tier]);
+
+  // No desktop o produto fica à direita do texto; no celular, centralizado (vale também ao redimensionar)
+  useEffect(() => {
+    const place = () => void (state.viewX = window.innerWidth > 900 ? 0.17 : 0);
+    place();
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [state]);
+
   useEffect(() => {
     const io = new IntersectionObserver(([e]) => setActive(e.isIntersecting), { rootMargin: "200px" });
     io.observe(root.current!);
     return () => io.disconnect();
   }, []);
 
-  // Arrastar para girar; o giro extra volta devagar quando solta
+  // Arrastar para girar; o giro extra volta devagar quando solta.
+  // O arraste só começa depois de alguns pixels, para não roubar o clique do botão do último capítulo.
   useEffect(() => {
     const el = stage.current;
     if (!el || tier === "none") return;
     let startX = 0;
     let base = 0;
+    let pointer = -1;
     let dragging = false;
     let back: gsap.core.Tween | undefined;
     const down = (e: PointerEvent) => {
-      dragging = true;
+      if (e.button !== 0 || !e.isPrimary) return;
+      if ((e.target as Element).closest("a, button, input, select, textarea")) return;
+      pointer = e.pointerId;
       startX = e.clientX;
       base = state.drag;
-      back?.kill();
-      el.setPointerCapture(e.pointerId);
     };
-    const move = (e: PointerEvent) => {
-      if (dragging) state.drag = base + ((e.clientX - startX) / el.clientWidth) * Math.PI * 1.6;
-    };
-    const up = () => {
+    const end = () => {
+      pointer = -1;
       if (!dragging) return;
       dragging = false;
       back = gsap.to(state, { drag: 0, duration: 2.2, delay: 1.4, ease: "power2.inOut" });
     };
+    const move = (e: PointerEvent) => {
+      if (e.pointerId !== pointer) return;
+      if (e.pointerType === "mouse" && !(e.buttons & 1)) return end();
+      const dx = e.clientX - startX;
+      if (!dragging) {
+        if (Math.abs(dx) < 6) return;
+        dragging = true;
+        back?.kill();
+        el.setPointerCapture(e.pointerId);
+      }
+      state.drag = base + (dx / el.clientWidth) * Math.PI * 1.6;
+    };
     el.addEventListener("pointerdown", down);
     el.addEventListener("pointermove", move);
-    el.addEventListener("pointerup", up);
-    el.addEventListener("pointercancel", up);
+    el.addEventListener("pointerup", end);
+    el.addEventListener("pointercancel", end);
+    el.addEventListener("lostpointercapture", end);
     return () => {
       el.removeEventListener("pointerdown", down);
       el.removeEventListener("pointermove", move);
-      el.removeEventListener("pointerup", up);
-      el.removeEventListener("pointercancel", up);
+      el.removeEventListener("pointerup", end);
+      el.removeEventListener("pointercancel", end);
+      el.removeEventListener("lostpointercapture", end);
       back?.kill();
     };
   }, [state, tier]);
+
+  // Quem chega pelo teclado a um capítulo (ex.: o botão do último) é levado até o trecho em que ele aparece
+  useEffect(() => {
+    const sec = root.current;
+    if (!sec || tier === "pending" || tier === "none") return;
+    const onFocus = (e: FocusEvent) => {
+      const art = (e.target as Element).closest("article");
+      const i = art ? [...sec.querySelectorAll("article")].indexOf(art as HTMLElement) : -1;
+      if (i < 0) return;
+      const y = sec.offsetTop + CHAPTERS[i].at * (sec.offsetHeight - window.innerHeight);
+      if (window.__lenis) window.__lenis.scrollTo(y, { duration: 0.8 });
+      else window.scrollTo(0, y);
+    };
+    sec.addEventListener("focusin", onFocus);
+    return () => sec.removeEventListener("focusin", onFocus);
+  }, [tier]);
 
   useGSAP(
     () => {
@@ -169,6 +213,7 @@ export default function ProductStory() {
       const chapters = q(`.${s.chapter}`) as HTMLElement[];
       const dots = q(`.${s.rail} li`) as HTMLElement[];
       const callouts = q(`.${s.callout}`) as HTMLElement[];
+      const ctas = chapters.map((c) => c.querySelector<HTMLElement>(`.${s.cta}`));
       const fill = q(`.${s.railFill}`)[0] as HTMLElement;
 
       ScrollTrigger.create({
@@ -178,7 +223,6 @@ export default function ProductStory() {
         scrub: true,
         onUpdate: ({ progress: p }) => {
           applyKeys(state, p);
-          state.viewX = window.innerWidth > 900 ? 0.17 : 0;
 
           // Cada capítulo aparece perto do seu quadro-chave
           let current = 0;
@@ -191,7 +235,9 @@ export default function ProductStory() {
             const el = chapters[i];
             el.style.opacity = String(w);
             el.style.transform = `translateY(${(1 - w) * 24}px)`;
-            el.style.visibility = w < 0.02 ? "hidden" : "visible";
+            // Os capítulos ficam no DOM para leitores de tela; só o botão visível recebe cliques
+            const cta = ctas[i];
+            if (cta) cta.style.pointerEvents = w > 0.5 ? "auto" : "none";
             if (p >= start) current = i;
           });
           dots.forEach((d, i) => d.classList.toggle(s.on, i === current));
@@ -273,21 +319,27 @@ export default function ProductStory() {
 
         <div className={s.callouts} aria-hidden="true">
           {ANCHORS.map((a) => (
-            <div key={a.id} ref={(el) => void (nodes.current[a.id] = el)} className={`${s.callout} ${a.left ? s.left : ""}`}>
+            <div
+              key={a.id}
+              ref={(el) => void (nodes.current[a.id] = el)}
+              className={`${s.callout} ${a.left ? s.left : ""}`}
+            >
               <i />
               <span>{a.label}</span>
             </div>
           ))}
         </div>
 
-        <ol className={s.rail} aria-hidden="true">
+        <div className={s.rail} aria-hidden="true">
           <span className={s.railTrack}>
             <span className={s.railFill} />
           </span>
-          {CHAPTERS.map((c) => (
-            <li key={c.kicker}>{c.kicker}</li>
-          ))}
-        </ol>
+          <ol>
+            {CHAPTERS.map((c) => (
+              <li key={c.kicker}>{c.kicker}</li>
+            ))}
+          </ol>
+        </div>
 
         <p className={s.hint} aria-hidden="true">
           {touch ? "Arraste para girar" : "Clique e arraste para girar"}

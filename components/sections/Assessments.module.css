@@ -276,7 +276,9 @@
   height: 36px;
   border-radius: 10px;
   background: var(--bg-2);
-  transition: background-color 0.15s, transform 0.2s var(--ease-out);
+  transition:
+    background-color 0.15s,
+    transform 0.2s var(--ease-out);
 }
 .grid9 .lit {
   background: var(--accent);

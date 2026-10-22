@@ -26,13 +26,43 @@ export const PAD_POSITIONS: [number, number, number, number][] = [
 function useMaterials() {
   return useMemo(
     () => ({
-      glass: new THREE.MeshPhysicalMaterial({ color: "#222a35", metalness: 0, roughness: 0.32, clearcoat: 0.55, clearcoatRoughness: 0.22 }),
-      body: new THREE.MeshPhysicalMaterial({ color: "#566b86", metalness: 0.3, roughness: 0.46, clearcoat: 0.2, clearcoatRoughness: 0.5 }),
+      glass: new THREE.MeshPhysicalMaterial({
+        color: "#222a35",
+        metalness: 0,
+        roughness: 0.32,
+        clearcoat: 0.55,
+        clearcoatRoughness: 0.22,
+      }),
+      body: new THREE.MeshPhysicalMaterial({
+        color: "#566b86",
+        metalness: 0.3,
+        roughness: 0.46,
+        clearcoat: 0.2,
+        clearcoatRoughness: 0.5,
+      }),
       top: new THREE.MeshPhysicalMaterial({ color: "#3d3f44", metalness: 0.5, roughness: 0.42 }),
       wedge: new THREE.MeshPhysicalMaterial({ color: "#47413c", metalness: 0.5, roughness: 0.45 }),
-      padGlass: new THREE.MeshPhysicalMaterial({ color: "#a7adb4", metalness: 0, roughness: 0.2, clearcoat: 0.6, clearcoatRoughness: 0.12 }),
-      steel: new THREE.MeshPhysicalMaterial({ color: "#f1f3f5", metalness: 0.35, roughness: 0.32, emissive: new THREE.Color("#2ec2c6"), emissiveIntensity: 0 }),
-      canopy: new THREE.MeshPhysicalMaterial({ color: "#1d2026", metalness: 0.75, roughness: 0.24, clearcoat: 0.6, clearcoatRoughness: 0.15 }),
+      padGlass: new THREE.MeshPhysicalMaterial({
+        color: "#a7adb4",
+        metalness: 0,
+        roughness: 0.2,
+        clearcoat: 0.6,
+        clearcoatRoughness: 0.12,
+      }),
+      steel: new THREE.MeshPhysicalMaterial({
+        color: "#f1f3f5",
+        metalness: 0.35,
+        roughness: 0.32,
+        emissive: new THREE.Color("#2ec2c6"),
+        emissiveIntensity: 0,
+      }),
+      canopy: new THREE.MeshPhysicalMaterial({
+        color: "#1d2026",
+        metalness: 0.75,
+        roughness: 0.24,
+        clearcoat: 0.6,
+        clearcoatRoughness: 0.15,
+      }),
       sensor: new THREE.MeshStandardMaterial({ color: "#0d0e10", metalness: 0.3, roughness: 0.55 }),
     }),
     [],
@@ -42,7 +72,9 @@ function useMaterials() {
 /** Placa fina de cantos arredondados (no plano x/z), para o vidro dos eletrodos e as placas de aço. */
 function plateGeometry(w: number, l: number, r: number, t: number) {
   const s = new THREE.Shape();
-  const x = w / 2, z = l / 2, rr = Math.min(r, x, z);
+  const x = w / 2,
+    z = l / 2,
+    rr = Math.min(r, x, z);
   s.moveTo(-x + rr, -z);
   s.lineTo(x - rr, -z);
   s.quadraticCurveTo(x, -z, x, -z + rr);
@@ -52,7 +84,14 @@ function plateGeometry(w: number, l: number, r: number, t: number) {
   s.quadraticCurveTo(-x, z, -x, z - rr);
   s.lineTo(-x, -z + rr);
   s.quadraticCurveTo(-x, -z, -x + rr, -z);
-  const g = new THREE.ExtrudeGeometry(s, { depth: t, bevelEnabled: true, bevelSize: 0.0012, bevelThickness: 0.0012, bevelSegments: 2, curveSegments: 16 });
+  const g = new THREE.ExtrudeGeometry(s, {
+    depth: t,
+    bevelEnabled: true,
+    bevelSize: 0.0012,
+    bevelThickness: 0.0012,
+    bevelSegments: 2,
+    curveSegments: 16,
+  });
   g.rotateX(Math.PI / 2);
   return g;
 }
@@ -65,7 +104,13 @@ function wedgeGeometry() {
   s.lineTo(0.035, 0.155);
   s.lineTo(BASE.z0 + 0.02, 0.155);
   s.closePath();
-  const g = new THREE.ExtrudeGeometry(s, { depth: 0.46, bevelEnabled: true, bevelSize: 0.003, bevelThickness: 0.003, bevelSegments: 2 });
+  const g = new THREE.ExtrudeGeometry(s, {
+    depth: 0.46,
+    bevelEnabled: true,
+    bevelSize: 0.003,
+    bevelThickness: 0.003,
+    bevelSegments: 2,
+  });
   g.rotateY(-Math.PI / 2);
   g.translate(0.23, 0, 0);
   return g;
@@ -89,7 +134,9 @@ function barGeometry(x: number) {
   }
   path.add(new THREE.LineCurve3(new THREE.Vector3(x, top, z + r), new THREE.Vector3(x, top, plateZ0 + 0.06)));
   // Seção retangular arredondada (0,026 × 0,02 m)
-  const w = 0.013, h = 0.01, rr = 0.004;
+  const w = 0.013,
+    h = 0.01,
+    rr = 0.004;
   const shape = new THREE.Shape();
   shape.moveTo(-w + rr, -h);
   shape.lineTo(w - rr, -h);
@@ -110,7 +157,17 @@ function Ultrasound({ state }: { state: StationState }) {
   const group = useRef<THREE.Group>(null);
   const rings = useMemo(() => Array.from({ length: 5 }, (_, i) => i / 5), []);
   const mats = useMemo(
-    () => rings.map(() => new THREE.MeshBasicMaterial({ color: "#2f7de1", transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide })),
+    () =>
+      rings.map(
+        () =>
+          new THREE.MeshBasicMaterial({
+            color: "#2f7de1",
+            transparent: true,
+            opacity: 0,
+            depthWrite: false,
+            side: THREE.DoubleSide,
+          }),
+      ),
     [rings],
   );
   useFrame((st) => {
@@ -204,8 +261,20 @@ export default function StationModel({ state: station }: { state: StationState }
     <group ref={root}>
       {/* Base: bandeja de alumínio, tampo grafite, cunha, vidro claro e eletrodos */}
       <group>
-        <RoundedBox args={[BASE.w, BASE.h, BASE.d]} radius={0.022} smoothness={6} position={[0, BASE.h / 2, BASE.z0 + BASE.d / 2]} material={m.body} />
-        <RoundedBox args={[BASE.w - 0.02, 0.004, BASE.d - 0.02]} radius={0.002} smoothness={2} position={[0, BASE.h + 0.001, BASE.z0 + BASE.d / 2]} material={m.top} />
+        <RoundedBox
+          args={[BASE.w, BASE.h, BASE.d]}
+          radius={0.022}
+          smoothness={6}
+          position={[0, BASE.h / 2, BASE.z0 + BASE.d / 2]}
+          material={m.body}
+        />
+        <RoundedBox
+          args={[BASE.w - 0.02, 0.004, BASE.d - 0.02]}
+          radius={0.002}
+          smoothness={2}
+          position={[0, BASE.h + 0.001, BASE.z0 + BASE.d / 2]}
+          material={m.top}
+        />
         <mesh geometry={wedge} material={m.wedge} />
         <mesh geometry={padGlassGeo} material={m.padGlass} position={[0, BASE.h + 0.007, 0.565]} />
         {PAD_POSITIONS.map(([x, z], i) => (
@@ -215,9 +284,27 @@ export default function StationModel({ state: station }: { state: StationState }
 
       {/* Torre: vidro preto na frente, corpo de alumínio atrás com degrau na metade de baixo */}
       <group ref={tower}>
-        <RoundedBox args={[TOWER.w, bodyTopH, 0.014]} radius={0.006} smoothness={4} position={[0, towerMidY, 0.033]} material={m.glass} />
-        <RoundedBox args={[0.415, bodyTopH, 0.06]} radius={0.01} smoothness={4} position={[0, towerMidY, -0.005]} material={m.body} />
-        <RoundedBox args={[0.415, 0.7, 0.1]} radius={0.012} smoothness={4} position={[0, TOWER.y0 + 0.35, -0.03]} material={m.body} />
+        <RoundedBox
+          args={[TOWER.w, bodyTopH, 0.014]}
+          radius={0.006}
+          smoothness={4}
+          position={[0, towerMidY, 0.033]}
+          material={m.glass}
+        />
+        <RoundedBox
+          args={[0.415, bodyTopH, 0.06]}
+          radius={0.01}
+          smoothness={4}
+          position={[0, towerMidY, -0.005]}
+          material={m.body}
+        />
+        <RoundedBox
+          args={[0.415, 0.7, 0.1]}
+          radius={0.012}
+          smoothness={4}
+          position={[0, TOWER.y0 + 0.35, -0.03]}
+          material={m.body}
+        />
         <mesh position={[0, TOWER.y1 - 0.022 - SCREEN.h / 2, 0.0405]}>
           <planeGeometry args={[SCREEN.w, SCREEN.h]} />
           <meshBasicMaterial ref={screenMat} color="#e6e6e6" toneMapped={false} />

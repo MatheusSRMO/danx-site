@@ -1,5 +1,6 @@
 .story {
   position: relative;
+  height: 620vh;
   height: 620svh;
   background: var(--bg-2);
 }
@@ -7,11 +8,12 @@
 .sticky {
   position: sticky;
   top: 0;
+  height: 100vh;
   height: 100svh;
   min-height: 640px;
   overflow: hidden;
   cursor: grab;
-  touch-action: pan-y;
+  touch-action: pan-y pinch-zoom;
   /* luz quente de estúdio no fundo */
   background: radial-gradient(70% 60% at 66% 58%, #ffffff 0%, var(--bg-2) 70%);
 }
@@ -36,11 +38,9 @@
   grid-area: 1 / 1;
   width: min(440px, 38vw);
   opacity: 0;
-  visibility: hidden;
 }
 .chapter:first-child {
   opacity: 1;
-  visibility: visible;
 }
 .kicker {
   font-size: 0.95rem;
@@ -86,7 +86,7 @@
 }
 .cta {
   margin-top: 26px;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 /* Rótulos presos às peças na vista explodida */
@@ -159,6 +159,13 @@
   font-size: 0.8rem;
   color: var(--ink-3);
 }
+.rail ol {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .railTrack {
   position: absolute;
   left: 0;
@@ -196,6 +203,13 @@
 @media (max-width: 1100px) {
   .rail {
     display: none;
+  }
+}
+
+/* Telas baixas (ex.: celular deitado): o palco acompanha a altura real para o texto não sair da tela */
+@media (max-height: 640px) {
+  .sticky {
+    min-height: 0;
   }
 }
 

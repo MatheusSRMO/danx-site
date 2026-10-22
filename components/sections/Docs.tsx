@@ -22,10 +22,7 @@ export default function Docs() {
                 <h3>{d.title}</h3>
                 <p>{d.text}</p>
               </div>
-              <span className={s.status}>
-                Em breve
-                {d.tbc && <span className="tbc">A confirmar</span>}
-              </span>
+              <span className={s.status}>{d.tbc ? <span className="tbc">A confirmar</span> : "Em breve"}</span>
             </li>
           ))}
         </ul>

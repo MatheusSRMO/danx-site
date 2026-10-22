@@ -44,7 +44,11 @@ export default function Report() {
         </div>
 
         <div className={s.phoneCard} data-reveal>
-          <div className={s.phone} role="img" aria-label="Relatório de exemplo no celular: pontuação de saúde 86, peso 44,2 kg, gordura 21,3%, músculo 52,2%, IMC 20,2">
+          <div
+            className={s.phone}
+            role="img"
+            aria-label="Relatório de exemplo no celular: aluno de 10 anos, 148 cm; pontuação de saúde 86, peso 44,2 kg, gordura 21,3%, músculo 52,2%, IMC 20,2"
+          >
             <div className={s.island} />
             <div className={s.screen} aria-hidden="true">
               <div className={s.appbar}>
@@ -52,7 +56,7 @@ export default function Report() {
                   <i />
                   Sua escola
                 </span>
-                <span className={s.date}>Out 2026</span>
+                <span className={s.date}>out. 2026</span>
               </div>
               <p className={s.h}>Relatório de saúde</p>
               <p className={s.who}>
@@ -77,8 +81,8 @@ export default function Report() {
                 ))}
               </ul>
               <div className={s.chips}>
-                <span>Exercícios recomendados</span>
-                <span>Orientação alimentar</span>
+                <span>Sugestões de atividade</span>
+                <span>Hábitos alimentares</span>
               </div>
             </div>
           </div>

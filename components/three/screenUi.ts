@@ -91,7 +91,8 @@ function roundRect(g: CanvasRenderingContext2D, x: number, y: number, w: number,
 
 function score(g: CanvasRenderingContext2D) {
   header(g, "Sua avaliação", "1/5");
-  const cx = SCREEN_W / 2, cy = 380;
+  const cx = SCREEN_W / 2,
+    cy = 380;
   ring(g, cx, cy, 160, 26, 0.86, C.blue);
   ring(g, cx, cy, 124, 26, 0.72, C.teal);
   ring(g, cx, cy, 88, 26, 0.6, C.green);
@@ -104,8 +105,8 @@ function score(g: CanvasRenderingContext2D) {
   g.fillText("pontuação de saúde", cx, cy + 56);
   g.textAlign = "left";
   bar(g, 640, "Peso", "44,2 kg", 0.6, C.blue);
-  bar(g, 730, "Gordura", "21,3 %", 0.52, C.fat);
-  bar(g, 820, "Músculo", "52,2 %", 0.72, C.protein);
+  bar(g, 730, "Gordura", "21,3%", 0.52, C.fat);
+  bar(g, 820, "Músculo", "52,2%", 0.72, C.protein);
   bar(g, 910, "IMC", "20,2", 0.58, C.teal);
 }
 
@@ -113,10 +114,10 @@ function composition(g: CanvasRenderingContext2D) {
   header(g, "Composição", "2/5");
   // Partes do peso corporal (somam 100%). Gordura vem do relatório de exemplo; o resto é ilustrativo.
   const parts = [
-    { l: "Água", v: "58,9 %", p: 0.589, c: C.water },
-    { l: "Proteína", v: "16,1 %", p: 0.161, c: C.protein },
-    { l: "Gordura", v: "21,3 %", p: 0.213, c: C.fat },
-    { l: "Minerais", v: "3,7 %", p: 0.037, c: C.mineral },
+    { l: "Água", v: "58,9%", p: 0.589, c: C.water },
+    { l: "Proteína", v: "16,1%", p: 0.161, c: C.protein },
+    { l: "Gordura", v: "21,3%", p: 0.213, c: C.fat },
+    { l: "Minerais", v: "3,7%", p: 0.037, c: C.mineral },
   ];
   // Barra empilhada com 2px de respiro entre os segmentos
   let x = 40;
@@ -144,11 +145,11 @@ function composition(g: CanvasRenderingContext2D) {
   });
   g.fillStyle = C.ink2;
   g.font = `500 24px ${FONT}`;
-  g.fillText("Massa muscular", 40, 880);
+  g.fillText("Músculo", 40, 880);
   g.fillStyle = C.ink;
   g.font = `700 44px ${FONT}`;
   g.textAlign = "right";
-  g.fillText("52,2 %", SCREEN_W - 40, 884);
+  g.fillText("52,2%", SCREEN_W - 40, 884);
   g.textAlign = "left";
 }
 
@@ -156,11 +157,38 @@ function posture(g: CanvasRenderingContext2D) {
   header(g, "Postura", "3/5");
   const cx = SCREEN_W / 2;
   const J = {
-    head: [cx, 230], neck: [cx, 300], shL: [cx - 90, 322], shR: [cx + 90, 310], elL: [cx - 112, 460], elR: [cx + 112, 452],
-    wrL: [cx - 118, 580], wrR: [cx + 118, 574], pel: [cx, 520], hipL: [cx - 50, 538], hipR: [cx + 50, 530],
-    knL: [cx - 54, 700], knR: [cx + 54, 696], anL: [cx - 54, 860], anR: [cx + 54, 860],
+    head: [cx, 230],
+    neck: [cx, 300],
+    shL: [cx - 90, 322],
+    shR: [cx + 90, 310],
+    elL: [cx - 112, 460],
+    elR: [cx + 112, 452],
+    wrL: [cx - 118, 580],
+    wrR: [cx + 118, 574],
+    pel: [cx, 520],
+    hipL: [cx - 50, 538],
+    hipR: [cx + 50, 530],
+    knL: [cx - 54, 700],
+    knR: [cx + 54, 696],
+    anL: [cx - 54, 860],
+    anR: [cx + 54, 860],
   } as Record<string, number[]>;
-  const bones = [["head", "neck"], ["neck", "pel"], ["neck", "shL"], ["neck", "shR"], ["shL", "elL"], ["elL", "wrL"], ["shR", "elR"], ["elR", "wrR"], ["pel", "hipL"], ["pel", "hipR"], ["hipL", "knL"], ["knL", "anL"], ["hipR", "knR"], ["knR", "anR"]];
+  const bones = [
+    ["head", "neck"],
+    ["neck", "pel"],
+    ["neck", "shL"],
+    ["neck", "shR"],
+    ["shL", "elL"],
+    ["elL", "wrL"],
+    ["shR", "elR"],
+    ["elR", "wrR"],
+    ["pel", "hipL"],
+    ["pel", "hipR"],
+    ["hipL", "knL"],
+    ["knL", "anL"],
+    ["hipR", "knR"],
+    ["knR", "anR"],
+  ];
   g.strokeStyle = "#c7c7cc";
   g.lineWidth = 10;
   g.lineCap = "round";
@@ -178,8 +206,12 @@ function posture(g: CanvasRenderingContext2D) {
   g.setLineDash([12, 10]);
   g.lineWidth = 4;
   g.strokeStyle = C.orange;
-  [[J.shL, J.shR], [J.hipL, J.hipR]].forEach(([a, b]) => {
-    const dx = b[0] - a[0], dy = b[1] - a[1];
+  [
+    [J.shL, J.shR],
+    [J.hipL, J.hipR],
+  ].forEach(([a, b]) => {
+    const dx = b[0] - a[0],
+      dy = b[1] - a[1];
     g.beginPath();
     g.moveTo(a[0] - dx * 0.9, a[1] - dy * 0.9);
     g.lineTo(b[0] + dx * 0.9, b[1] + dy * 0.9);
@@ -202,15 +234,16 @@ function posture(g: CanvasRenderingContext2D) {
   });
   g.fillStyle = C.ink;
   g.font = `600 26px ${FONT}`;
-  g.fillText("Ombros  2,1°", 40, 950);
+  g.fillText("Ombros 2,1°", 40, 950);
   g.textAlign = "right";
-  g.fillText("Pelve  1,4°", SCREEN_W - 40, 950);
+  g.fillText("Pelve 1,4°", SCREEN_W - 40, 950);
   g.textAlign = "left";
 }
 
 function balance(g: CanvasRenderingContext2D) {
   header(g, "Equilíbrio", "4/5");
-  const cx = SCREEN_W / 2, cy = 470;
+  const cx = SCREEN_W / 2,
+    cy = 470;
   [200, 140, 80].forEach((r, i) => {
     g.strokeStyle = i === 2 ? C.blue + "55" : C.line;
     g.lineWidth = 3;
@@ -241,7 +274,10 @@ function balance(g: CanvasRenderingContext2D) {
 
 function growth(g: CanvasRenderingContext2D) {
   header(g, "Crescimento", "5/5");
-  const L = 60, R = SCREEN_W - 40, T = 220, B = 760;
+  const L = 60,
+    R = SCREEN_W - 40,
+    T = 220,
+    B = 760;
   const ages = [2, 4, 6, 8, 10, 12, 14, 16, 18];
   const curves = [
     [82, 94, 106, 117, 126, 136, 148, 157, 161],

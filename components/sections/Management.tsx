@@ -4,19 +4,30 @@ import s from "./Management.module.css";
 
 // Dados fictícios, só para ilustrar o painel da gestão.
 const BY_GRADE = [
-  { g: "1º", v: 9 }, { g: "2º", v: 11 }, { g: "3º", v: 12 }, { g: "4º", v: 14 }, { g: "5º", v: 17 },
-  { g: "6º", v: 21 }, { g: "7º", v: 24 }, { g: "8º", v: 26 }, { g: "9º", v: 23 },
+  { g: "1º", v: 9 },
+  { g: "2º", v: 11 },
+  { g: "3º", v: 12 },
+  { g: "4º", v: 14 },
+  { g: "5º", v: 17 },
+  { g: "6º", v: 21 },
+  { g: "7º", v: 24 },
+  { g: "8º", v: 26 },
+  { g: "9º", v: 23 },
 ];
 
 function Dashboard() {
   const max = 30;
   return (
-    <div className={s.window} role="img" aria-label="Exemplo de painel da gestão com dados fictícios: alunos avaliados, escolas, avaliações no ano e percentual de alunos com sinais de atenção postural por série, que cresce do 1º ao 8º ano">
+    <div
+      className={s.window}
+      role="img"
+      aria-label="Exemplo de painel da gestão com dados fictícios: alunos avaliados, escolas, avaliações no ano e percentual de alunos com sinais de atenção postural por ano escolar, que cresce do 1º ao 8º ano"
+    >
       <div className={s.chrome} aria-hidden="true">
         <span />
         <span />
         <span />
-        <em>painel.danx.com.br</em>
+        <em>Painel da gestão</em>
       </div>
       <div className={s.body} aria-hidden="true">
         <div className={s.filters}>

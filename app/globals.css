@@ -19,8 +19,8 @@
   --line-2: #e9e5dd;
 
   /* Marca DANX: azul → turquesa (versão escurecida para contraste em fundo claro) */
-  --accent: #1f6fd8;
-  --accent-hover: #1a60bd;
+  --accent: #1a63c4;
+  --accent-hover: #15529f;
   --teal: #0e979a;
   --grad: linear-gradient(90deg, #1f6fd8 0%, #0e979a 100%);
   --grad-soft: linear-gradient(90deg, #3d86e0 0%, #2ec2c6 100%);
@@ -140,6 +140,10 @@ p {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 6px;
+}
+/* Seções e avisos que recebem foco por script não ganham contorno */
+[tabindex="-1"]:focus {
+  outline: none;
 }
 
 .skip-link {
@@ -367,6 +371,16 @@ p {
 .js [data-reveal] {
   opacity: 0;
   transform: translateY(32px);
+}
+/* Rede de segurança: se o JavaScript falhar, o conteúdo aparece sozinho depois de alguns segundos */
+.js:not(.reveals-on) [data-reveal] {
+  animation: reveal-fallback 0.6s 5s forwards;
+}
+@keyframes reveal-fallback {
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 .reduced [data-reveal] {
   opacity: 1 !important;

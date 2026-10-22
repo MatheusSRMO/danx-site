@@ -11,14 +11,22 @@ const Check = () => (
 export default function Pricing() {
   const wa = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Olá! Quero saber o valor e as condições da Estação de Saúde DANX.")}`;
   return (
-    <section id="investimento" className="section alt" aria-labelledby="preco-title">
+    <section id="investimento" className="section alt" aria-labelledby="preco-kicker preco-title">
       <div className="container-wide">
         <div className={s.box}>
           <div className={s.media} data-reveal>
-            <Image src="/media/station-studio.webp" alt="Estação de Saúde DANX em vista de três quartos" width={1024} height={1536} sizes="(max-width: 900px) 70vw, 460px" />
+            <Image
+              src="/media/station-studio.webp"
+              alt="Estação de Saúde DANX em vista de três quartos"
+              width={1024}
+              height={1536}
+              sizes="(max-width: 900px) 70vw, 460px"
+            />
           </div>
           <div className={s.info}>
-            <p className={s.kicker}>Investimento</p>
+            <p id="preco-kicker" className={s.kicker}>
+              Investimento
+            </p>
             <h2 id="preco-title" className={s.name}>
               Estação de Saúde DANX
             </h2>
@@ -29,7 +37,7 @@ export default function Pricing() {
             <p className={s.per}>{pricing.price.per}</p>
             <p className={s.lead}>{pricing.lead}</p>
 
-            <h3 className={s.h3}>Formas de pagamento</h3>
+            <h3 className={s.h3}>Condições comerciais</h3>
             <ul className={s.conditions}>
               {pricing.conditions.map((c) => (
                 <li key={c.title}>

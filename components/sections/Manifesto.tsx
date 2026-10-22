@@ -27,13 +27,16 @@ export default function Manifesto() {
         const target = parseFloat(node.dataset.stat!);
         const dec = parseInt(node.dataset.dec!, 10);
         const o = { v: 0 };
+        const fmt = (v: number) =>
+          v.toLocaleString("pt-BR", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+        // Começa do zero já antes de aparecer (o HTML traz o valor final para quem não roda JS)
+        node.textContent = fmt(0);
         gsap.to(o, {
           v: target,
           duration: 2,
           ease: "power3.out",
           scrollTrigger: { trigger: node, start: "top 85%", once: true },
-          onUpdate: () =>
-            void (node.textContent = o.v.toLocaleString("pt-BR", { minimumFractionDigits: dec, maximumFractionDigits: dec })),
+          onUpdate: () => void (node.textContent = fmt(o.v)),
         });
       });
     },
