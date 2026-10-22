@@ -31,7 +31,18 @@ export function slabGeometry(w: number, d: number, r: number, h: number, bevel =
   });
   g.rotateX(Math.PI / 2);
   g.translate(0, -bevel, 0);
-  return toCreasedNormals(g, Math.PI / 3);
+  return flatPlateNormals(g, h);
+}
+
+/** Mantém as faces ópticas planas, suavizando apenas os biséis e o perímetro. */
+function flatPlateNormals(g: THREE.BufferGeometry, h: number) {
+  const smooth = toCreasedNormals(g, Math.PI / 3);
+  const p = smooth.getAttribute("position"), n = smooth.getAttribute("normal");
+  for (let i = 0; i < p.count; i++) {
+    if (Math.abs(p.getY(i)) < 1e-6) n.setXYZ(i, 0, 1, 0);
+    else if (Math.abs(p.getY(i) + h) < 1e-6) n.setXYZ(i, 0, -1, 0);
+  }
+  return smooth;
 }
 
 /** Dedos: ponta elíptica junto à torre. Calcanhar: meia-elipse, corte reto junto aos dedos. */
@@ -60,7 +71,7 @@ export function electrodeGeometry(w: number, d: number, heel: boolean) {
   });
   g.rotateX(Math.PI / 2);
   g.translate(0, -b, 0);
-  return toCreasedNormals(g, Math.PI / 3);
+  return flatPlateNormals(g, 0.002);
 }
 
 /** Carenagem de uma peça: o perfil côncavo chega tangente ao tampo. */
@@ -71,10 +82,12 @@ export function fairingGeometry(baseY: number) {
   const sides: boolean[] = [];
   for (let j = 0; j <= rings; j++) {
     const t = j / rings;
-    const w = THREE.MathUtils.lerp(0.416, 0.478, t);
+    const w = THREE.MathUtils.lerp(0.416, 0.478, t * t);
     const back = THREE.MathUtils.lerp(-0.067, -0.155, t);
-    const front = THREE.MathUtils.lerp(0.050, 0.175, t);
-    const y = baseY + 0.108 * Math.pow(1 - t, 1.65);
+    const front = THREE.MathUtils.lerp(0.050, 0.135, t);
+    const u = Math.max(0, (t - 0.7) / 0.3);
+    const profile = t <= 0.7 ? 1 - t : 0.3 * (1 - u) ** 2 * (1 + u);
+    const y = baseY + 0.080 * profile;
     const outline = roundedOutline(w, front - back, 0.008 + 0.01 * t).getPoints(10);
     outline.pop();
     count = outline.length;
@@ -113,8 +126,8 @@ export function towerBodyGeometry(w: number, bottom: number, top: number, step: 
   s.lineTo(-0.035, top - 0.004);
   s.lineTo(-0.035, step + 0.024);
   s.quadraticCurveTo(-0.035, step + 0.018, -0.043, step + 0.013);
-  s.lineTo(-0.073, step);
-  s.lineTo(-0.073, bottom + 0.004);
+  s.lineTo(-0.059, step);
+  s.lineTo(-0.059, bottom + 0.004);
   s.closePath();
   const g = new THREE.ExtrudeGeometry(s, {
     depth: w - 0.008, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.004,
@@ -146,7 +159,7 @@ export function canopyBarGeometry(
       z = c.z + c.r * (1 - Math.cos(a));
     } else { y = c.top; z = c.z + c.r + s - vertical - bend; }
     const f = THREE.MathUtils.clamp((y - bottom) / (c.top - bottom), 0, 1);
-    const x = side * THREE.MathUtils.lerp(c.x, c.topX, f * f * (3 - 2 * f));
+    const x = side * THREE.MathUtils.lerp(c.x, c.topX, f * f * f);
     return new THREE.Vector3(x, y, z);
   };
   const section = roundedOutline(0.016, 0.028, 0.003).getPoints(4);

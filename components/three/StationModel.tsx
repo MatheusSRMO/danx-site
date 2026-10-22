@@ -8,12 +8,12 @@ import type { StationState } from "./stationState";
 
 // Modelo fiel à estação real (metros; y para cima, frente em +z, torre ao fundo).
 // Medidas: 2,10 m de altura · base 0,48 × 0,935 m · tela de 32″ (0,398 × 0,708 m) na vertical.
-// Cores amostradas do render oficial do produto.
+// Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
 const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.19, radius: 0.038 };
-const TOWER = { y0: 0.17, y1: 1.74, w: 0.43, step: 0.77, screenMargin: 0.048 };
+const TOWER = { y0: 0.14, y1: 1.76, w: 0.43, step: 0.745, screenMargin: 0.048 };
 const SCREEN = { w: 0.398, h: 0.708 };
-const CANOPY = { x: 0.19, topX: 0.226, z: -0.02, rise: 1.955, top: 2.085, r: 0.13, plateZ0: 0.33, plateZ1: 0.49, w: 0.476, sensorZ: 0.445 };
+const CANOPY = { x: 0.19, topX: 0.219, z: -0.02, rise: 1.97, top: 2.085, r: 0.115, plateZ0: 0.33, plateZ1: 0.49, w: 0.466, sensorZ: 0.445, sensorY: 2.0725 };
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
   // x, z, largura (x), comprimento (z): para cada pé, dedos (maior, perto da torre) e calcanhar
@@ -27,9 +27,9 @@ function useMaterials() {
   return useMemo(
     () => ({
       glass: new THREE.MeshPhysicalMaterial({
-        color: "#282d30",
+        color: "#2e3335",
         metalness: 0,
-        roughness: 0.18,
+        roughness: 0.22,
         clearcoat: 1,
         clearcoatRoughness: 0.08,
       }),
@@ -93,18 +93,19 @@ function Ultrasound({ state }: { state: StationState }) {
     g.visible = w > 0.01;
     if (!g.visible) return;
     const t = st.clock.elapsedTime;
-    g.children.forEach((c, i) => {
+    for (let i = 0; i < g.children.length; i++) {
+      const c = g.children[i];
       const ph = (t * 0.45 + rings[i]) % 1;
-      c.position.y = THREE.MathUtils.lerp(CANOPY.top - 0.018, 1.05, ph);
+      c.position.y = THREE.MathUtils.lerp(CANOPY.sensorY, 1.05, ph);
       const r = 0.03 + ph * 0.24;
       c.scale.set(r, r, r);
       mats[i].opacity = w * Math.sin(ph * Math.PI) * 0.55;
-    });
+    }
   });
   return (
     <group ref={group}>
       {rings.map((r, i) => (
-        <mesh key={r} rotation={[-Math.PI / 2, 0, 0]} position={[0, CANOPY.top - 0.018, CANOPY.sensorZ]} material={mats[i]}>
+        <mesh key={r} rotation={[-Math.PI / 2, 0, 0]} position={[0, CANOPY.sensorY, CANOPY.sensorZ]} material={mats[i]}>
           <ringGeometry args={[0.9, 1, 64]} />
         </mesh>
       ))}
@@ -126,7 +127,7 @@ export default function StationModel({ state: station }: { state: StationState }
     padGlass: slabGeometry(0.4, 0.435, 0.027, 0.004, 0.0007),
     pads: PAD_POSITIONS.map(([, , w, d], i) => electrodeGeometry(w, d, i >= 2)),
     body: towerBodyGeometry(0.415, TOWER.y0 - 0.012, TOWER.y1, TOWER.step),
-    // Rotation du plan x/z vers la façade x/y; le verre s'étend vers l'arrière.
+    // Do plano x/z para a fachada x/y, com a espessura do vidro para trás.
     glass: slabGeometry(TOWER.w, TOWER.y1 - TOWER.y0, 0.014, 0.01, 0.0015).rotateX(Math.PI / 2),
     bars: [-1, 1].map((side) => canopyBarGeometry(side, CANOPY, TOWER.y1)),
     cap: slabGeometry(CANOPY.w, CANOPY.plateZ1 - CANOPY.plateZ0, 0.017, 0.024, 0.002),
