@@ -155,7 +155,7 @@ export function electrodeGeometry(w: number, d: number, heel: boolean) {
 
 /** Cunha trapezoidal: faces planas e arestas com raio de 2 mm, inclusive nos ombros. */
 export function fairingGeometry(baseY: number, topWidth: number) {
-  const radius = 0.002, height = 0.070;
+  const radius = 0.002, height = 0.038;
   // O núcleo recuado recebe faces, cilindros nas arestas e esferas nos vértices.
   // Assim, os biséis não suavizam as normais das faces grandes nem mudam o envelope.
   const vertices: THREE.Vector3[] = [];

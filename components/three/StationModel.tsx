@@ -21,7 +21,7 @@ import type { StationState } from "./stationState";
 // Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
 const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.21, radius: 0.035 };
-const TOWER = { y0: 0.13, y1: 1.769, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.038 };
+const TOWER = { y0: 0.109, y1: 1.769, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.038 };
 const SCREEN = { w: 0.36, h: 0.708 };
 const CANOPY = {
   x: 0.201, z: -0.005, diameter: 0.036,
