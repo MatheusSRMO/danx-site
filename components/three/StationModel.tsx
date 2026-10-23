@@ -62,9 +62,16 @@ function useMaterials(low: boolean) {
         clearcoatRoughness: 0.16,
       }),
       body: new THREE.MeshPhysicalMaterial({
-        color: "#4d6375",
+        color: "#6b7f93",
         metalness: 0.3,
-        roughness: 0.46,
+        roughness: 0.32,
+        clearcoat: 0.2,
+        clearcoatRoughness: 0.5,
+      }),
+      fairingEnd: new THREE.MeshPhysicalMaterial({
+        color: "#5a697c",
+        metalness: 0.3,
+        roughness: 0.4,
         clearcoat: 0.2,
         clearcoatRoughness: 0.5,
       }),
@@ -79,19 +86,20 @@ function useMaterials(low: boolean) {
       wedge: new THREE.MeshPhysicalMaterial({ color: "#35312d", metalness: 0.45, roughness: 0.4 }),
       padFrame: new THREE.MeshStandardMaterial({ color: "#303839", metalness: 0.25, roughness: 0.32 }),
       padGlass: new THREE.MeshPhysicalMaterial({
-        color: "#aeb5b6",
+        color: "#f5f5f2",
         metalness: 0,
         roughness: 0.1,
         // No modo leve (celular) sem transmissão: evita uma passada extra da cena a cada quadro
-        transmission: low ? 0 : 0.55,
+        transmission: low ? 0 : 0.12,
         thickness: 0.003,
         ior: 1.5,
-        clearcoat: 1,
+        // Camada fina: o verniz integral escurecia demais o vidro nos ângulos rasantes.
+        clearcoat: 0.2,
         clearcoatRoughness: 0.08,
       }),
       steel: new THREE.MeshPhysicalMaterial({
-        color: "#f0efea",
-        metalness: 0.65,
+        color: "#fafaf7",
+        metalness: 0.35,
         envMapIntensity: 1.5,
         roughness: 0.3,
         anisotropy: 0.65,
@@ -187,7 +195,7 @@ export default function StationModel({ state: station, low = false }: { state: S
     underside: sensorPlateGeometry(CANOPY.w - 0.022, CANOPY.plateZ1 - CANOPY.plateZ0 - 0.018, 0.012, 0.002, 0.0005,
       SENSOR_LOCAL_Z, 0.002, true),
   }), []);
-  const fairingMaterials = useMemo(() => [m.wedge, m.body], [m]);
+  const fairingMaterials = useMemo(() => [m.wedge, m.fairingEnd], [m]);
   const plateMaterials = useMemo(() => [m.canopyPlate, m.canopyEdge], [m]);
 
   // Telas (geradas após a fonte carregar, para o texto sair certo)
