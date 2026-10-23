@@ -2,7 +2,10 @@
 // Valores do relatório de exemplo da apresentação DANX: aluno de 10 anos, 148 cm.
 
 export const SCREEN_W = 600;
-export const SCREEN_H = 1000;
+// Mesma proporção da área visível da tela no modelo (STATION_DIMS.SCREEN: 360 × 708 mm)
+export const SCREEN_H = Math.round((SCREEN_W * 0.708) / 0.36);
+// O conteúdo foi desenhado para 1000 px de altura: abaixo do título ele desce para ficar centrado na tela mais alta
+const CONTENT_SHIFT = Math.round((SCREEN_H - 1000) / 2);
 
 const FONT = '"Inter Variable", "Inter", system-ui, sans-serif';
 // Tema escuro, como a interface original da estação.
@@ -52,6 +55,7 @@ function header(g: CanvasRenderingContext2D, title: string, step: string) {
   g.fillStyle = C.ink;
   g.font = `700 44px ${FONT}`;
   g.fillText(title, 40, 150);
+  g.translate(0, CONTENT_SHIFT);
 }
 
 function ring(g: CanvasRenderingContext2D, x: number, y: number, r: number, w: number, pct: number, color: string) {
