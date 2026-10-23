@@ -47,6 +47,15 @@ export function slabGeometry(w: number, d: number, r: number, h: number, bevel =
   return g;
 }
 
+/** Moldura vazada sob o vidro: o centro deixa aparecer o tampo através da chapa. */
+export function roundedFrameGeometry(w: number, d: number, r: number, border: number, h: number) {
+  const shape = roundedOutline(w, d, r);
+  shape.holes.push(new THREE.Path(roundedOutline(w - 2 * border, d - 2 * border, r - border).getPoints(12)));
+  const g = new THREE.ExtrudeGeometry(shape, { depth: h, bevelEnabled: false, curveSegments: 12 });
+  g.rotateX(Math.PI / 2);
+  return g;
+}
+
 /** Cavidade cega por baixo: mantém o tampo inteiro e as dimensões externas da placa. */
 export function sensorPlateGeometry(
   w: number, d: number, r: number, h: number, bevel: number,

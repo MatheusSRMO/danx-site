@@ -6,11 +6,13 @@ import {
   canopyBarGeometry,
   electrodeGeometry,
   fairingGeometry,
+  roundedFrameGeometry,
   sensorPlateGeometry,
   slabGeometry,
   towerBodyGeometry,
 } from "./stationGeometry";
 import { drawScreen, SCREEN_COUNT } from "./screenUi";
+import StationGlassReflection from "./StationGlassReflection";
 import type { StationState } from "./stationState";
 
 // Modelo fiel à estação real (metros; y para cima, frente em +z, torre ao fundo).
@@ -73,23 +75,23 @@ function useMaterials() {
         clearcoat: 0.2,
         clearcoatRoughness: 0.5,
       }),
-      top: new THREE.MeshPhysicalMaterial({ color: "#4b4944", metalness: 0.4, roughness: 0.32 }),
+      top: new THREE.MeshPhysicalMaterial({ color: "#90918c", metalness: 0.45, roughness: 0.28 }),
       wedge: new THREE.MeshPhysicalMaterial({ color: "#35312d", metalness: 0.45, roughness: 0.4 }),
       padFrame: new THREE.MeshStandardMaterial({ color: "#303839", metalness: 0.25, roughness: 0.32 }),
       padGlass: new THREE.MeshPhysicalMaterial({
-        color: "#aab0b1",
+        color: "#aeb5b6",
         metalness: 0,
-        roughness: 0.12,
-        transmission: 0.28,
+        roughness: 0.1,
+        transmission: 0.55,
         thickness: 0.003,
         ior: 1.5,
         clearcoat: 1,
         clearcoatRoughness: 0.08,
       }),
       steel: new THREE.MeshPhysicalMaterial({
-        color: "#e4e7e5",
-        metalness: 0.7,
-        envMapIntensity: 1.35,
+        color: "#f0efea",
+        metalness: 0.65,
+        envMapIntensity: 1.5,
         roughness: 0.3,
         anisotropy: 0.65,
         anisotropyRotation: Math.PI / 2,
@@ -172,7 +174,7 @@ export default function StationModel({ state: station }: { state: StationState }
     base: slabGeometry(BASE.w, BASE.d, BASE.radius, BASE.h, 0.003),
     top: slabGeometry(BASE.w - 0.002, BASE.d - 0.002, BASE.radius - 0.001, 0.003, 0.0008),
     fairing: fairingGeometry(BASE.h + 0.001, TOWER.bodyW),
-    padFrame: slabGeometry(0.404, 0.439, 0.029, 0.001, 0.0003),
+    padFrame: roundedFrameGeometry(0.404, 0.439, 0.029, 0.008, 0.001),
     padGlass: slabGeometry(0.4, 0.435, 0.027, 0.003, 0.0007),
     pads: PAD_POSITIONS.map(([, , w, d], i) => electrodeGeometry(w, d, i >= 2)),
     body: towerBodyGeometry(TOWER.bodyW, TOWER.y0 - 0.012, TOWER.y1, TOWER.step),
@@ -246,6 +248,7 @@ export default function StationModel({ state: station }: { state: StationState }
         {PAD_POSITIONS.map(([x, z], i) => (
           <mesh key={i} name={`electrode-${i}`} geometry={geometry.pads[i]} material={m.steel} position={[x, BASE.h + 0.0065, z]} />
         ))}
+        <StationGlassReflection state={station} />
       </group>
 
       {/* Vidro preto contínuo; carcaça traseira com degrau de alumínio e ombro inclinado. */}
