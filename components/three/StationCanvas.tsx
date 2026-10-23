@@ -85,7 +85,7 @@ export default function StationCanvas({
       <ambientLight intensity={0.25} />
       <Rig state={state} />
       <group position={[0, 0, -0.35]}>
-        <StationModel state={state} />
+        <StationModel state={state} low={low} />
         <ContactShadows
           position={[0, 0.0005, 0.35]}
           scale={3.2}

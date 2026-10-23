@@ -50,7 +50,7 @@ export const PAD_POSITIONS: [number, number, number, number][] = [
   [0.1, 0.591, 0.1, 0.086],
 ];
 
-function useMaterials() {
+function useMaterials(low: boolean) {
   return useMemo(
     () => ({
       glass: new THREE.MeshPhysicalMaterial({
@@ -82,7 +82,8 @@ function useMaterials() {
         color: "#aeb5b6",
         metalness: 0,
         roughness: 0.1,
-        transmission: 0.55,
+        // No modo leve (celular) sem transmissão: evita uma passada extra da cena a cada quadro
+        transmission: low ? 0 : 0.55,
         thickness: 0.003,
         ior: 1.5,
         clearcoat: 1,
@@ -115,7 +116,7 @@ function useMaterials() {
       }),
       sensor: new THREE.MeshStandardMaterial({ color: "#0d0e10", metalness: 0.3, roughness: 0.55 }),
     }),
-    [],
+    [low],
   );
 }
 
@@ -163,8 +164,8 @@ function Ultrasound({ state }: { state: StationState }) {
   );
 }
 
-export default function StationModel({ state: station }: { state: StationState }) {
-  const m = useMaterials();
+export default function StationModel({ state: station, low = false }: { state: StationState; low?: boolean }) {
+  const m = useMaterials(low);
   const root = useRef<THREE.Group>(null);
   const canopy = useRef<THREE.Group>(null);
   const tower = useRef<THREE.Group>(null);
@@ -248,7 +249,7 @@ export default function StationModel({ state: station }: { state: StationState }
         {PAD_POSITIONS.map(([x, z], i) => (
           <mesh key={i} name={`electrode-${i}`} geometry={geometry.pads[i]} material={m.steel} position={[x, BASE.h + 0.0065, z]} />
         ))}
-        <StationGlassReflection state={station} />
+        {!low && <StationGlassReflection state={station} />}
       </group>
 
       {/* Vidro preto contínuo; carcaça traseira com degrau de alumínio e ombro inclinado. */}
