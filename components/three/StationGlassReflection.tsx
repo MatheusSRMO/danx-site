@@ -1,18 +1,44 @@
 "use client";
 import { useEffect, useMemo } from "react";
 import * as THREE from "three";
+import { useThree } from "@react-three/fiber";
 import { Reflector } from "three/addons/objects/Reflector.js";
 import { roundedOutline } from "./stationGeometry";
+import { reflectionGuard } from "./reflectionGuard";
 import type { StationState } from "./stationState";
 
-/** Reflexo local no vidro, sem fotografia ou iluminação incorporada à textura. */
-export default function StationGlassReflection({ state }: { state: StationState }) {
+export type MirrorRegion = {
+  w: number; d: number; r: number; cz: number;
+  /** Furo no espelho (o bolsão do vidro, quando o espelho cobre o tampo). */
+  hole?: { w: number; d: number; r: number; cz: number };
+};
+
+/** Contorno (x, z do mundo) para o plano do espelho: o eixo y local da forma vira -z depois da rotação. */
+function placedPath(w: number, d: number, r: number, cz: number) {
+  return roundedOutline(w, d, r).getPoints(12).map((p) => new THREE.Vector2(p.x, p.y - cz));
+}
+
+const DEFAULT_REGION: MirrorRegion = { w: 0.3986, d: 0.4336, r: 0.0263, cz: 0.47 };
+
+/**
+ * Reflexo local de torre e dossel numa superfície horizontal brilhante da bandeja (o vidro dos eletrodos ou o tampo
+ * bronze), sem fotografia ou iluminação incorporada à textura. Cada região tem sua altura e intensidade.
+ */
+export default function StationGlassReflection({
+  state, y = 0.0685, region = DEFAULT_REGION, strength = 0.4, opacity = 0.85,
+}: { state: StationState; y?: number; region?: MirrorRegion; strength?: number; opacity?: number }) {
+  // Resolução do espelho: metade dos pixels da tela, até 512 px (reflexo de vidro brilhante tolera leve desfoque; é recapturado a cada quadro em que a câmera anda)
+  const size = useThree((st) => st.size), dpr = useThree((st) => st.viewport.dpr);
+  const tw = THREE.MathUtils.clamp(Math.round((size.width * dpr) / 2), 128, 512);
+  const th = THREE.MathUtils.clamp(Math.round((size.height * dpr) / 2), 128, 512);
   const reflection = useMemo(() => {
-    const geometry = new THREE.ShapeGeometry(roundedOutline(0.3986, 0.4336, 0.0263), 12);
+    const shape = new THREE.Shape(placedPath(region.w, region.d, region.r, region.cz));
+    if (region.hole) shape.holes.push(new THREE.Path(placedPath(region.hole.w, region.hole.d, region.hole.r, region.hole.cz)));
+    const geometry = new THREE.ShapeGeometry(shape, 12);
     const mirror = new Reflector(geometry, {
-      textureWidth: 256, textureHeight: 256, multisample: 0, clipBias: 0.0001,
+      textureWidth: tw, textureHeight: th, multisample: 2, clipBias: 0.0001,
       shader: {
-        uniforms: { tDiffuse: { value: null }, textureMatrix: { value: null }, color: { value: null } },
+        uniforms: { tDiffuse: { value: null }, textureMatrix: { value: null }, color: { value: null }, strength: { value: strength }, opacity: { value: opacity } },
         vertexShader: `
           uniform mat4 textureMatrix;
           varying vec4 reflectionUv;
@@ -27,14 +53,16 @@ export default function StationGlassReflection({ state }: { state: StationState 
         `,
         fragmentShader: `
           uniform sampler2D tDiffuse;
+          uniform float strength;
+          uniform float opacity;
           varying vec4 reflectionUv;
           varying vec3 surfacePosition;
           varying vec3 surfaceNormal;
           void main() {
             vec4 reflected = texture2DProj(tDiffuse, reflectionUv);
             float facing = clamp(dot(normalize(cameraPosition - surfacePosition), normalize(surfaceNormal)), 0.0, 1.0);
-            float fresnel = 0.85 + 0.15 * pow(1.0 - facing, 5.0);
-            gl_FragColor = vec4(reflected.rgb * 0.4, reflected.a * fresnel);
+            float fresnel = opacity + (1.0 - opacity) * pow(1.0 - facing, 5.0);
+            gl_FragColor = vec4(reflected.rgb * strength, reflected.a * fresnel);
             #include <tonemapping_fragment>
             #include <colorspace_fragment>
           }
@@ -46,7 +74,7 @@ export default function StationGlassReflection({ state }: { state: StationState 
     material.depthWrite = false;
     mirror.name = "electrode-glass-reflection";
     mirror.rotation.x = -Math.PI / 2;
-    mirror.position.set(0, 0.0751, 0.47);
+    mirror.position.set(0, y, 0);
 
     const renderReflection = mirror.onBeforeRender;
     const cameraMatrix = new THREE.Matrix4(), projection = new THREE.Matrix4();
@@ -58,7 +86,7 @@ export default function StationGlassReflection({ state }: { state: StationState 
     let screenTexture: THREE.Texture | null = null;
     mirror.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
       // A silhueta usa o material substituto da bancada; não precisa de captura.
-      if (scene.overrideMaterial) return;
+      if (scene.overrideMaterial || reflectionGuard.busy) return;
       const base = mirror.parent, root = base?.parent;
       if (!base || !root) return;
       const tower = root.children[1], canopy = root.children[2];
@@ -83,6 +111,7 @@ export default function StationGlassReflection({ state }: { state: StationState 
       const background = scene.background, alpha = renderer.getClearAlpha();
       renderer.getClearColor(clearColor);
       const wasVisible = base.visible;
+      reflectionGuard.busy = true;
       try {
         // A captura contém só a geometria acima do vidro; fundo transparente conserva o ambiente PBR.
         base.visible = false;
@@ -90,6 +119,7 @@ export default function StationGlassReflection({ state }: { state: StationState 
         renderer.setClearColor(0x000000, 0);
         renderReflection.call(mirror, renderer, scene, camera, geometry, material, group);
       } finally {
+        reflectionGuard.busy = false;
         base.visible = wasVisible;
         scene.background = background;
         renderer.setClearColor(clearColor, alpha);
@@ -110,7 +140,7 @@ export default function StationGlassReflection({ state }: { state: StationState 
       valid = true;
     };
     return mirror;
-  }, [state]);
+  }, [state, y, region, strength, opacity, tw, th]);
 
   useEffect(() => () => {
     reflection.dispose();

@@ -47,6 +47,96 @@ export function slabGeometry(w: number, d: number, r: number, h: number, bevel =
   return g;
 }
 
+export type SlabHole = { w: number; d: number; r: number; cz: number };
+
+/**
+ * Chapa de contorno arredondado com raios de borda independentes em cima e embaixo e, opcionalmente, um furo de paredes
+ * verticais (o bolsão do vidro). Superfície superior em y = 0, espessura para baixo. Normais analíticas: as faces
+ * grandes ficam planas e os biséis e cantos variam suavemente. Dois grupos: 0 = paredes externas, 1 = tampas e furo.
+ */
+export function ringSlabGeometry(
+  w: number, d: number, r: number, h: number, topBevel: number, bottomBevel: number, hole?: SlabHole, segs = 3,
+) {
+  const core = (x: number, z: number, hw: number, hd: number, cx = 0, cz = 0) => {
+    const qx = THREE.MathUtils.clamp(x - cx, -hw, hw), qz = THREE.MathUtils.clamp(z - cz, -hd, hd);
+    const nx = x - cx - qx, nz = z - cz - qz, len = Math.hypot(nx, nz) || 1;
+    return [nx / len, nz / len] as const;
+  };
+  // Anéis do contorno externo, de cima para baixo: [y, recuo, ângulo da normal (0 = para cima, 90° = horizontal)]
+  const profile: [number, number, number][] = [];
+  if (topBevel > 0) {
+    for (let i = 0; i <= segs; i++) {
+      const t = (i / segs) * (Math.PI / 2);
+      profile.push([-topBevel * (1 - Math.cos(t)), topBevel * (1 - Math.sin(t)), t]);
+    }
+  } else profile.push([0, 0, Math.PI / 2]);
+  if (bottomBevel > 0) {
+    for (let i = segs; i >= 0; i--) {
+      const t = (i / segs) * (Math.PI / 2);
+      profile.push([-h + bottomBevel * (1 - Math.cos(t)), bottomBevel * (1 - Math.sin(t)), Math.PI - t]);
+    }
+  } else profile.push([-h, 0, Math.PI / 2]);
+  const outline = (inset: number) => roundedOutline(w - 2 * inset, d - 2 * inset, Math.max(r - inset, 0.0005)).getPoints(12);
+  const rings = profile.map(([y, inset]) => outline(inset).map((p) => new THREE.Vector3(p.x, y, p.y)));
+  const hw = w / 2 - r, hd = d / 2 - r;
+  const positions: number[][] = [[], []], normals: number[][] = [[], []];
+  const tri = (g: number, a: THREE.Vector3, b: THREE.Vector3, c: THREE.Vector3, na: THREE.Vector3, nb: THREE.Vector3, nc: THREE.Vector3) => {
+    const cross = b.clone().sub(a).cross(c.clone().sub(a));
+    const flip = cross.dot(na.clone().add(nb).add(nc)) < 0;
+    const order = flip ? [a, c, b] : [a, b, c], nn = flip ? [na, nc, nb] : [na, nb, nc];
+    order.forEach((v, i) => { positions[g].push(v.x, v.y, v.z); normals[g].push(nn[i].x, nn[i].y, nn[i].z); });
+  };
+  const wallNormal = (p: THREE.Vector3, angle: number) => {
+    const [nx, nz] = core(p.x, p.z, hw, hd);
+    return new THREE.Vector3(nx * Math.sin(angle), Math.cos(angle), nz * Math.sin(angle));
+  };
+  for (let i = 0; i < rings.length - 1; i++) {
+    const A = rings[i], B = rings[i + 1];
+    for (let j = 0; j < A.length - 1; j++) {
+      const a = A[j], b = A[j + 1], c = B[j + 1], e = B[j];
+      const [na, nb, nc, ne] = [wallNormal(a, profile[i][2]), wallNormal(b, profile[i][2]), wallNormal(c, profile[i + 1][2]), wallNormal(e, profile[i + 1][2])];
+      tri(0, a, b, c, na, nb, nc);
+      tri(0, a, c, e, na, nc, ne);
+    }
+  }
+  // Tampas: a de cima com o furo (se houver), a de baixo inteira
+  const top = rings[0], bottom = rings[rings.length - 1];
+  const holePts = hole ? roundedOutline(hole.w, hole.d, hole.r).getPoints(12).map((p) => new THREE.Vector2(p.x, p.y + hole.cz)) : [];
+  const capFaces = (ring: THREE.Vector3[], holes: THREE.Vector2[][], y: number, ny: number) => {
+    const contour = ring.slice(0, -1).map((p) => new THREE.Vector2(p.x, p.z));
+    const holeLoops = holes.map((hp) => hp.slice(0, -1));
+    const all = [...contour, ...holeLoops.flat()];
+    const n = new THREE.Vector3(0, ny, 0);
+    for (const f of THREE.ShapeUtils.triangulateShape(contour, holeLoops)) {
+      const [a, b, c] = f.map((k) => new THREE.Vector3(all[k].x, y, all[k].y));
+      tri(1, a, b, c, n, n, n);
+    }
+  };
+  capFaces(top, hole ? [holePts] : [], top[0].y, 1);
+  capFaces(bottom, [], bottom[0].y, -1);
+  if (hole) {
+    const loop = holePts, yTop = top[0].y, yBottom = bottom[0].y;
+    const hhw = hole.w / 2 - hole.r, hhd = hole.d / 2 - hole.r;
+    const inward = (p: THREE.Vector2) => {
+      const [nx, nz] = core(p.x, p.y, hhw, hhd, 0, hole.cz);
+      return new THREE.Vector3(-nx, 0, -nz);
+    };
+    for (let j = 0; j < loop.length - 1; j++) {
+      const p = loop[j], q = loop[j + 1];
+      const a = new THREE.Vector3(p.x, yTop, p.y), b = new THREE.Vector3(q.x, yTop, q.y);
+      const c = new THREE.Vector3(q.x, yBottom, q.y), e = new THREE.Vector3(p.x, yBottom, p.y);
+      tri(1, a, b, c, inward(p), inward(q), inward(q));
+      tri(1, a, c, e, inward(p), inward(q), inward(p));
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(positions.flat(), 3));
+  g.setAttribute("normal", new THREE.Float32BufferAttribute(normals.flat(), 3));
+  g.addGroup(0, positions[0].length / 3, 0);
+  g.addGroup(positions[0].length / 3, positions[1].length / 3, 1);
+  return g;
+}
+
 /** Moldura vazada sob o vidro: o centro deixa aparecer o tampo através da chapa. */
 export function roundedFrameGeometry(w: number, d: number, r: number, border: number, h: number) {
   const shape = roundedOutline(w, d, r);
@@ -153,16 +243,21 @@ export function electrodeGeometry(w: number, d: number, heel: boolean) {
   return flatPlateNormals(g, 0.002);
 }
 
-/** Cunha trapezoidal: faces planas e arestas com raio de 2 mm, inclusive nos ombros. */
-export function fairingGeometry(baseY: number, topWidth: number) {
-  const radius = 0.002, height = 0.038;
+/** Cunha trapezoidal de largura constante: rampa de trás curta e íngreme, rampa da frente mais longa; arestas de 2 mm. */
+export type FairingSpec = {
+  height: number; widthBottom: number; widthTop: number;
+  backBottom: number; frontBottom: number; backTop: number; frontTop: number;
+};
+
+export function fairingGeometry(baseY: number, f: FairingSpec) {
+  const radius = 0.002, height = f.height;
   // O núcleo recuado recebe faces, cilindros nas arestas e esferas nos vértices.
   // Assim, os biséis não suavizam as normais das faces grandes nem mudam o envelope.
   const vertices: THREE.Vector3[] = [];
   for (let y = 0; y < 2; y++) {
-    const halfWidth = (y ? topWidth : 0.478) / 2 - radius;
-    const back = (y ? -0.067 : -0.145) + radius;
-    const front = (y ? 0.042 : 0.120) - radius;
+    const halfWidth = (y ? f.widthTop : f.widthBottom) / 2 - radius;
+    const back = (y ? f.backTop : f.backBottom) + radius;
+    const front = (y ? f.frontTop : f.frontBottom) - radius;
     for (let z = 0; z < 2; z++) for (let x = 0; x < 2; x++) {
       vertices.push(new THREE.Vector3(x ? halfWidth : -halfWidth,
         baseY + (y ? height - radius : radius), z ? front : back));
@@ -233,69 +328,105 @@ export function fairingGeometry(baseY: number, topWidth: number) {
   return g;
 }
 
-/** Seção lateral contínua; o degrau traseiro tem uma pequena rampa de concordância. */
-export function towerBodyGeometry(w: number, bottom: number, top: number, step: number) {
+export type TowerBodySpec = {
+  front: number; rear: number; rear2: number; step: number; chamfer: number;
+};
+
+/** Recua um polígono simples (sentido anti-horário em z/y) por d, interseccionando as retas deslocadas. */
+function insetPolygon(pts: [number, number][], d: number) {
+  const n = pts.length;
+  const lines = pts.map((p, i) => {
+    const q = pts[(i + 1) % n];
+    const dx = q[0] - p[0], dy = q[1] - p[1], len = Math.hypot(dx, dy);
+    const nx = -dy / len, ny = dx / len; // normal para a esquerda (interior, em sentido anti-horário)
+    return { px: p[0] + nx * d, py: p[1] + ny * d, dx, dy };
+  });
+  return pts.map((_, i) => {
+    const a = lines[(i + n - 1) % n], b = lines[i];
+    const det = a.dx * b.dy - a.dy * b.dx;
+    const t = ((b.px - a.px) * b.dy - (b.py - a.py) * b.dx) / det;
+    return [a.px + a.dx * t, a.py + a.dy * t] as [number, number];
+  });
+}
+
+/** Corpo de alumínio: perfil lateral (z, y) extrudado em x, com chanfro reto no degrau traseiro; medidas externas. */
+export function towerBodyGeometry(w: number, bottom: number, top: number, b: TowerBodySpec) {
+  const bevel = 0.004;
+  const outer: [number, number][] = [
+    [b.front, bottom], [b.front, top], [b.rear, top], [b.rear, b.step + b.chamfer], [b.rear2, b.step], [b.rear2, bottom],
+  ];
+  // Já em sentido anti-horário em (z, y): frente embaixo, frente em cima, topo, degrau, traseira embaixo.
+  const inner = insetPolygon(outer, bevel);
   const s = new THREE.Shape();
-  s.moveTo(0.025, bottom + 0.004);
-  s.lineTo(0.025, top - 0.004);
-  s.lineTo(-0.035, top - 0.004);
-  s.lineTo(-0.035, step + 0.024);
-  s.quadraticCurveTo(-0.035, step + 0.018, -0.043, step + 0.013);
-  s.lineTo(-0.059, step);
-  s.lineTo(-0.059, bottom + 0.004);
+  inner.forEach(([z, y], i) => (i ? s.lineTo(z, y) : s.moveTo(z, y)));
   s.closePath();
   const g = new THREE.ExtrudeGeometry(s, {
-    depth: w - 0.008, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.004,
+    depth: w - 2 * bevel, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel,
     bevelSegments: 3, curveSegments: 10,
   });
   g.rotateY(-Math.PI / 2);
-  g.translate(w / 2 - 0.004, 0, 0);
+  g.translate(w / 2 - bevel, 0, 0);
   return toCreasedNormals(g, Math.PI / 3);
 }
 
-/** Tubo circular: montante paralelo, cotovelo tangente e trecho reto com pequena queda frontal. */
-export function canopyBarGeometry(
-  side: number,
-  c: { x: number; z: number; diameter: number; rise: number; top: number; r: number; plateZ0: number; pitch: number },
-  bottom: number,
-) {
-  const start = bottom - 0.025;
-  const pitchAngle = Math.atan(c.pitch);
-  // Pontos e tangentes analíticos, incluindo exatamente o ápice de 2,100 m.
-  const path: { y: number; z: number; ty: number; tz: number }[] = [];
-  for (let i = 0; i <= 12; i++) {
-    path.push({ y: THREE.MathUtils.lerp(start, c.rise, i / 12), z: c.z, ty: 1, tz: 0 });
+export type CanopyBarSpec = {
+  x: number; z: number; wx: number; wt: number; fillet: number;
+  rise: number; R: number; pitch: number; zEnd: number;
+};
+
+/** Seção retangular com filetes: pontos e normais no plano (u = x, v = normal ao eixo no plano y/z). */
+function filletedSection(wx: number, wt: number, f: number, seg = 3) {
+  const hx = wx / 2, hv = wt / 2;
+  const pts: [number, number][] = [], nrm: [number, number][] = [];
+  const corners: [number, number, number][] = [[hx - f, hv - f, 0], [-hx + f, hv - f, 90], [-hx + f, -hv + f, 180], [hx - f, -hv + f, 270]];
+  for (const [cx, cv, a0] of corners) {
+    for (let i = 0; i <= seg; i++) {
+      const a = THREE.MathUtils.degToRad(a0 + (90 * i) / seg);
+      pts.push([cx + Math.cos(a) * f, cv + Math.sin(a) * f]);
+      nrm.push([Math.cos(a), Math.sin(a)]);
+    }
   }
+  return { pts, nrm };
+}
+
+/**
+ * Barra plana (retangular com filetes): montante reto, cotovelo circular tangente e trecho reto com queda frontal.
+ * A seção gira com o eixo, então a face larga externa continua externa na curva. Normais analíticas: faces planas
+ * ficam planas e só os filetes e o cotovelo variam.
+ */
+export function canopyBarGeometry(side: number, c: CanopyBarSpec, bottom: number) {
+  const pitchAngle = Math.atan(c.pitch);
+  const path: { y: number; z: number; ty: number; tz: number }[] = [];
+  for (let i = 0; i <= 8; i++) path.push({ y: THREE.MathUtils.lerp(bottom, c.rise, i / 8), z: c.z, ty: 1, tz: 0 });
   const arcPoint = (a: number) => ({
-    y: c.rise + Math.sin(a) * c.r, z: c.z + c.r * (1 - Math.cos(a)),
-    ty: Math.cos(a), tz: Math.sin(a),
+    y: c.rise + Math.sin(a) * c.R, z: c.z + c.R * (1 - Math.cos(a)), ty: Math.cos(a), tz: Math.sin(a),
   });
-  for (let i = 1; i <= 48; i++) path.push(arcPoint(i / 48 * Math.PI / 2));
+  for (let i = 1; i <= 48; i++) path.push(arcPoint((i / 48) * (Math.PI / 2)));
   const end = arcPoint(Math.PI / 2 + pitchAngle);
-  if (pitchAngle !== 0) path.push(end);
-  for (let i = 1; i <= 24; i++) {
-    const z = THREE.MathUtils.lerp(end.z, c.plateZ0 + 0.035, i / 24);
+  path.push(end);
+  for (let i = 1; i <= 12; i++) {
+    const z = THREE.MathUtils.lerp(end.z, c.zEnd, i / 12);
     path.push({ y: end.y - (z - end.z) * c.pitch, z, ty: end.ty, tz: end.tz });
   }
-  const section = Array.from({ length: 24 }, (_, i) => {
-    const a = i / 24 * Math.PI * 2;
-    return new THREE.Vector2(Math.cos(a) * c.diameter / 2, Math.sin(a) * c.diameter / 2);
-  });
-  const count = section.length, steps = path.length - 1;
-  const positions: number[] = [], indices: number[] = [];
+  const { pts, nrm } = filletedSection(c.wx, c.wt, c.fillet);
+  const count = pts.length, steps = path.length - 1;
+  const positions: number[] = [], normals: number[] = [], indices: number[] = [];
   for (let j = 0; j <= steps; j++) {
     const p = path[j];
-    for (const q of section) {
-      positions.push(side * c.x + q.x, p.y - q.y * p.tz, p.z + q.y * p.ty);
+    for (let i = 0; i < count; i++) {
+      const [u, v] = pts[i], [nu, nv] = nrm[i];
+      positions.push(side * c.x + u, p.y - v * p.tz, p.z + v * p.ty);
+      normals.push(nu, -nv * p.tz, nv * p.ty);
     }
-    if (j < steps) for (let i = 0; i < count; i++) {
-      const a = j * count + i, b = j * count + (i + 1) % count;
-      indices.push(a, a + count, b, b, a + count, b + count);
-    }
+  }
+  for (let j = 0; j < steps; j++) for (let i = 0; i < count; i++) {
+    const a = j * count + i, b = j * count + ((i + 1) % count);
+    indices.push(a, a + count, b, b, a + count, b + count);
   }
   const g = new THREE.BufferGeometry();
   g.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  g.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
   g.setIndex(indices);
-  g.computeVertexNormals();
+  // Tampas nas pontas: a de baixo some dentro do corpo e a de cima dentro da placa.
   return g;
 }

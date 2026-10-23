@@ -32,6 +32,9 @@ export default function StationStudio({ variant = "site" }: { variant?: StudioVa
         <Lightformer intensity={4.5} rotation-y={-Math.PI / 4} position={[-4, 1.6, 4]} scale={[3, 5, 1]} />
         <Lightformer intensity={1.2} rotation-x={Math.PI / 2} position={[0, 6, 1]} scale={[6, 4, 1]} />
         <Lightformer intensity={1.6} rotation-y={Math.PI / 2} position={[-4, 1.2, -1]} scale={[0.6, 6, 1]} />
+        {/* Painel difuso atrás, à direita e baixo: é o que o vidro preto da plataforma espelha no render oficial da
+            base de perto (cinza-claro de raspão); sem ele o vidro fica preto no estúdio escuro. */}
+        <Lightformer intensity={1.4} rotation-y={-0.93} rotation-x={0.2} position={[4, 1.3, -2.5]} scale={[4, 3, 1]} />
       </Environment>
     );
   return (
