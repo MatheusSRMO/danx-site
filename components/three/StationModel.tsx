@@ -22,10 +22,19 @@ const TOWER = { y0: 0.13, y1: 1.769, w: 0.432, bodyW: 0.417, step: 0.745, screen
 const SCREEN = { w: 0.36, h: 0.708 };
 const CANOPY = {
   x: 0.201, z: -0.005, diameter: 0.036,
-  rise: 1.982, top: 2.082, r: 0.1,
+  rise: 1.982, top: 2.082, r: 0.1, pitch: 0.015,
   plateZ0: 0.373, plateZ1: 0.509, w: 0.44, plateH: 0.036,
   sensorZ: 0.466, sensorY: 2.0605,
 };
+// A placa acompanha a pequena queda do trecho reto; o ponto mais alto continua no cotovelo.
+const PLATE_ANGLE = Math.atan(CANOPY.pitch);
+const PLATE_Z = (CANOPY.plateZ0 + CANOPY.plateZ1) / 2;
+const BEND_Z = CANOPY.z + CANOPY.r * (1 + Math.sin(PLATE_ANGLE));
+const BEND_Y = CANOPY.rise + CANOPY.r * Math.cos(PLATE_ANGLE);
+const plateHeightAt = (z: number) => BEND_Y - (z - BEND_Z) * CANOPY.pitch + CANOPY.diameter / (2 * Math.cos(PLATE_ANGLE));
+const PLATE_Y = plateHeightAt(PLATE_Z);
+// Face inferior do sensor: usada também como origem das ondas, em coordenadas do dossel.
+CANOPY.sensorY = plateHeightAt(CANOPY.sensorZ) - (CANOPY.plateH + 0.0035) / Math.cos(PLATE_ANGLE);
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
   // x, z, largura (x), comprimento (z): para cada pé, dedos (maior, perto da torre) e calcanhar
@@ -229,9 +238,10 @@ export default function StationModel({ state: station }: { state: StationState }
       {/* Tubos paralelos com cotovelo circular; sensor somente na face inferior da placa. */}
       <group ref={canopy}>
         {geometry.bars.map((g, i) => <mesh key={i} geometry={g} material={m.canopy} />)}
-        <mesh geometry={geometry.cap} material={m.canopy} position={[0, 2.1, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
-        <mesh geometry={geometry.underside} material={m.canopy} position={[0, 2.1 - CANOPY.plateH + 0.001, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
-        <mesh position={[0, CANOPY.sensorY + 0.0015, CANOPY.sensorZ]} material={m.sensor}>
+        <mesh geometry={geometry.cap} material={m.canopy} rotation={[PLATE_ANGLE, 0, 0]} position={[0, PLATE_Y, PLATE_Z]} />
+        <mesh geometry={geometry.underside} material={m.canopy} rotation={[PLATE_ANGLE, 0, 0]}
+          position={[0, PLATE_Y - (CANOPY.plateH - 0.001) * Math.cos(PLATE_ANGLE), PLATE_Z - (CANOPY.plateH - 0.001) * Math.sin(PLATE_ANGLE)]} />
+        <mesh rotation={[PLATE_ANGLE, 0, 0]} position={[0, CANOPY.sensorY + 0.0015 * Math.cos(PLATE_ANGLE), CANOPY.sensorZ + 0.0015 * Math.sin(PLATE_ANGLE)]} material={m.sensor}>
           <cylinderGeometry args={[0.014, 0.014, 0.003, 40]} />
         </mesh>
         <Ultrasound state={station} />

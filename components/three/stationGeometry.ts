@@ -151,42 +151,40 @@ export function towerBodyGeometry(w: number, bottom: number, top: number, step: 
   return toCreasedNormals(g, Math.PI / 3);
 }
 
-/** Tubo circular: montante reto, cotovelo tangente de 90° e trecho horizontal até a placa. */
+/** Tubo circular: montante paralelo, cotovelo tangente e trecho reto com pequena queda frontal. */
 export function canopyBarGeometry(
   side: number,
-  c: { x: number; z: number; diameter: number; rise: number; top: number; r: number; plateZ0: number },
+  c: { x: number; z: number; diameter: number; rise: number; top: number; r: number; plateZ0: number; pitch: number },
   bottom: number,
 ) {
   const start = bottom - 0.025;
-  const vertical = c.rise - start;
-  const bend = Math.PI * c.r / 2;
-  const horizontal = c.plateZ0 + 0.035 - c.z - c.r;
-  const length = vertical + bend + horizontal;
-  const center = (t: number) => {
-    const s = t * length;
-    let y: number, z: number;
-    if (s <= vertical) { y = start + s; z = c.z; }
-    else if (s < vertical + bend) {
-      const a = (s - vertical) / c.r;
-      y = c.rise + Math.sin(a) * c.r;
-      z = c.z + c.r * (1 - Math.cos(a));
-    } else { y = c.top; z = c.z + c.r + s - vertical - bend; }
-    return new THREE.Vector3(side * c.x, y, z);
-  };
+  const pitchAngle = Math.atan(c.pitch);
+  // Pontos e tangentes analíticos, incluindo exatamente o ápice de 2,100 m.
+  const path: { y: number; z: number; ty: number; tz: number }[] = [];
+  for (let i = 0; i <= 12; i++) {
+    path.push({ y: THREE.MathUtils.lerp(start, c.rise, i / 12), z: c.z, ty: 1, tz: 0 });
+  }
+  const arcPoint = (a: number) => ({
+    y: c.rise + Math.sin(a) * c.r, z: c.z + c.r * (1 - Math.cos(a)),
+    ty: Math.cos(a), tz: Math.sin(a),
+  });
+  for (let i = 1; i <= 48; i++) path.push(arcPoint(i / 48 * Math.PI / 2));
+  const end = arcPoint(Math.PI / 2 + pitchAngle);
+  if (pitchAngle !== 0) path.push(end);
+  for (let i = 1; i <= 24; i++) {
+    const z = THREE.MathUtils.lerp(end.z, c.plateZ0 + 0.035, i / 24);
+    path.push({ y: end.y - (z - end.z) * c.pitch, z, ty: end.ty, tz: end.tz });
+  }
   const section = Array.from({ length: 24 }, (_, i) => {
     const a = i / 24 * Math.PI * 2;
     return new THREE.Vector2(Math.cos(a) * c.diameter / 2, Math.sin(a) * c.diameter / 2);
   });
-  const count = section.length, steps = 100;
+  const count = section.length, steps = path.length - 1;
   const positions: number[] = [], indices: number[] = [];
   for (let j = 0; j <= steps; j++) {
-    const t = j / steps, p = center(t);
-    const tangent = center(Math.min(1, t + 0.0001)).sub(center(Math.max(0, t - 0.0001))).normalize();
-    const width = new THREE.Vector3(1, 0, 0).addScaledVector(tangent, -tangent.x).normalize();
-    const depth = new THREE.Vector3().crossVectors(width, tangent).normalize();
+    const p = path[j];
     for (const q of section) {
-      positions.push(p.x + q.x * width.x + q.y * depth.x,
-        p.y + q.x * width.y + q.y * depth.y, p.z + q.x * width.z + q.y * depth.z);
+      positions.push(side * c.x + q.x, p.y - q.y * p.tz, p.z + q.y * p.ty);
     }
     if (j < steps) for (let i = 0; i < count; i++) {
       const a = j * count + i, b = j * count + (i + 1) % count;
