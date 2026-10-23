@@ -17,13 +17,13 @@ import type { StationState } from "./stationState";
 // Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
 const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.21, radius: 0.038 };
-const TOWER = { y0: 0.13, y1: 1.757, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.048 };
+const TOWER = { y0: 0.13, y1: 1.769, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.048 };
 const SCREEN = { w: 0.398, h: 0.708 };
 const CANOPY = {
   x: 0.197, z: -0.005, diameter: 0.036,
   rise: 1.967, top: 2.082, r: 0.115,
-  plateZ0: 0.373, plateZ1: 0.503, w: 0.458,
-  sensorZ: 0.466, sensorY: 2.0725,
+  plateZ0: 0.373, plateZ1: 0.509, w: 0.432, plateH: 0.036,
+  sensorZ: 0.466, sensorY: 2.0605,
 };
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
@@ -70,11 +70,11 @@ function useMaterials() {
         emissiveIntensity: 0,
       }),
       canopy: new THREE.MeshPhysicalMaterial({
-        color: "#303334",
-        metalness: 0.5,
-        roughness: 0.3,
-        clearcoat: 0.6,
-        clearcoatRoughness: 0.15,
+        color: "#3e4142",
+        metalness: 0.4,
+        roughness: 0.38,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.24,
       }),
       sensor: new THREE.MeshStandardMaterial({ color: "#0d0e10", metalness: 0.3, roughness: 0.55 }),
     }),
@@ -143,7 +143,7 @@ export default function StationModel({ state: station }: { state: StationState }
     // Do plano x/z para a fachada x/y, com a espessura do vidro para trás.
     glass: slabGeometry(TOWER.w, TOWER.y1 - TOWER.y0, 0.018, 0.01, 0.0015).rotateX(Math.PI / 2),
     bars: [-1, 1].map((side) => canopyBarGeometry(side, CANOPY, TOWER.y1)),
-    cap: slabGeometry(CANOPY.w, CANOPY.plateZ1 - CANOPY.plateZ0, 0.017, 0.024, 0.002),
+    cap: slabGeometry(CANOPY.w, CANOPY.plateZ1 - CANOPY.plateZ0, 0.018, CANOPY.plateH, 0.002),
     underside: slabGeometry(CANOPY.w - 0.022, CANOPY.plateZ1 - CANOPY.plateZ0 - 0.018, 0.012, 0.002, 0.0005),
   }), []);
   const fairingMaterials = useMemo(() => [m.wedge, m.body], [m]);
@@ -222,7 +222,7 @@ export default function StationModel({ state: station }: { state: StationState }
       <group ref={canopy}>
         {geometry.bars.map((g, i) => <mesh key={i} geometry={g} material={m.canopy} />)}
         <mesh geometry={geometry.cap} material={m.canopy} position={[0, 2.1, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
-        <mesh geometry={geometry.underside} material={m.canopy} position={[0, 2.077, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
+        <mesh geometry={geometry.underside} material={m.canopy} position={[0, 2.1 - CANOPY.plateH + 0.001, (CANOPY.plateZ0 + CANOPY.plateZ1) / 2]} />
         <mesh position={[0, CANOPY.sensorY + 0.0015, CANOPY.sensorZ]} material={m.sensor}>
           <cylinderGeometry args={[0.014, 0.014, 0.003, 40]} />
         </mesh>
