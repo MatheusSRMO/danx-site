@@ -42,10 +42,10 @@ CANOPY.sensorY = plateHeightAt(CANOPY.sensorZ) + SENSOR_LOCAL_Y / Math.cos(PLATE
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
   // x, z, largura (x), comprimento (z): para cada pé, dedos (maior, perto da torre) e calcanhar
-  [-0.085, 0.385, 0.086, 0.16],
-  [0.085, 0.385, 0.086, 0.16],
-  [-0.085, 0.535, 0.086, 0.08],
-  [0.085, 0.535, 0.086, 0.08],
+  [-0.1, 0.423, 0.1, 0.186],
+  [0.1, 0.423, 0.1, 0.186],
+  [-0.1, 0.591, 0.1, 0.086],
+  [0.1, 0.591, 0.1, 0.086],
 ];
 
 function useMaterials() {
@@ -75,18 +75,24 @@ function useMaterials() {
       }),
       top: new THREE.MeshPhysicalMaterial({ color: "#4b4944", metalness: 0.4, roughness: 0.32 }),
       wedge: new THREE.MeshPhysicalMaterial({ color: "#35312d", metalness: 0.45, roughness: 0.4 }),
+      padFrame: new THREE.MeshStandardMaterial({ color: "#303839", metalness: 0.25, roughness: 0.32 }),
       padGlass: new THREE.MeshPhysicalMaterial({
-        color: "#9fa5a4",
+        color: "#aab0b1",
         metalness: 0,
-        roughness: 0.2,
-        clearcoat: 0.6,
-        clearcoatRoughness: 0.12,
+        roughness: 0.12,
+        transmission: 0.28,
+        thickness: 0.003,
+        ior: 1.5,
+        clearcoat: 1,
+        clearcoatRoughness: 0.08,
       }),
       steel: new THREE.MeshPhysicalMaterial({
-        color: "#f4f4ef",
-        metalness: 0.35,
-        envMapIntensity: 1.2,
-        roughness: 0.32,
+        color: "#e4e7e5",
+        metalness: 0.7,
+        envMapIntensity: 1.35,
+        roughness: 0.3,
+        anisotropy: 0.65,
+        anisotropyRotation: Math.PI / 2,
         emissive: new THREE.Color("#2ec2c6"),
         emissiveIntensity: 0,
       }),
@@ -166,7 +172,8 @@ export default function StationModel({ state: station }: { state: StationState }
     base: slabGeometry(BASE.w, BASE.d, BASE.radius, BASE.h, 0.003),
     top: slabGeometry(BASE.w - 0.002, BASE.d - 0.002, BASE.radius - 0.001, 0.003, 0.0008),
     fairing: fairingGeometry(BASE.h + 0.001, TOWER.bodyW),
-    padGlass: slabGeometry(0.4, 0.435, 0.027, 0.004, 0.0007),
+    padFrame: slabGeometry(0.404, 0.439, 0.029, 0.001, 0.0003),
+    padGlass: slabGeometry(0.4, 0.435, 0.027, 0.003, 0.0007),
     pads: PAD_POSITIONS.map(([, , w, d], i) => electrodeGeometry(w, d, i >= 2)),
     body: towerBodyGeometry(TOWER.bodyW, TOWER.y0 - 0.012, TOWER.y1, TOWER.step),
     // Do plano x/z para a fachada x/y, com a espessura do vidro para trás.
@@ -234,9 +241,10 @@ export default function StationModel({ state: station }: { state: StationState }
         <mesh geometry={geometry.base} position={[0, BASE.h, BASE.z0 + BASE.d / 2]} material={m.body} />
         <mesh geometry={geometry.top} position={[0, BASE.h + 0.001, BASE.z0 + BASE.d / 2]} material={m.top} />
         <mesh geometry={geometry.fairing} material={fairingMaterials} />
-        <mesh geometry={geometry.padGlass} material={m.padGlass} position={[0, BASE.h + 0.003, 0.47]} />
+        <mesh name="electrode-frame" geometry={geometry.padFrame} material={m.padFrame} position={[0, BASE.h + 0.002, 0.47]} />
+        <mesh name="electrode-glass" geometry={geometry.padGlass} material={m.padGlass} position={[0, BASE.h + 0.005, 0.47]} />
         {PAD_POSITIONS.map(([x, z], i) => (
-          <mesh key={i} geometry={geometry.pads[i]} material={m.steel} position={[x, BASE.h + 0.0045, z]} />
+          <mesh key={i} name={`electrode-${i}`} geometry={geometry.pads[i]} material={m.steel} position={[x, BASE.h + 0.0065, z]} />
         ))}
       </group>
 
