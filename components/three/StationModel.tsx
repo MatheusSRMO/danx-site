@@ -238,7 +238,7 @@ export default function StationModel({ state: station }: { state: StationState }
 
   return (
     <group ref={root}>
-      {/* Bandeja arredondada, carenagem côncava e vidro claro separado do tampo bronze. */}
+      {/* Bandeja arredondada, cunha trapezoidal e vidro claro separado do tampo. */}
       <group>
         <mesh geometry={geometry.base} position={[0, BASE.h, BASE.z0 + BASE.d / 2]} material={m.body} />
         <mesh geometry={geometry.top} position={[0, BASE.h + 0.001, BASE.z0 + BASE.d / 2]} material={m.top} />

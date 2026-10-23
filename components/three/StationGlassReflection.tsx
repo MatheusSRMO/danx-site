@@ -33,8 +33,8 @@ export default function StationGlassReflection({ state }: { state: StationState 
           void main() {
             vec4 reflected = texture2DProj(tDiffuse, reflectionUv);
             float facing = clamp(dot(normalize(cameraPosition - surfacePosition), normalize(surfaceNormal)), 0.0, 1.0);
-            float fresnel = 0.38 + 0.62 * pow(1.0 - facing, 5.0);
-            gl_FragColor = vec4(reflected.rgb, reflected.a * fresnel);
+            float fresnel = 0.85 + 0.15 * pow(1.0 - facing, 5.0);
+            gl_FragColor = vec4(reflected.rgb * 0.4, reflected.a * fresnel);
             #include <tonemapping_fragment>
             #include <colorspace_fragment>
           }
@@ -52,14 +52,30 @@ export default function StationGlassReflection({ state }: { state: StationState 
     const cameraMatrix = new THREE.Matrix4(), projection = new THREE.Matrix4();
     const rootMatrix = new THREE.Matrix4(), towerMatrix = new THREE.Matrix4(), canopyMatrix = new THREE.Matrix4();
     const clearColor = new THREE.Color();
-    let valid = false, screen = -1;
-    mirror.onBeforeRender = (renderer, scene, camera, ...args) => {
+    const waveMatrices = Array.from({ length: 5 }, () => new THREE.Matrix4());
+    const waveOpacities = new Float64Array(5);
+    let valid = false, screen = -1, wavesVisible = false, screenVersion = -1;
+    let screenTexture: THREE.Texture | null = null;
+    mirror.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
       // A silhueta usa o material substituto da bancada; não precisa de captura.
       if (scene.overrideMaterial) return;
       const base = mirror.parent, root = base?.parent;
       if (!base || !root) return;
       const tower = root.children[1], canopy = root.children[2];
-      if (valid && state.ultraSmooth < 0.01 && screen === state.screen
+      const screenMap = (tower.children[2] as THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>).material.map;
+      const waves = canopy.children[canopy.children.length - 1];
+      let wavesChanged = wavesVisible !== waves.visible;
+      if (waves.visible && !wavesChanged) {
+        for (let i = 0; i < waves.children.length; i++) {
+          const wave = waves.children[i] as THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>;
+          if (!waveMatrices[i].equals(wave.matrixWorld) || waveOpacities[i] !== wave.material.opacity) {
+            wavesChanged = true;
+            break;
+          }
+        }
+      }
+      if (valid && !wavesChanged && screen === state.screen
+        && screenTexture === screenMap && screenVersion === (screenMap?.version ?? -1)
         && cameraMatrix.equals(camera.matrixWorld) && projection.equals(camera.projectionMatrix)
         && rootMatrix.equals(root.matrixWorld) && towerMatrix.equals(tower.matrixWorld)
         && canopyMatrix.equals(canopy.matrixWorld)) return;
@@ -72,7 +88,7 @@ export default function StationGlassReflection({ state }: { state: StationState 
         base.visible = false;
         scene.background = null;
         renderer.setClearColor(0x000000, 0);
-        renderReflection.call(mirror, renderer, scene, camera, ...args);
+        renderReflection.call(mirror, renderer, scene, camera, geometry, material, group);
       } finally {
         base.visible = wasVisible;
         scene.background = background;
@@ -81,6 +97,16 @@ export default function StationGlassReflection({ state }: { state: StationState 
       cameraMatrix.copy(camera.matrixWorld); projection.copy(camera.projectionMatrix);
       rootMatrix.copy(root.matrixWorld); towerMatrix.copy(tower.matrixWorld); canopyMatrix.copy(canopy.matrixWorld);
       screen = state.screen;
+      screenTexture = screenMap;
+      screenVersion = screenMap?.version ?? -1;
+      wavesVisible = waves.visible;
+      if (wavesVisible) {
+        for (let i = 0; i < waves.children.length; i++) {
+          const wave = waves.children[i] as THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>;
+          waveMatrices[i].copy(wave.matrixWorld);
+          waveOpacities[i] = wave.material.opacity;
+        }
+      }
       valid = true;
     };
     return mirror;

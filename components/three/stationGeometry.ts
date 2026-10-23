@@ -153,47 +153,83 @@ export function electrodeGeometry(w: number, d: number, heel: boolean) {
   return flatPlateNormals(g, 0.002);
 }
 
-/** Carenagem de uma peça: o perfil côncavo chega tangente ao tampo. */
+/** Cunha trapezoidal: faces planas e arestas com raio de 2 mm, inclusive nos ombros. */
 export function fairingGeometry(baseY: number, topWidth: number) {
-  const positions: number[] = [], indices: number[] = [];
-  const rings = 24;
-  let count = 0;
-  const sides: boolean[] = [];
-  for (let j = 0; j <= rings; j++) {
-    const t = j / rings;
-    const w = THREE.MathUtils.lerp(topWidth, 0.478, t * t);
-    const back = THREE.MathUtils.lerp(-0.067, -0.145, t);
-    const front = THREE.MathUtils.lerp(0.050, 0.120, t);
-    const u = Math.max(0, (t - 0.7) / 0.3);
-    const profile = t <= 0.7 ? 1 - t : 0.3 * (1 - u) ** 2 * (1 + u);
-    const y = baseY + 0.070 * profile;
-    const outline = roundedOutline(w, front - back, 0.008 + 0.01 * t).getPoints(10);
-    outline.pop();
-    count = outline.length;
-    outline.forEach((p, i) => {
-      positions.push(p.x, y, p.y + (front + back) / 2);
-      if (j === 0) {
-        const q = outline[(i + 1) % count];
-        sides.push(Math.abs(q.y - p.y) > Math.abs(q.x - p.x));
-      }
-    });
+  const radius = 0.002, height = 0.070;
+  // O núcleo recuado recebe faces, cilindros nas arestas e esferas nos vértices.
+  // Assim, os biséis não suavizam as normais das faces grandes nem mudam o envelope.
+  const vertices: THREE.Vector3[] = [];
+  for (let y = 0; y < 2; y++) {
+    const halfWidth = (y ? topWidth : 0.478) / 2 - radius;
+    const back = (y ? -0.067 : -0.145) + radius;
+    const front = (y ? 0.042 : 0.120) - radius;
+    for (let z = 0; z < 2; z++) for (let x = 0; x < 2; x++) {
+      vertices.push(new THREE.Vector3(x ? halfWidth : -halfWidth,
+        baseY + (y ? height - radius : radius), z ? front : back));
+    }
+  }
+  const faces = [
+    { ids: [0, 2, 6, 4], material: 1 }, // alumínio nas duas pontas
+    { ids: [1, 5, 7, 3], material: 1 },
+    { ids: [0, 4, 5, 1], material: 0 }, // bronze: traseira, frente, fundo e topo
+    { ids: [2, 3, 7, 6], material: 0 },
+    { ids: [0, 1, 3, 2], material: 0 },
+    { ids: [4, 6, 7, 5], material: 0 },
+  ].map((f) => {
+    const [a, b, c] = f.ids.map((i) => vertices[i]);
+    const normal = b.clone().sub(a).cross(c.clone().sub(a)).normalize();
+    return { ...f, normal };
+  });
+  const positions: number[][] = [[], []], normals: number[][] = [[], []];
+  const triangle = (points: THREE.Vector3[], ns: THREE.Vector3[], material: number) => {
+    const cross = points[1].clone().sub(points[0]).cross(points[2].clone().sub(points[0]));
+    const order = cross.dot(ns[0]) < 0 ? [0, 2, 1] : [0, 1, 2];
+    for (const i of order) {
+      positions[material].push(points[i].x, points[i].y, points[i].z);
+      normals[material].push(ns[i].x, ns[i].y, ns[i].z);
+    }
+  };
+  const offset = (vertex: THREE.Vector3, normal: THREE.Vector3) => vertex.clone().addScaledVector(normal, radius);
+  for (const f of faces) {
+    const p = f.ids.map((i) => offset(vertices[i], f.normal));
+    triangle([p[0], p[1], p[2]], [f.normal, f.normal, f.normal], f.material);
+    triangle([p[0], p[2], p[3]], [f.normal, f.normal, f.normal], f.material);
+  }
+  const segments = 6;
+  for (let i = 0; i < faces.length; i++) for (let j = i + 1; j < faces.length; j++) {
+    const a = faces[i], b = faces[j];
+    const edge = a.ids.filter((id) => b.ids.includes(id));
+    if (edge.length !== 2) continue;
+    const [v0, v1] = edge.map((id) => vertices[id]);
+    for (let k = 0; k < segments; k++) {
+      const n0 = a.normal.clone().lerp(b.normal, k / segments).normalize();
+      const n1 = a.normal.clone().lerp(b.normal, (k + 1) / segments).normalize();
+      const p = [offset(v0, n0), offset(v1, n0), offset(v0, n1), offset(v1, n1)];
+      const material = k < segments / 2 ? a.material : b.material;
+      triangle([p[0], p[1], p[2]], [n0, n0, n1], material);
+      triangle([p[1], p[3], p[2]], [n0, n1, n1], material);
+    }
+  }
+  for (let i = 0; i < vertices.length; i++) {
+    const adjacent = faces.filter((f) => f.ids.includes(i));
+    const [a, b, c] = adjacent.map((f) => f.normal);
+    const normalAt = (u: number, v: number) => a.clone().multiplyScalar(1 - (u + v) / segments)
+      .addScaledVector(b, u / segments).addScaledVector(c, v / segments).normalize();
+    const patch = (ns: THREE.Vector3[]) => {
+      const middle = ns[0].clone().add(ns[1]).add(ns[2]).normalize();
+      const closest = adjacent.reduce((best, face) => face.normal.dot(middle) > best.normal.dot(middle) ? face : best);
+      triangle(ns.map((n) => offset(vertices[i], n)), ns, closest.material);
+    };
+    for (let u = 0; u < segments; u++) for (let v = 0; v < segments - u; v++) {
+      patch([normalAt(u, v), normalAt(u + 1, v), normalAt(u, v + 1)]);
+      if (u + v < segments - 1) patch([normalAt(u + 1, v), normalAt(u + 1, v + 1), normalAt(u, v + 1)]);
+    }
   }
   const g = new THREE.BufferGeometry();
-  for (let material = 0; material < 2; material++) {
-    const first = indices.length;
-    for (let j = 0; j < rings; j++) {
-      for (let i = 0; i < count; i++) {
-        if (Number(sides[i]) !== material) continue;
-        const a = j * count + i, b = j * count + (i + 1) % count;
-        const c = a + count, d = b + count;
-        indices.push(a, b, c, b, d, c);
-      }
-    }
-    g.addGroup(first, indices.length - first, material);
-  }
-  g.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  g.setIndex(indices);
-  g.computeVertexNormals();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(positions.flat(), 3));
+  g.setAttribute("normal", new THREE.Float32BufferAttribute(normals.flat(), 3));
+  g.addGroup(0, positions[0].length / 3, 0);
+  g.addGroup(positions[0].length / 3, positions[1].length / 3, 1);
   return g;
 }
 
