@@ -6,6 +6,7 @@ import {
   canopyBarGeometry,
   electrodeGeometry,
   fairingGeometry,
+  sensorPlateGeometry,
   slabGeometry,
   towerBodyGeometry,
 } from "./stationGeometry";
@@ -34,7 +35,10 @@ const BEND_Y = CANOPY.rise + CANOPY.r * Math.cos(PLATE_ANGLE);
 const plateHeightAt = (z: number) => BEND_Y - (z - BEND_Z) * CANOPY.pitch + CANOPY.diameter / (2 * Math.cos(PLATE_ANGLE));
 const PLATE_Y = plateHeightAt(PLATE_Z);
 // Face inferior do sensor: usada também como origem das ondas, em coordenadas do dossel.
-CANOPY.sensorY = plateHeightAt(CANOPY.sensorZ) - (CANOPY.plateH + 0.0035) / Math.cos(PLATE_ANGLE);
+const SENSOR_DEPTH = 0.009;
+const SENSOR_LOCAL_Y = -CANOPY.plateH + SENSOR_DEPTH - 0.0001;
+const SENSOR_LOCAL_Z = (CANOPY.sensorZ - PLATE_Z + SENSOR_LOCAL_Y * Math.sin(PLATE_ANGLE)) / Math.cos(PLATE_ANGLE);
+CANOPY.sensorY = plateHeightAt(CANOPY.sensorZ) + SENSOR_LOCAL_Y / Math.cos(PLATE_ANGLE);
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
   // x, z, largura (x), comprimento (z): para cada pé, dedos (maior, perto da torre) e calcanhar
@@ -87,11 +91,19 @@ function useMaterials() {
         emissiveIntensity: 0,
       }),
       canopy: new THREE.MeshPhysicalMaterial({
-        color: "#3e4142",
-        metalness: 0.4,
-        roughness: 0.38,
-        clearcoat: 0.3,
-        clearcoatRoughness: 0.24,
+        color: "#202425",
+        metalness: 0.58,
+        roughness: 0.17,
+        clearcoat: 0.85,
+        clearcoatRoughness: 0.09,
+      }),
+      canopyPlate: new THREE.MeshPhysicalMaterial({
+        color: "#343738", metalness: 0.4, roughness: 0.32,
+        clearcoat: 0.35, clearcoatRoughness: 0.22,
+      }),
+      canopyEdge: new THREE.MeshPhysicalMaterial({
+        color: "#414546", metalness: 0.55, roughness: 0.22,
+        clearcoat: 0.65, clearcoatRoughness: 0.12,
       }),
       sensor: new THREE.MeshStandardMaterial({ color: "#0d0e10", metalness: 0.3, roughness: 0.55 }),
     }),
@@ -160,10 +172,13 @@ export default function StationModel({ state: station }: { state: StationState }
     // Do plano x/z para a fachada x/y, com a espessura do vidro para trás.
     glass: slabGeometry(TOWER.w, TOWER.y1 - TOWER.y0, 0.018, 0.01, 0.0015).rotateX(Math.PI / 2),
     bars: [-1, 1].map((side) => canopyBarGeometry(side, CANOPY, TOWER.y1)),
-    cap: slabGeometry(CANOPY.w, CANOPY.plateZ1 - CANOPY.plateZ0, 0.018, CANOPY.plateH, 0.002),
-    underside: slabGeometry(CANOPY.w - 0.022, CANOPY.plateZ1 - CANOPY.plateZ0 - 0.018, 0.012, 0.002, 0.0005),
+    cap: sensorPlateGeometry(CANOPY.w, CANOPY.plateZ1 - CANOPY.plateZ0, 0.018, CANOPY.plateH, 0.0025,
+      SENSOR_LOCAL_Z, SENSOR_DEPTH),
+    underside: sensorPlateGeometry(CANOPY.w - 0.022, CANOPY.plateZ1 - CANOPY.plateZ0 - 0.018, 0.012, 0.002, 0.0005,
+      SENSOR_LOCAL_Z, 0.002, true),
   }), []);
   const fairingMaterials = useMemo(() => [m.wedge, m.body], [m]);
+  const plateMaterials = useMemo(() => [m.canopyPlate, m.canopyEdge], [m]);
 
   // Telas (geradas após a fonte carregar, para o texto sair certo)
   const screens = useRef<THREE.CanvasTexture[]>([]);
@@ -238,11 +253,11 @@ export default function StationModel({ state: station }: { state: StationState }
       {/* Tubos paralelos com cotovelo circular; sensor somente na face inferior da placa. */}
       <group ref={canopy}>
         {geometry.bars.map((g, i) => <mesh key={i} geometry={g} material={m.canopy} />)}
-        <mesh geometry={geometry.cap} material={m.canopy} rotation={[PLATE_ANGLE, 0, 0]} position={[0, PLATE_Y, PLATE_Z]} />
-        <mesh geometry={geometry.underside} material={m.canopy} rotation={[PLATE_ANGLE, 0, 0]}
+        <mesh name="canopy-plate" geometry={geometry.cap} material={plateMaterials} rotation={[PLATE_ANGLE, 0, 0]} position={[0, PLATE_Y, PLATE_Z]} />
+        <mesh geometry={geometry.underside} material={m.canopyPlate} rotation={[PLATE_ANGLE, 0, 0]}
           position={[0, PLATE_Y - (CANOPY.plateH - 0.001) * Math.cos(PLATE_ANGLE), PLATE_Z - (CANOPY.plateH - 0.001) * Math.sin(PLATE_ANGLE)]} />
-        <mesh rotation={[PLATE_ANGLE, 0, 0]} position={[0, CANOPY.sensorY + 0.0015 * Math.cos(PLATE_ANGLE), CANOPY.sensorZ + 0.0015 * Math.sin(PLATE_ANGLE)]} material={m.sensor}>
-          <cylinderGeometry args={[0.014, 0.014, 0.003, 40]} />
+        <mesh name="ultrasound-sensor" rotation={[Math.PI / 2 + PLATE_ANGLE, 0, 0]} position={[0, CANOPY.sensorY, CANOPY.sensorZ]} material={m.sensor}>
+          <circleGeometry args={[0.014, 48]} />
         </mesh>
         <Ultrasound state={station} />
       </group>

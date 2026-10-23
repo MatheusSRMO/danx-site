@@ -47,6 +47,63 @@ export function slabGeometry(w: number, d: number, r: number, h: number, bevel =
   return g;
 }
 
+/** Cavidade cega por baixo: mantém o tampo inteiro e as dimensões externas da placa. */
+export function sensorPlateGeometry(
+  w: number, d: number, r: number, h: number, bevel: number,
+  sensorZ: number, recessDepth: number, through = false,
+) {
+  const slab = slabGeometry(w, d, r, h, bevel);
+  const p = slab.getAttribute("position"), n = slab.getAttribute("normal");
+  const positions: number[][] = [[], []], normals: number[][] = [[], []];
+  for (const group of slab.groups) {
+    const material = group.materialIndex ?? 0;
+    for (let i = group.start; i < group.start + group.count; i += 3) {
+      if ([0, 1, 2].every((j) => Math.abs(p.getY(i + j) + h) < 1e-6)) continue;
+      // A chapa inferior é vazada; o teto da cavidade pertence só à placa principal.
+      if (through && [0, 1, 2].every((j) => Math.abs(p.getY(i + j)) < 1e-6)) continue;
+      for (let j = i; j < i + 3; j++) {
+        positions[material].push(p.getX(j), p.getY(j), p.getZ(j));
+        normals[material].push(n.getX(j), n.getY(j), n.getZ(j));
+      }
+    }
+  }
+  const contour = roundedOutline(w - 2 * bevel, d - 2 * bevel, r - bevel).getPoints(12);
+  contour.pop();
+  const radius = 0.0145, segments = 48;
+  const hole = Array.from({ length: segments }, (_, i) => {
+    const a = -i / segments * Math.PI * 2;
+    return new THREE.Vector2(Math.cos(a) * radius, sensorZ + Math.sin(a) * radius);
+  });
+  const points = [...contour, ...hole];
+  for (const face of THREE.ShapeUtils.triangulateShape(contour, [hole])) {
+    for (const i of face) {
+      positions[0].push(points[i].x, -h, points[i].y);
+      normals[0].push(0, -1, 0);
+    }
+  }
+  const ceiling = through ? 0 : -h + recessDepth;
+  for (let i = 0; i < segments; i++) {
+    const a = hole[i], b = hole[(i + 1) % segments];
+    for (const [point, y] of [[a, -h], [a, ceiling], [b, -h], [b, -h], [a, ceiling], [b, ceiling]] as const) {
+      positions[0].push(point.x, y, point.y);
+      normals[0].push(-point.x / radius, 0, -(point.y - sensorZ) / radius);
+    }
+    if (!through) {
+      for (const point of [a, new THREE.Vector2(0, sensorZ), b]) {
+        positions[0].push(point.x, ceiling, point.y);
+        normals[0].push(0, -1, 0);
+      }
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(positions.flat(), 3));
+  g.setAttribute("normal", new THREE.Float32BufferAttribute(normals.flat(), 3));
+  g.addGroup(0, positions[0].length / 3, 0);
+  g.addGroup(positions[0].length / 3, positions[1].length / 3, 1);
+  slab.dispose();
+  return g;
+}
+
 /** Mantém as faces ópticas planas, suavizando apenas os biséis e o perímetro. */
 function flatPlateNormals(g: THREE.BufferGeometry, h: number) {
   const smooth = toCreasedNormals(g, Math.PI / 3);
