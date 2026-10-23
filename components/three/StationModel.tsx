@@ -13,12 +13,13 @@ import { drawScreen, SCREEN_COUNT } from "./screenUi";
 import type { StationState } from "./stationState";
 
 // Modelo fiel à estação real (metros; y para cima, frente em +z, torre ao fundo).
-// Medidas: 2,10 m de altura · base 0,48 × 0,935 m · tela de 32″ (0,398 × 0,708 m) na vertical.
+// Medidas: 2,10 m de altura · base 0,48 × 0,935 m · tela nominal de 32″ na vertical.
+// A área visível da tela segue o render CAD (mais estreita que a proporção nominal 16:9).
 // Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
 const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.21, radius: 0.038 };
-const TOWER = { y0: 0.13, y1: 1.769, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.048 };
-const SCREEN = { w: 0.398, h: 0.708 };
+const TOWER = { y0: 0.13, y1: 1.769, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.038 };
+const SCREEN = { w: 0.36, h: 0.708 };
 const CANOPY = {
   x: 0.197, z: -0.005, diameter: 0.036,
   rise: 1.967, top: 2.082, r: 0.115,
@@ -38,17 +39,24 @@ function useMaterials() {
   return useMemo(
     () => ({
       glass: new THREE.MeshPhysicalMaterial({
-        color: "#3d4249",
+        color: "#3b4348",
         metalness: 0,
         roughness: 0.27,
-        envMapIntensity: 0.55,
-        clearcoat: 0.65,
+        envMapIntensity: 0.35,
+        clearcoat: 0.45,
         clearcoatRoughness: 0.16,
       }),
       body: new THREE.MeshPhysicalMaterial({
         color: "#4d6375",
         metalness: 0.3,
         roughness: 0.46,
+        clearcoat: 0.2,
+        clearcoatRoughness: 0.5,
+      }),
+      towerBody: new THREE.MeshPhysicalMaterial({
+        color: "#6c8598",
+        metalness: 0.3,
+        roughness: 0.4,
         clearcoat: 0.2,
         clearcoatRoughness: 0.5,
       }),
@@ -210,7 +218,7 @@ export default function StationModel({ state: station }: { state: StationState }
 
       {/* Vidro preto contínuo; carcaça traseira com degrau de alumínio e ombro inclinado. */}
       <group ref={tower}>
-        <mesh geometry={geometry.body} material={m.body} />
+        <mesh geometry={geometry.body} material={m.towerBody} />
         <mesh geometry={geometry.glass} position={[0, (TOWER.y0 + TOWER.y1) / 2, 0.040]} material={m.glass} />
         <mesh position={[0, TOWER.y1 - TOWER.screenMargin - SCREEN.h / 2, 0.0403]}>
           <planeGeometry args={[SCREEN.w, SCREEN.h]} />
