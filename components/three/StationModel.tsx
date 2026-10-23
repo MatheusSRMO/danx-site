@@ -91,18 +91,15 @@ function useMaterials(low: boolean) {
       top: new THREE.MeshPhysicalMaterial({ color: "#90918c", metalness: 0.45, roughness: 0.28 }),
       wedge: new THREE.MeshPhysicalMaterial({ color: "#35312d", metalness: 0.45, roughness: 0.4 }),
       padFrame: new THREE.MeshStandardMaterial({ color: "#303839", metalness: 0.25, roughness: 0.32 }),
+      // Vidro temperado preto brilhante (legenda do desenho oficial). Parece cinza-claro no render 3/4 só porque,
+      // visto de raspão, reflete o fundo branco do estúdio; com fundo preto (base de perto) fica escuro.
       padGlass: new THREE.MeshPhysicalMaterial({
-        // Cinza-claro do render oficial no 3/4 (eletrodos ~30 níveis mais claros); sem transmissão o vidro clareia, daí o tom
-        color: low ? "#cbcdca" : "#d4d6d3",
+        color: "#0c0d0e",
         metalness: 0,
-        roughness: 0.1,
-        // No modo leve (celular) sem transmissão: evita uma passada extra da cena a cada quadro
-        transmission: low ? 0 : 0.12,
-        thickness: 0.003,
+        roughness: 0.04,
         ior: 1.5,
-        // Camada fina: o verniz integral escurecia demais o vidro nos ângulos rasantes.
-        clearcoat: 0.2,
-        clearcoatRoughness: 0.08,
+        clearcoat: 1,
+        clearcoatRoughness: 0.03,
       }),
       steel: new THREE.MeshPhysicalMaterial({
         color: "#fafaf7",
