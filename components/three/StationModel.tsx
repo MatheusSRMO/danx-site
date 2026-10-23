@@ -42,7 +42,7 @@ const UNDERSIDE_H = 0.002;
 const UNDERSIDE_INSET = 0.001;
 const SENSOR_DEPTH = 0.0004;
 const SENSOR_LOCAL_Y = -CANOPY.plateH + UNDERSIDE_INSET - UNDERSIDE_H + SENSOR_DEPTH - 0.0001;
-const SENSOR_LOCAL_Z = (CANOPY.sensorZ - PLATE_Z + SENSOR_LOCAL_Y * Math.sin(PLATE_ANGLE)) / Math.cos(PLATE_ANGLE);
+const SENSOR_LOCAL_Z = (CANOPY.sensorZ - PLATE_Z - SENSOR_LOCAL_Y * Math.sin(PLATE_ANGLE)) / Math.cos(PLATE_ANGLE);
 CANOPY.sensorY = plateHeightAt(CANOPY.sensorZ) + SENSOR_LOCAL_Y / Math.cos(PLATE_ANGLE);
 
 export const PAD_POSITIONS: [number, number, number, number][] = [
@@ -125,7 +125,11 @@ function useMaterials(low: boolean) {
         color: "#414546", metalness: 0.55, roughness: 0.22,
         clearcoat: 0.65, clearcoatRoughness: 0.12,
       }),
-      sensor: new THREE.MeshStandardMaterial({ color: "#303334", metalness: 0.4, roughness: 0.65 }),
+      // Resposta especular próxima à chapa: o disco escuro não forma uma mancha clara de perfil.
+      sensor: new THREE.MeshPhysicalMaterial({
+        color: "#303334", metalness: 0.4, roughness: 0.32,
+        clearcoat: 0.35, clearcoatRoughness: 0.22,
+      }),
     }),
     [low],
   );
