@@ -12,6 +12,7 @@ import {
   towerBodyGeometry,
 } from "./stationGeometry";
 import { drawScreen, SCREEN_COUNT } from "./screenUi";
+import { GLASS_LOGO_ASPECT, glassLogoTexture } from "./glassLogo";
 import StationGlassReflection from "./StationGlassReflection";
 import type { StationState } from "./stationState";
 
@@ -23,6 +24,8 @@ import type { StationState } from "./stationState";
 const BASE = { w: 0.48, d: 0.935, h: 0.07, z0: -0.21, radius: 0.035 };
 const TOWER = { y0: 0.109, y1: 1.769, w: 0.432, bodyW: 0.417, step: 0.745, screenMargin: 0.038 };
 const SCREEN = { w: 0.36, h: 0.708 };
+// Logotipo no vidro: mesmo lugar e tamanho da inscrição do render oficial (centro a 236 mm do chão, 30 mm de altura)
+const GLASS_LOGO = { y: 0.236, h: 0.03 };
 const CANOPY = {
   x: 0.201, z: -0.005, diameter: 0.036,
   rise: 1.982, top: 2.082, r: 0.1, pitch: 0.015,
@@ -186,6 +189,8 @@ export default function StationModel({ state: station, low = false }: { state: S
   const canopy = useRef<THREE.Group>(null);
   const tower = useRef<THREE.Group>(null);
   const screenMat = useRef<THREE.MeshBasicMaterial>(null);
+  const logo = useMemo(() => glassLogoTexture(), []);
+  useEffect(() => () => logo.dispose(), [logo]);
 
   const geometry = useMemo(() => ({
     base: slabGeometry(BASE.w, BASE.d, BASE.radius, BASE.h, 0.003),
@@ -274,6 +279,10 @@ export default function StationModel({ state: station, low = false }: { state: S
         <mesh position={[0, TOWER.y1 - TOWER.screenMargin - SCREEN.h / 2, 0.0403]}>
           <planeGeometry args={[SCREEN.w, SCREEN.h]} />
           <meshBasicMaterial ref={screenMat} color="#e6e6e6" toneMapped={false} />
+        </mesh>
+        <mesh position={[0, GLASS_LOGO.y, 0.0403]}>
+          <planeGeometry args={[GLASS_LOGO.h * GLASS_LOGO_ASPECT, GLASS_LOGO.h]} />
+          <meshBasicMaterial map={logo} color="#e4e6e8" transparent depthWrite={false} />
         </mesh>
       </group>
 
