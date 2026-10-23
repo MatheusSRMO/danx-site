@@ -89,7 +89,8 @@ function useMaterials(low: boolean) {
       wedge: new THREE.MeshPhysicalMaterial({ color: "#35312d", metalness: 0.45, roughness: 0.4 }),
       padFrame: new THREE.MeshStandardMaterial({ color: "#303839", metalness: 0.25, roughness: 0.32 }),
       padGlass: new THREE.MeshPhysicalMaterial({
-        color: "#f5f5f2",
+        // Cinza-claro do render oficial no 3/4 (eletrodos ~30 níveis mais claros); sem transmissão o vidro clareia, daí o tom
+        color: low ? "#cbcdca" : "#d4d6d3",
         metalness: 0,
         roughness: 0.1,
         // No modo leve (celular) sem transmissão: evita uma passada extra da cena a cada quadro
