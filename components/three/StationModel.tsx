@@ -36,9 +36,12 @@ const BEND_Z = CANOPY.z + CANOPY.r * (1 + Math.sin(PLATE_ANGLE));
 const BEND_Y = CANOPY.rise + CANOPY.r * Math.cos(PLATE_ANGLE);
 const plateHeightAt = (z: number) => BEND_Y - (z - BEND_Z) * CANOPY.pitch + CANOPY.diameter / (2 * Math.cos(PLATE_ANGLE));
 const PLATE_Y = plateHeightAt(PLATE_Z);
-// Face inferior do sensor: usada também como origem das ondas, em coordenadas do dossel.
-const SENSOR_DEPTH = 0.009;
-const SENSOR_LOCAL_Y = -CANOPY.plateH + SENSOR_DEPTH - 0.0001;
+// Sensor quase rente à chapa inferior: rebaixo de 0,3 mm, sem aro refletivo.
+// A mesma face emissora define a origem das ondas em coordenadas do dossel.
+const UNDERSIDE_H = 0.002;
+const UNDERSIDE_INSET = 0.001;
+const SENSOR_DEPTH = 0.0004;
+const SENSOR_LOCAL_Y = -CANOPY.plateH + UNDERSIDE_INSET - UNDERSIDE_H + SENSOR_DEPTH - 0.0001;
 const SENSOR_LOCAL_Z = (CANOPY.sensorZ - PLATE_Z + SENSOR_LOCAL_Y * Math.sin(PLATE_ANGLE)) / Math.cos(PLATE_ANGLE);
 CANOPY.sensorY = plateHeightAt(CANOPY.sensorZ) + SENSOR_LOCAL_Y / Math.cos(PLATE_ANGLE);
 
@@ -108,11 +111,11 @@ function useMaterials(low: boolean) {
         emissiveIntensity: 0,
       }),
       canopy: new THREE.MeshPhysicalMaterial({
-        color: "#202425",
-        metalness: 0.58,
-        roughness: 0.17,
-        clearcoat: 0.85,
-        clearcoatRoughness: 0.09,
+        color: "#4a4c4f",
+        metalness: 0.35,
+        roughness: 0.48,
+        clearcoat: 0.12,
+        clearcoatRoughness: 0.5,
       }),
       canopyPlate: new THREE.MeshPhysicalMaterial({
         color: "#343738", metalness: 0.4, roughness: 0.32,
@@ -122,7 +125,7 @@ function useMaterials(low: boolean) {
         color: "#414546", metalness: 0.55, roughness: 0.22,
         clearcoat: 0.65, clearcoatRoughness: 0.12,
       }),
-      sensor: new THREE.MeshStandardMaterial({ color: "#0d0e10", metalness: 0.3, roughness: 0.55 }),
+      sensor: new THREE.MeshStandardMaterial({ color: "#303334", metalness: 0.4, roughness: 0.65 }),
     }),
     [low],
   );
@@ -190,10 +193,9 @@ export default function StationModel({ state: station, low = false }: { state: S
     // Do plano x/z para a fachada x/y, com a espessura do vidro para trás.
     glass: slabGeometry(TOWER.w, TOWER.y1 - TOWER.y0, 0.018, 0.01, 0.0015).rotateX(Math.PI / 2),
     bars: [-1, 1].map((side) => canopyBarGeometry(side, CANOPY, TOWER.y1)),
-    cap: sensorPlateGeometry(CANOPY.w, CANOPY.plateZ1 - CANOPY.plateZ0, 0.018, CANOPY.plateH, 0.0025,
+    cap: slabGeometry(CANOPY.w, CANOPY.plateZ1 - CANOPY.plateZ0, 0.018, CANOPY.plateH, 0.0025),
+    underside: sensorPlateGeometry(CANOPY.w - 0.022, CANOPY.plateZ1 - CANOPY.plateZ0 - 0.018, 0.012, UNDERSIDE_H, 0.0005,
       SENSOR_LOCAL_Z, SENSOR_DEPTH),
-    underside: sensorPlateGeometry(CANOPY.w - 0.022, CANOPY.plateZ1 - CANOPY.plateZ0 - 0.018, 0.012, 0.002, 0.0005,
-      SENSOR_LOCAL_Z, 0.002, true),
   }), []);
   const fairingMaterials = useMemo(() => [m.wedge, m.fairingEnd], [m]);
   const plateMaterials = useMemo(() => [m.canopyPlate, m.canopyEdge], [m]);
@@ -274,10 +276,10 @@ export default function StationModel({ state: station, low = false }: { state: S
       <group ref={canopy}>
         {geometry.bars.map((g, i) => <mesh key={i} geometry={g} material={m.canopy} />)}
         <mesh name="canopy-plate" geometry={geometry.cap} material={plateMaterials} rotation={[PLATE_ANGLE, 0, 0]} position={[0, PLATE_Y, PLATE_Z]} />
-        <mesh geometry={geometry.underside} material={m.canopyPlate} rotation={[PLATE_ANGLE, 0, 0]}
-          position={[0, PLATE_Y - (CANOPY.plateH - 0.001) * Math.cos(PLATE_ANGLE), PLATE_Z - (CANOPY.plateH - 0.001) * Math.sin(PLATE_ANGLE)]} />
+        <mesh name="canopy-underside" geometry={geometry.underside} material={m.canopyPlate} rotation={[PLATE_ANGLE, 0, 0]}
+          position={[0, PLATE_Y - (CANOPY.plateH - UNDERSIDE_INSET) * Math.cos(PLATE_ANGLE), PLATE_Z - (CANOPY.plateH - UNDERSIDE_INSET) * Math.sin(PLATE_ANGLE)]} />
         <mesh name="ultrasound-sensor" rotation={[Math.PI / 2 + PLATE_ANGLE, 0, 0]} position={[0, CANOPY.sensorY, CANOPY.sensorZ]} material={m.sensor}>
-          <circleGeometry args={[0.014, 48]} />
+          <circleGeometry args={[0.0145, 48]} />
         </mesh>
         <Ultrasound state={station} />
       </group>
