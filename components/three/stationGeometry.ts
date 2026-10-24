@@ -137,6 +137,33 @@ export function ringSlabGeometry(
   return g;
 }
 
+/**
+ * Placa do dossel: contorno retangular com raios de canto diferentes na frente (rFront, lado do sensor) e atrás
+ * (rBack), bisel só nas arestas de cima e de baixo. Superfície superior em y = 0, espessura para baixo; as dimensões
+ * incluem o bisel. As faces grandes ficam planas e o perímetro, suave.
+ */
+export function canopyPlateGeometry(w: number, d: number, rFront: number, rBack: number, h: number, bevel = 0.001) {
+  const x = w / 2 - bevel, z = d / 2 - bevel;
+  const rf = Math.max(Math.min(rFront - bevel, x, z), 0.0005), rb = Math.max(Math.min(rBack - bevel, x, z), 0.0005);
+  const s = new THREE.Shape();
+  s.moveTo(-x + rb, -z);
+  s.lineTo(x - rb, -z);
+  s.absarc(x - rb, -z + rb, rb, -Math.PI / 2, 0, false);
+  s.lineTo(x, z - rf);
+  s.absarc(x - rf, z - rf, rf, 0, Math.PI / 2, false);
+  s.lineTo(-x + rf, z);
+  s.absarc(-x + rf, z - rf, rf, Math.PI / 2, Math.PI, false);
+  s.lineTo(-x, -z + rb);
+  s.absarc(-x + rb, -z + rb, rb, Math.PI, Math.PI * 1.5, false);
+  s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, {
+    depth: h - 2 * bevel, bevelEnabled: true, bevelSize: bevel, bevelThickness: bevel, bevelSegments: 3, curveSegments: 16,
+  });
+  g.rotateX(Math.PI / 2);
+  g.translate(0, -bevel, 0);
+  return flatPlateNormals(g, h);
+}
+
 /** Moldura vazada sob o vidro: o centro deixa aparecer o tampo através da chapa. */
 export function roundedFrameGeometry(w: number, d: number, r: number, border: number, h: number) {
   const shape = roundedOutline(w, d, r);
