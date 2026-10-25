@@ -24,12 +24,12 @@ import type { StationState } from "./stationState";
 // A área visível da tela segue o render CAD (mais estreita que a proporção nominal 16:9).
 // Formas e acabamentos ajustados pelas referências oficiais e pelas avaliações em .fidelity/LOG.md.
 
-// Bandeja: corpo de alumínio azul-ardósia e, por cima, uma chapa bronze-grafite de 4,4 mm com o bolsão do vidro.
-const BASE = { w: 0.48, d: 0.935, h: 0.0699, z0: -0.21, radius: 0.0337, plate: 0.0044, bottomBevel: 0.004 };
+// Bandeja: corpo de alumínio azul-ardósia e, por cima, uma chapa bronze-grafite de 6,4 mm com o bolsão do vidro.
+const BASE = { w: 0.48, d: 0.935, h: 0.070078, z0: -0.21, radius: 0.033125, plate: 0.0064488, bottomBevel: 0.0050034 };
 // Vidro dos eletrodos assentado 1,6 mm abaixo do tampo; os eletrodos ficam rentes à face dele.
 const PAD = { cz: 0.47, w: 0.4, d: 0.435, r: 0.027, thick: 0.003, top: 0.0683, hole: 0.0045 };
-// O produto é ortogonal: bandeja, torre e dossel sem giros (a câmera da bancada é que imita a perspectiva dos renders).
-const BASE_TILT = { euler: new THREE.Euler(0, 0, 0), position: new THREE.Vector3(0, 0, 0) };
+// O produto é ortogonal: bandeja, torre e dossel sem giros nem deslocamentos de compensação (a câmera da bancada é que
+// imita a perspectiva dos renders).
 // Regiões dos espelhos planares da bandeja: o vidro (altura do vidro) e o tampo em volta dele (altura do tampo).
 const GLASS_MIRROR: MirrorRegion = { w: PAD.w - 0.0014, d: PAD.d - 0.0014, r: PAD.r - 0.0007, cz: PAD.cz };
 // O espelho do tampo não mostra o logotipo do vidro (o render oficial não tem esse reflexo no tampo).
@@ -38,34 +38,32 @@ const TOP_MIRROR: MirrorRegion = {
   w: BASE.w - 0.001, d: BASE.d - 0.001, r: BASE.radius - 0.0005, cz: BASE.z0 + BASE.d / 2,
   hole: { w: PAD.w + PAD.hole, d: PAD.d + PAD.hole, r: PAD.r + PAD.hole / 2, cz: PAD.cz },
 };
-// Torre: vidro preto de 438,5 mm rente ao corpo de alumínio (442 mm); atrás, o degrau com chanfro reto.
+// Torre: vidro preto de 441,0 mm rente ao corpo de alumínio (443,1 mm); atrás, o degrau com chanfro reto.
 const TOWER = {
-  y0: 0.109, y1: 1.76615, w: 0.43851, bodyW: 0.4422, step: 0.7556, chamfer: 0.02135,
+  y0: 0.11499, y1: 1.7676, w: 0.44102, bodyW: 0.44313, step: 0.76275, chamfer: 0.021283,
   front: 0.02694, rear: -0.01661, rear2: -0.04439, glassZ: 0.0383, glassT: 0.0142, screenMargin: 0.0345,
 };
-const TOWER_TILT = { euler: new THREE.Euler(0, 0, 0), position: new THREE.Vector3(0, 0, 0) };
 const SCREEN = { w: 0.36, h: 0.708 };
 // Logotipo no vidro: mesmo lugar e tamanho da inscrição do render oficial (centro a 236 mm do chão, 30 mm de altura)
 const GLASS_LOGO = { y: 0.236, h: 0.03 };
-// Cunha de largura constante (rente às pontas da bandeja): trapézio de 50 mm de altura com a rampa de trás curta e a da frente
+// Cunha de largura constante (rente às pontas da bandeja): trapézio de 51 mm de altura com a rampa de trás curta e a da frente
 // longa; a face de bronze sobe até o pé do vidro (medida nos dois renders oficiais, com a bandeja já ajustada acima).
 const FAIRING = {
-  height: 0.05007, widthBottom: 0.47895, widthTop: 0.47895,
-  backBottom: -0.04159, frontBottom: 0.08603, backTop: -0.03804, frontTop: 0.06002,
+  height: 0.051091, widthBottom: 0.47895, widthTop: 0.47895,
+  backBottom: -0.055, frontBottom: 0.079657, backTop: -0.04, frontTop: 0.052742,
 };
-// Dossel: duas barras planas (24,7 × 32,1 mm) que sobem coladas à traseira da torre, fazem o cotovelo e seguem retas
-// (queda frontal de ~3,7°) até a placa. A placa tem a mesma espessura das barras (+0,8 mm) e o mesmo plano de cima:
+// Dossel: duas barras planas (24,9 × 31,5 mm) que sobem coladas à traseira da torre, fazem o cotovelo e seguem retas
+// (queda frontal de ~4,0°) até a placa. A placa tem a mesma espessura das barras (+0,8 mm) e o mesmo plano de cima:
 // a aresta de cima da barra continua direto na da placa, e as faces de fora das barras e das pontas da placa ficam no
-// mesmo plano. Os cantos da frente da placa são de raio grande (44 mm); os de trás somem dentro das barras.
-// Medido sobre o render 3/4 oficial (ajuste da silhueta em 1080 px). O ponto mais alto (cotovelo) fica na altura
-// nominal de 2,100 m.
+// mesmo plano. Os cantos da frente da placa são de raio grande (49 mm); os de trás (20 mm) somem dentro das barras.
+// Medido sobre o render 3/4 oficial (ajuste da silhueta em 1080 px com a câmera nivelada da bancada). O ponto mais alto
+// (cotovelo) fica na altura real do produto, 2,100 m, e nunca passa disso.
 const CANOPY = {
-  x: 0.20043, z: -0.00368, wx: 0.02474, wt: 0.03207, fillet: 0.0025,
-  R: 0.11448, top: 2.1, pitch: 0.06554,
-  plateW: 0, plateD: 0.11781, plateZ: 0.48535, plateY: 0, plateH: 0, plateR: 0.04411, plateRBack: 0.005,
-  plateBevel: 0.0025, barOverlap: 0.06, outerShift: -0.00004, dH: 0.0008,
-  roll: 0, yaw: 0, pivotY: 1.76, pivotZ: -0.00415,
-  rise: 0, sensorX: 0, sensorZ: 0, sensorY: 0,
+  x: 0.19652, z: -0.00405, wx: 0.02492, wt: 0.0315, fillet: 0.00313,
+  R: 0.11541, top: 2.1, pitch: 0.06964,
+  plateW: 0, plateD: 0.11735, plateZ: 0.48474, plateY: 0, plateH: 0, plateR: 0.04887, plateRBack: 0.02,
+  plateBevel: 0.0025, barOverlap: 0.06784, outerShift: -0.00046, dH: 0.00079,
+  rise: 0, sensorZ: 0, sensorY: 0,
 };
 CANOPY.rise = CANOPY.top - CANOPY.R - CANOPY.wt / 2;
 CANOPY.plateW = 2 * (CANOPY.x + CANOPY.wx / 2 + CANOPY.outerShift);
@@ -85,21 +83,12 @@ const plateHeightAt = (z: number) => PLATE_Y - (z - PLATE_Z) * CANOPY.pitch;
 // Sensor quase rente à chapa inferior: rebaixo de 0,3 mm, sem aro refletivo.
 // A mesma face emissora define a origem das ondas em coordenadas do dossel.
 const UNDERSIDE_H = 0.002;
-const UNDERSIDE_INSET = 0.001;
+const UNDERSIDE_INSET = 0.0018;
 const SENSOR_DEPTH = 0.0004;
 const SENSOR_LOCAL_Y = -CANOPY.plateH + UNDERSIDE_INSET - UNDERSIDE_H + SENSOR_DEPTH - 0.0001;
 CANOPY.sensorZ = PLATE_Z + CANOPY.plateD / 2 - 0.043;
 const SENSOR_LOCAL_Z = (CANOPY.sensorZ - PLATE_Z - SENSOR_LOCAL_Y * Math.sin(PLATE_ANGLE)) / Math.cos(PLATE_ANGLE);
 CANOPY.sensorY = plateHeightAt(CANOPY.sensorZ) + SENSOR_LOCAL_Y / Math.cos(PLATE_ANGLE);
-const SENSOR_Y0 = CANOPY.sensorY, SENSOR_Z0 = CANOPY.sensorZ; // no referencial da placa, antes de girar o dossel
-// Posição do sensor no dossel já girado (as ondas partem dele): mesma transformação do grupo `tilt`.
-const TILT_PIVOT = new THREE.Vector3(0, CANOPY.pivotY, CANOPY.pivotZ);
-const TILT_ROTATION = new THREE.Euler(0, CANOPY.yaw, CANOPY.roll, "ZYX");
-{
-  const sensor = new THREE.Vector3(0, SENSOR_Y0, SENSOR_Z0).sub(TILT_PIVOT)
-    .applyEuler(TILT_ROTATION).add(TILT_PIVOT);
-  CANOPY.sensorX = sensor.x; CANOPY.sensorY = sensor.y; CANOPY.sensorZ = sensor.z;
-}
 // Fila vertical de furos na traseira, abaixo do degrau (ventilação/alto-falante)
 const REAR_HOLES = { count: 15, y0: 0.28, y1: 0.657, d: 0.007 };
 
@@ -177,17 +166,26 @@ export const PAD_POSITIONS: [number, number, number, number][] = [
  * (emissivo) das faces voltadas para baixo, que no oficial são escuras.
  */
 const RIM_DIR = new THREE.Vector3(0.8955, 0.26, -0.3618).normalize();
-function addRimStrip(mat: THREE.MeshPhysicalMaterial, gain: number, tint: string, cosLo = 0.9135, cosHi = 0.9877) {
+function addRimStrip(mat: THREE.MeshPhysicalMaterial, gain: number, tint: string, cosLo = 0.9135, cosHi = 0.9877, sideEmissive?: string) {
   mat.onBeforeCompile = (shader) => {
     shader.uniforms.rimDir = { value: RIM_DIR };
     shader.uniforms.rimColor = { value: new THREE.Color(tint).multiplyScalar(gain) };
+    shader.uniforms.sideEmissive = { value: new THREE.Color(sideEmissive ?? "#000000") };
+    // Com `sideEmissive`, as faces de lado (normal em ±x, em espaço do objeto) têm outra luz própria: nas barras do
+    // dossel o render oficial tem as faces de lado cinza-quente neutro e as da frente azuladas.
+    if (sideEmissive) {
+      shader.vertexShader = shader.vertexShader
+        .replace("#include <common>", "#include <common>\nvarying float vSide;")
+        .replace("#include <begin_vertex>", "#include <begin_vertex>\nvSide = smoothstep(0.55, 0.9, abs(normal.x));");
+    }
     shader.fragmentShader = shader.fragmentShader
-      .replace("#include <common>", "#include <common>\nuniform vec3 rimDir;\nuniform vec3 rimColor;")
+      .replace("#include <common>", `#include <common>\nuniform vec3 rimDir;\nuniform vec3 rimColor;${sideEmissive ? "\nuniform vec3 sideEmissive;\nvarying float vSide;" : ""}`)
       // A base de luz própria (emissivo) vale só para as faces voltadas para cima e para os lados: as de baixo, vistas
       // de baixo, são escuras no render oficial.
       .replace(
         "#include <emissivemap_fragment>",
         `#include <emissivemap_fragment>
+        ${sideEmissive ? "totalEmissiveRadiance = mix(totalEmissiveRadiance, sideEmissive, vSide);" : ""}
         totalEmissiveRadiance *= 1.0 - smoothstep(0.15, 0.7, -(inverseTransformDirection(normal, viewMatrix)).y);`,
       )
       .replace(
@@ -201,7 +199,7 @@ function addRimStrip(mat: THREE.MeshPhysicalMaterial, gain: number, tint: string
         #include <opaque_fragment>`,
       );
   };
-  mat.customProgramCacheKey = () => `rim-${gain}-${tint}`;
+  mat.customProgramCacheKey = () => `rim-${gain}-${tint}-${sideEmissive ?? "none"}`;
   return mat;
 }
 
@@ -241,6 +239,29 @@ function addGlassProfile(mat: THREE.MeshPhysicalMaterial, centerY: number) {
   return mat;
 }
 
+/**
+ * Parede da frente da bandeja: nos dois renders oficiais (3/4 e base de perto) ela é grafite neutro e brilhante, enquanto
+ * as paredes laterais são azul-ardósia. O peso `vFront` vem da normal em espaço do objeto (gira junto com o modelo): 1
+ * na parede que olha para +z, e cai nos cantos arredondados. Cor, aspereza e metal da frente ficam em `FRONT_WALL`.
+ */
+const FRONT_WALL = { color: "#686c71", roughness: 0.46, metalness: 0.2 };
+function addFrontWall(mat: THREE.MeshPhysicalMaterial) {
+  const c = new THREE.Color(FRONT_WALL.color);
+  mat.onBeforeCompile = (shader) => {
+    shader.uniforms.frontColor = { value: c };
+    shader.vertexShader = shader.vertexShader
+      .replace("#include <common>", "#include <common>\nvarying float vFront;")
+      .replace("#include <begin_vertex>", "#include <begin_vertex>\nvFront = smoothstep(0.35, 0.9, normal.z);");
+    shader.fragmentShader = shader.fragmentShader
+      .replace("#include <common>", "#include <common>\nvarying float vFront;\nuniform vec3 frontColor;")
+      .replace("#include <color_fragment>", "#include <color_fragment>\ndiffuseColor.rgb = mix(diffuseColor.rgb, frontColor, vFront);")
+      .replace("#include <roughnessmap_fragment>", `#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, ${FRONT_WALL.roughness.toFixed(3)}, vFront);`)
+      .replace("#include <metalnessmap_fragment>", `#include <metalnessmap_fragment>\nmetalnessFactor = mix(metalnessFactor, ${FRONT_WALL.metalness.toFixed(3)}, vFront);`);
+  };
+  mat.customProgramCacheKey = () => `front-wall-${FRONT_WALL.color}-${FRONT_WALL.roughness}-${FRONT_WALL.metalness}`;
+  return mat;
+}
+
 function useMaterials(low: boolean) {
   return useMemo(
     () => ({
@@ -257,14 +278,14 @@ function useMaterials(low: boolean) {
       }), (TOWER.y0 + TOWER.y1) / 2),
       // O fio do vidro (espessura) é escuro: sem o brilho das faces.
       glassEdge: new THREE.MeshBasicMaterial({ color: "#0d0f12" }),
-      body: new THREE.MeshPhysicalMaterial({ color: "#5d697d", metalness: 0, roughness: 0.8 }),
+      body: addFrontWall(new THREE.MeshPhysicalMaterial({ color: "#5d697d", metalness: 0, roughness: 0.8 })),
       fairingEnd: new THREE.MeshPhysicalMaterial({ color: "#4e5b6e", metalness: 0.05, roughness: 0.8 }),
       towerBody: addRimStrip(new THREE.MeshPhysicalMaterial({
         vertexColors: true, color: "#566f82", metalness: 0, roughness: 0.8,
       }), 0.65, "#a4b6d2", 0.8, 0.965),
       // Tampo e cunha bronze-grafite; alumínio azul-ardósia. Acabamento acetinado: casam nos dois estúdios (claro e escuro).
       top: new THREE.MeshPhysicalMaterial({ color: "#9b9b96", metalness: 0, roughness: 0.8 }),
-      wedge: new THREE.MeshPhysicalMaterial({ color: "#514d49", metalness: 0.1, roughness: 0.8 }),
+      wedge: new THREE.MeshPhysicalMaterial({ color: "#5d5853", metalness: 0, roughness: 0.9 }),
       padFrame: new THREE.MeshStandardMaterial({ color: "#303839", metalness: 0.25, roughness: 0.32 }),
       // Vidro temperado preto brilhante (legenda do desenho oficial). Parece cinza-claro no render 3/4 só porque,
       // visto de raspão, reflete o fundo branco do estúdio; com fundo preto (base de perto) fica escuro.
@@ -288,9 +309,9 @@ function useMaterials(low: boolean) {
       // Grafite acetinado: luz própria baixa (as faces da frente do render oficial são cinza médio, o estúdio escuro da
       // frente não dá isso sozinho) e um filete de luz nos raios (addRimStrip). Faces planas sem reflexo forte.
       canopy: addRimStrip(new THREE.MeshPhysicalMaterial({
-        color: "#30353b", metalness: 0.2, roughness: 0.3, emissive: new THREE.Color("#2d333b"),
-      }), 1, "#c6d7e6"),
-      canopyPlate: new THREE.MeshPhysicalMaterial({ color: "#001730", metalness: 0.5, roughness: 0.62, clearcoat: 0.05, clearcoatRoughness: 0.22 }),
+        color: "#323232", metalness: 0.2, roughness: 0.3, emissive: new THREE.Color("#333b43"),
+      }), 1, "#c6d7e6", 0.9135, 0.9877, "#2c2c2e"),
+      canopyPlate: new THREE.MeshPhysicalMaterial({ color: "#001f48", metalness: 0.25, roughness: 0.7, clearcoat: 0.05, clearcoatRoughness: 0.22 }),
       // Laterais e cantos da placa: o mesmo grafite das barras, para a placa e as barras serem uma peça só
       canopyEdge: addRimStrip(new THREE.MeshPhysicalMaterial({
         color: "#25272a", metalness: 0.2, roughness: 0.3, emissive: new THREE.Color("#454648"),
@@ -364,7 +385,7 @@ function Ultrasound({ state }: { state: StationState }) {
   return (
     <group ref={group}>
       {rings.map((r, i) => (
-        <mesh key={r} rotation={[-Math.PI / 2, 0, 0]} position={[CANOPY.sensorX, CANOPY.sensorY, CANOPY.sensorZ]} material={mats[i]}>
+        <mesh key={r} rotation={[-Math.PI / 2, 0, 0]} position={[0, CANOPY.sensorY, CANOPY.sensorZ]} material={mats[i]}>
           <ringGeometry args={[0.9, 1, 64]} />
         </mesh>
       ))}
@@ -393,9 +414,8 @@ export default function StationModel({ state: station, low = false }: { state: S
     body: heightShade(towerBodyGeometry(TOWER.bodyW, TOWER.y0 - 0.012, TOWER.y1, TOWER), TOWER.y1),
     // Do plano x/z para a fachada x/y, com a espessura do vidro para trás.
     glass: slabGeometry(TOWER.w, TOWER.y1 - TOWER.y0, 0.018, TOWER.glassT, 0.0015).rotateX(Math.PI / 2),
-    // Montante reto que sobe pela traseira da torre (parado) e parte de cima do dossel (gira em `tilt`)
-    barsLower: [-1, 1].map((side) => canopyBarGeometry(side, { ...CANOPY, zEnd: 0, stopAt: CANOPY.pivotY + 0.005 }, TOWER.step + TOWER.chamfer - 0.001)),
-    barsUpper: [-1, 1].map((side) => canopyBarGeometry(side, { ...CANOPY, zEnd: PLATE_Z - CANOPY.plateD / 2 + CANOPY.barOverlap }, CANOPY.pivotY - 0.025)),
+    // Barras: do degrau da torre, subindo coladas à traseira, cotovelo e trecho reto até dentro da placa
+    bars: [-1, 1].map((side) => canopyBarGeometry(side, { ...CANOPY, zEnd: PLATE_Z - CANOPY.plateD / 2 + CANOPY.barOverlap }, TOWER.step + TOWER.chamfer - 0.001)),
     cap: canopyPlateGeometry(CANOPY.plateW, CANOPY.plateD, CANOPY.plateR, CANOPY.plateRBack, CANOPY.plateH, CANOPY.plateBevel),
     underside: sensorPlateGeometry(CANOPY.plateW - 0.022, CANOPY.plateD - 0.018, 0.004, UNDERSIDE_H, 0.0005,
       SENSOR_LOCAL_Z, SENSOR_DEPTH),
@@ -457,7 +477,7 @@ export default function StationModel({ state: station, low = false }: { state: S
   return (
     <group ref={root}>
       {/* Bandeja arredondada, cunha trapezoidal e vidro claro separado do tampo. */}
-      <group position={BASE_TILT.position} rotation={BASE_TILT.euler}>
+      <group>
         <mesh geometry={geometry.base} position={[0, BASE.h - BASE.plate, BASE.z0 + BASE.d / 2]} material={m.body} />
         <mesh geometry={geometry.top} position={[0, BASE.h, BASE.z0 + BASE.d / 2]} material={topMaterials} />
         <mesh geometry={geometry.fairing} material={fairingMaterials} />
@@ -471,7 +491,7 @@ export default function StationModel({ state: station, low = false }: { state: S
       </group>
 
       {/* Vidro preto contínuo; carcaça traseira com degrau de alumínio e ombro inclinado. */}
-      <group ref={tower} position={TOWER_TILT.position} rotation={TOWER_TILT.euler}>
+      <group ref={tower}>
         <mesh geometry={geometry.body} material={m.towerBody} />
         <mesh geometry={geometry.glass} position={[0, (TOWER.y0 + TOWER.y1) / 2, TOWER.glassZ]} material={glassMaterials} />
         <mesh position={[0, TOWER.y1 - TOWER.screenMargin - SCREEN.h / 2, TOWER.glassZ + 0.0003]}>
@@ -489,23 +509,17 @@ export default function StationModel({ state: station, low = false }: { state: S
         )}
       </group>
 
-      {/* Tubos paralelos com cotovelo circular; sensor somente na face inferior da placa. */}
+      {/* Barras planas com cotovelo circular; sensor somente na face inferior da placa. */}
       <group ref={canopy}>
-        {geometry.barsLower.map((g, i) => <mesh key={i} geometry={g} material={m.canopy} />)}
+        {geometry.bars.map((g, i) => <mesh key={i} geometry={g} material={m.canopy} />)}
         <mesh name="bar-accessories" geometry={geometry.accessories} material={m.clip} />
-        {/* Parte de cima do dossel (barras acima do topo da torre, placa e sensor): rotação residual pequena em torno
-            do ponto em que as barras saem da torre; o filho desloca de volta para o referencial da peça. */}
-        <group name="canopy-tilt" position={TILT_PIVOT} rotation={TILT_ROTATION}>
-          <group position={[0, -CANOPY.pivotY, -CANOPY.pivotZ]}>
-            {geometry.barsUpper.map((g, i) => <mesh key={i} geometry={g} material={m.canopy} />)}
-            <mesh name="canopy-plate" geometry={geometry.cap} material={plateMaterials} rotation={[PLATE_ANGLE, 0, 0]} position={[0, PLATE_Y, PLATE_Z]} />
-            <mesh name="canopy-underside" geometry={geometry.underside} material={m.canopyPlate} rotation={[PLATE_ANGLE, 0, 0]}
-              position={[0, PLATE_Y - (CANOPY.plateH - UNDERSIDE_INSET) * Math.cos(PLATE_ANGLE), PLATE_Z - (CANOPY.plateH - UNDERSIDE_INSET) * Math.sin(PLATE_ANGLE)]} />
-            <mesh name="ultrasound-sensor" rotation={[Math.PI / 2 + PLATE_ANGLE, 0, 0]} position={[0, SENSOR_Y0, SENSOR_Z0]} material={m.canopyPlate}>
-              <circleGeometry args={[0.0145, 48]} />
-            </mesh>
-          </group>
-        </group>
+        <mesh name="canopy-plate" geometry={geometry.cap} material={plateMaterials} rotation={[PLATE_ANGLE, 0, 0]} position={[0, PLATE_Y, PLATE_Z]} />
+        <mesh name="canopy-underside" geometry={geometry.underside} material={m.canopyPlate} rotation={[PLATE_ANGLE, 0, 0]}
+          position={[0, PLATE_Y - (CANOPY.plateH - UNDERSIDE_INSET) * Math.cos(PLATE_ANGLE), PLATE_Z - (CANOPY.plateH - UNDERSIDE_INSET) * Math.sin(PLATE_ANGLE)]} />
+        <mesh name="ultrasound-sensor" rotation={[Math.PI / 2 + PLATE_ANGLE, 0, 0]} position={[0, CANOPY.sensorY, CANOPY.sensorZ]} material={m.canopyPlate}>
+          <circleGeometry args={[0.0145, 48]} />
+        </mesh>
+        {/* O grupo das ondas tem de ser o último filho do dossel (o espelho do vidro conta com isso). */}
         <Ultrasound state={station} />
       </group>
     </group>

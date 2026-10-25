@@ -19,6 +19,29 @@ export function roundedOutline(w: number, d: number, r: number) {
   return s;
 }
 
+/**
+ * Pontos do contorno arredondado (sentido anti-horário em x/z, fechado), sempre com a mesma contagem. O `getPoints` do
+ * three descarta pontos repetidos por igualdade exata de ponto flutuante, o que mudava o número de pontos de um anel
+ * para outro conforme o raio e quebrava `ringSlabGeometry` com certos valores.
+ */
+export function roundedOutlinePoints(w: number, d: number, r: number, divisions = 12) {
+  const x = w / 2, z = d / 2;
+  r = Math.min(r, x, z);
+  const pts: THREE.Vector2[] = [];
+  const corner = (cx: number, cz: number, a0: number) => {
+    for (let i = 0; i <= divisions; i++) {
+      const a = a0 + (i / divisions) * (Math.PI / 2);
+      pts.push(new THREE.Vector2(cx + r * Math.cos(a), cz + r * Math.sin(a)));
+    }
+  };
+  corner(x - r, -z + r, -Math.PI / 2);
+  corner(x - r, z - r, 0);
+  corner(-x + r, z - r, Math.PI / 2);
+  corner(-x + r, -z + r, Math.PI);
+  pts.push(pts[0].clone());
+  return pts;
+}
+
 /** Superfície superior em y=0, espessura para baixo; dimensões incluem o bisel. */
 export function slabGeometry(w: number, d: number, r: number, h: number, bevel = 0.001) {
   const g = new THREE.ExtrudeGeometry(roundedOutline(w - 2 * bevel, d - 2 * bevel, r - bevel), {
@@ -76,7 +99,7 @@ export function ringSlabGeometry(
       profile.push([-h + bottomBevel * (1 - Math.cos(t)), bottomBevel * (1 - Math.sin(t)), Math.PI - t]);
     }
   } else profile.push([-h, 0, Math.PI / 2]);
-  const outline = (inset: number) => roundedOutline(w - 2 * inset, d - 2 * inset, Math.max(r - inset, 0.0005)).getPoints(12);
+  const outline = (inset: number) => roundedOutlinePoints(w - 2 * inset, d - 2 * inset, Math.max(r - inset, 0.0005));
   const rings = profile.map(([y, inset]) => outline(inset).map((p) => new THREE.Vector3(p.x, y, p.y)));
   const hw = w / 2 - r, hd = d / 2 - r;
   const positions: number[][] = [[], []], normals: number[][] = [[], []];
@@ -101,7 +124,7 @@ export function ringSlabGeometry(
   }
   // Tampas: a de cima com o furo (se houver), a de baixo inteira
   const top = rings[0], bottom = rings[rings.length - 1];
-  const holePts = hole ? roundedOutline(hole.w, hole.d, hole.r).getPoints(12).map((p) => new THREE.Vector2(p.x, p.y + hole.cz)) : [];
+  const holePts = hole ? roundedOutlinePoints(hole.w, hole.d, hole.r).map((p) => new THREE.Vector2(p.x, p.y + hole.cz)) : [];
   const capFaces = (ring: THREE.Vector3[], holes: THREE.Vector2[][], y: number, ny: number) => {
     const contour = ring.slice(0, -1).map((p) => new THREE.Vector2(p.x, p.z));
     const holeLoops = holes.map((hp) => hp.slice(0, -1));
@@ -256,16 +279,20 @@ function flatPlateNormals(g: THREE.BufferGeometry, h: number) {
   return smooth;
 }
 
-/** Dedos: ponta elíptica junto à torre. Calcanhar: meia-elipse, corte reto junto aos dedos. */
+/** Dedos: ponta elíptica junto à torre. Calcanhar: lados retos e ponta arredondada, corte reto junto aos dedos. */
 export function electrodeGeometry(w: number, d: number, heel: boolean) {
   const b = 0.0004;
   const x = w / 2 - b, z = d / 2 - b;
   const s = new THREE.Shape();
   if (heel) {
+    // Corte reto junto aos dedos; lados retos e ponta da frente arredondada (raio em z de ~65% do comprimento): no render
+    // oficial o calcanhar é um "D" de lados retos, não uma meia-elipse.
+    const shoulder = z - d * 0.65;
     s.moveTo(-x, -z);
     s.lineTo(x, -z);
-    s.bezierCurveTo(x, -z + d * 0.55228475, x * 0.55228475, z, 0, z);
-    s.bezierCurveTo(-x * 0.55228475, z, -x, -z + d * 0.55228475, -x, -z);
+    s.lineTo(x, shoulder);
+    s.bezierCurveTo(x, shoulder + d * 0.65 * 0.55228475, x * 0.55228475, z, 0, z);
+    s.bezierCurveTo(-x * 0.55228475, z, -x, shoulder + d * 0.65 * 0.55228475, -x, shoulder);
   } else {
     const shoulder = -z + d * 0.30;
     s.moveTo(-x, z);
