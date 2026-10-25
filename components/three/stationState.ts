@@ -21,7 +21,7 @@ export type StationState = {
   /** Ondas do sensor ultrassônico (0 a 1), no capítulo de altura. */
   ultra: number;
   ultraSmooth: number;
-  /** Tempo da cena do manequim (0 = fora de cena; cada inteiro é uma chave da coreografia em Mannequin). */
+  /** Tempo da cena da criança (0 = fora de cena; cada inteiro é uma chave da coreografia em Child). */
   act: number;
   /** Progresso (0 a 1) da avaliação mostrada na tela. */
   screenT: number;

@@ -105,7 +105,7 @@ function arrow(g: G, cx: number, cy: number, ang: number, inward: boolean) {
 }
 
 // ---------------------------------------------------------------- botão superior (equilíbrio e agilidade)
-const BX = 540,
+export const BX = 540,
   BY = 400;
 
 function topHalo(g: G) {
@@ -199,10 +199,10 @@ export const equilibrio: Page = {
 };
 
 // ================================================================ AGILIDADE
-const TAPS = [480, 455, 400, 380, 345]; // tempos de reação (ms); a média é 412
-const CELLS = [2, 3, 7, 4, 6];
-const GRID_X = [276, 468, 660];
-const GRID_Y = [806, 957, 1107];
+export const TAPS = [480, 455, 400, 380, 345]; // tempos de reação (ms); a média é 412
+export const CELLS = [2, 3, 7, 4, 6];
+export const GRID_X = [276, 468, 660];
+export const GRID_Y = [806, 957, 1107];
 
 function gridCell(g: G, i: number, lit: boolean) {
   const x = GRID_X[i % 3],
