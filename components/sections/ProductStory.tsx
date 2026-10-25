@@ -55,8 +55,8 @@ const KEYS: Key[] = [
   { p: 0.835, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0, act: 13 },
   { p: 0.865, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0, act: 13 },
   // Instalação: vista explodida (a criança some enquanto as peças se separam)
-  { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0, act: 13 },
-  { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0.15, act: 13, span: 1.9 },
+  { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0, act: 13.5 },
+  { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0, act: 14, span: 1.9 },
 ];
 
 // Telas reais da estação ao longo da rolagem: mesma tela entre dois pontos → o progresso t avança

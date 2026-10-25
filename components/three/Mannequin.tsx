@@ -100,8 +100,8 @@ const KEYS: Key[] = [
   { at: [0.0, 2.55, 0], face: 180, pose: VISION }, // 10 visão a 2,5 m
   { at: [0.0, 2.35, 0], face: 180, pose: POSTURE }, // 11 postura de frente
   { at: [0.0, 2.35, 0], face: 90, pose: POSTURE, walk: true }, // 12 postura de lado
-  { at: [1.0, 0.3, 0], face: 20, pose: STAND, walk: true }, // 13 fica ao lado da estação, virada para quem vê (fecho da história)
-  { at: [-1.6, 1.4, 0], face: 140, pose: STAND, walk: true, visible: false }, // 14 sai de cena
+  { at: [1.0, 0.3, 0], face: 20, pose: STAND }, // 13 espera fora do quadro enquanto a tela mostra o resultado
+  { at: [-0.62, 0.45, 0], face: 20, pose: STAND }, // 14 fecho: ao lado esquerdo da estação, virada para quem vê (troca de lado escondida na vista explodida)
 ];
 export const MANNEQUIN_KEYS = KEYS.length;
 
