@@ -8,7 +8,9 @@ export const U_H = 1920;
 /** Uma tela: `bg` é a parte estática (guardada em cache), `fg` é a parte que muda com t. */
 export type Page = {
   steps: number;
-  bg?: (g: G) => void;
+  /** quando o fundo estático tem mais de uma versão (ex.: vista de frente e de lado), escolhe a versão a partir de t */
+  variant?: (t: number) => number;
+  bg?: (g: G, variant: number) => void;
   fg?: (g: G, t: number) => void;
 };
 
@@ -100,7 +102,8 @@ export function text(g: G, str: string, x: number, y: number, o: TextOpts) {
     if (o.fit) sx = o.fit / m;
     else if (o.max && m > o.max) sx = o.max / m;
   }
-  const sk = o.sk ? -Math.tan((o.sk * Math.PI) / 180) : 0;
+  const skDeg = o.sk ?? (o.italic ? 6 : 0);
+  const sk = skDeg ? -Math.tan((skDeg * Math.PI) / 180) : 0;
   if (sx !== 1 || sk) g.transform(sx, 0, sk, 1, 0, 0);
   g.fillText(str, 0, 0);
   g.restore();
@@ -146,6 +149,19 @@ export function halo(g: G, cx: number, cy: number, r0: number, r1: number, rgb: 
     [1, `rgba(${rgb},${a1})`],
   ]);
   circle(g, cx, cy, r1);
+  g.fill();
+}
+
+/** Halo em forma de coroa: transparente por dentro de rIn, mais forte em rIn e sumindo até rOut. */
+export function haloRing(g: G, cx: number, cy: number, rIn: number, rOut: number, rgb: string, a: number) {
+  const k = rIn / rOut;
+  g.fillStyle = gradRad(g, cx, cy, 0, rOut, [
+    [0, `rgba(${rgb},0)`],
+    [Math.max(0, k - 0.001), `rgba(${rgb},0)`],
+    [k, `rgba(${rgb},${a})`],
+    [1, `rgba(${rgb},0)`],
+  ]);
+  circle(g, cx, cy, rOut);
   g.fill();
 }
 
@@ -263,9 +279,9 @@ export function header(g: G, title: string, titleW: number) {
   g.fill();
   // título
   const gr = gradX(g, 540 - titleW / 2, 540 + titleW / 2, [
-    [0, "#e2e4ff"],
-    [0.5, "#c9d6f6"],
-    [1, "#cbe6fa"],
+    [0, "#c4c6f4"],
+    [0.5, "#b8c6ee"],
+    [1, "#b4d4ee"],
   ]);
   text(g, title, 540, 88, { f: "title", w: 400, s: 37, c: gr, a: "center", fit: titleW });
 }

@@ -1,16 +1,16 @@
 // Fontes das telas da estação (desenhadas em canvas).
 // next/font/google baixa e hospeda as fontes junto com o site; o canvas só enxerga uma fonte depois que ela é carregada
 // (document.fonts.load), por isso loadScreenFonts() precisa ser esperada antes de desenhar.
-import { Outfit, Quantico, Roboto, Unbounded } from "next/font/google";
+import { Heebo, Outfit, Quantico, Unbounded } from "next/font/google";
 
-// Texto corrido, rótulos e valores (a interface original usa uma grotesca neutra, estilo Roboto)
-const roboto = Roboto({ subsets: ["latin"], weight: ["300", "400", "500", "700"], display: "swap", preload: false });
+// Texto corrido, rótulos e valores: a interface original usa uma grotesca neutra no estilo Roboto (Heebo tem o mesmo desenho latino)
+const roboto = Heebo({ subsets: ["latin"], display: "swap", preload: false });
 // Títulos da barra superior e dígitos finos do teclado (geométrica, traço médio)
 const outfit = Outfit({ subsets: ["latin"], display: "swap", preload: false });
 // Números grandes: itálica larga e pesada como a do original
 const unbounded = Unbounded({ subsets: ["latin"], display: "swap", preload: false });
-// Letreiros técnicos em itálico (emblema, título do aviso, "concluída")
-const quantico = Quantico({ subsets: ["latin"], weight: ["700"], style: ["italic"], display: "swap", preload: false });
+// Letreiros técnicos: itálico no emblema e nos avisos, reto nos rótulos do anel de composição
+const quantico = Quantico({ subsets: ["latin"], weight: ["400", "700"], style: ["normal", "italic"], display: "swap", preload: false });
 
 export const FAM = {
   text: roboto.style.fontFamily,
@@ -52,10 +52,11 @@ export function loadFonts(): Promise<void> {
     `500 40px ${FAM.title}`,
     `800 40px ${FAM.num}`,
     `italic 700 40px ${FAM.tech}`,
+    `400 40px ${FAM.tech}`,
   ];
-  const sample = "AaÇçÃãÉéÚú0123456789 %:.,";
+  const sample = "AaÇçÃãÁáÂâÉéÊêÍíÓóÔôÕõÚú0123456789 %:.,·–-+/|()°";
   loading = Promise.all(specs.map((s) => document.fonts.load(s, sample).catch(() => [])))
-    .then(() => undefined)
+    .then(() => document.fonts.ready)
     .catch(() => undefined)
     .then(() => {
       loaded = true;

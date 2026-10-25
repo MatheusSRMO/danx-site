@@ -33,8 +33,8 @@ const KEYS: Key[] = [
   { p: 0.05, rot: -0.7, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0, act: 0 },
   // Identificação: a criança chega, sobe na plataforma e digita o número na tela
   { p: 0.1, rot: -0.55, dist: 6.4, y: 1.0, elev: 0.45, explode: 0, glow: 0, ultra: 0, cx: 0, act: 1, span: 2.2 },
-  { p: 0.135, rot: -0.85, dist: 4.4, y: 1.15, elev: 0.3, explode: 0, glow: 0, ultra: 0, cx: 0, act: 2.4 },
-  { p: 0.165, rot: -0.95, dist: 3.9, y: 1.22, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: 0, act: 3 },
+  { p: 0.135, rot: -0.85, dist: 5.2, y: 1.12, elev: 0.3, explode: 0, glow: 0, ultra: 0, cx: 0, act: 2.4 },
+  { p: 0.165, rot: -0.95, dist: 4.6, y: 1.25, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: 0, act: 3 },
   // Altura: ondas do sensor descem até a cabeça
   { p: 0.235, rot: -0.42, dist: 3.6, y: 1.72, elev: 0.15, explode: 0, glow: 0, ultra: 1, cx: 0, act: 4 },
   // Composição corporal: eletrodos sob os pés
@@ -46,17 +46,17 @@ const KEYS: Key[] = [
   // Fôlego: espirômetro
   { p: 0.56, rot: -1.05, dist: 3.4, y: 1.28, elev: 0.18, explode: 0, glow: 0, ultra: 0, cx: 0, act: 8 },
   // Visão: a criança recua até 2,5 m; vista de perfil mostra a distância
-  { p: 0.6, rot: -1.3, dist: 6.4, y: 1.0, elev: 0.35, explode: 0, glow: 0, ultra: 0, cx: -0.6, act: 9, span: 2.8 },
-  { p: 0.655, rot: -1.55, dist: 7.6, y: 1.0, elev: 0.35, explode: 0, glow: 0, ultra: 0, cx: -1.2, act: 10, span: 3.5 },
+  { p: 0.6, rot: -1.3, dist: 6.4, y: 1.0, elev: 0.35, explode: 0, glow: 0, ultra: 0, cx: -0.3, act: 9, span: 3.0 },
+  { p: 0.655, rot: -1.55, dist: 7.6, y: 1.0, elev: 0.35, explode: 0, glow: 0, ultra: 0, cx: -0.75, act: 10, span: 3.9 },
   // Postura: de frente para a câmera da estação e depois de lado (de lado, ela fica de frente para nós)
-  { p: 0.725, rot: -1.55, dist: 6.6, y: 0.95, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: -1.05, act: 11, span: 3.2 },
-  { p: 0.77, rot: -1.55, dist: 6.6, y: 0.95, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: -1.05, act: 12, span: 3.2 },
-  // Resultado: a criança volta para a tela
-  { p: 0.835, rot: -0.3, dist: 2.6, y: 1.4, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0, act: 13 },
-  { p: 0.865, rot: -0.3, dist: 2.6, y: 1.4, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0, act: 13.4 },
-  // Instalação: vista explodida (a criança sai de cena)
-  { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0, act: 14 },
-  { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0, act: 14 },
+  { p: 0.725, rot: -1.55, dist: 6.6, y: 0.95, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: -0.65, act: 11, span: 3.6 },
+  { p: 0.77, rot: -1.55, dist: 6.6, y: 0.95, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: -0.65, act: 12, span: 3.6 },
+  // Resultado: a tela em destaque (a criança sai do quadro e espera ao lado da estação)
+  { p: 0.835, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0, act: 13 },
+  { p: 0.865, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0, act: 13 },
+  // Instalação: vista explodida (a criança some enquanto as peças se separam)
+  { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0, act: 13 },
+  { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0.15, act: 13, span: 1.9 },
 ];
 
 // Telas reais da estação ao longo da rolagem: mesma tela entre dois pontos → o progresso t avança
