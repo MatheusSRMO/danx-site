@@ -5,13 +5,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { getTier, isTouch, type Tier } from "@/lib/device";
 import { createStationState, type StationState } from "../three/stationState";
+import { SCREENS, type ScreenId } from "../three/screenUi";
 import type { Anchor } from "../three/Projector";
 import s from "./ProductStory.module.css";
 
 const StationCanvas = dynamic(() => import("../three/StationCanvas"), { ssr: false });
 const Projector = dynamic(() => import("../three/Projector"), { ssr: false });
 
-// Quadros-chave da câmera e do produto ao longo da rolagem (p de 0 a 1).
+// Quadros-chave da câmera, do produto e do manequim ao longo da rolagem (p de 0 a 1).
+// act = tempo da coreografia do manequim (chaves em components/three/Mannequin.tsx).
 type Key = {
   p: number;
   rot: number;
@@ -22,53 +24,142 @@ type Key = {
   glow: number;
   ultra: number;
   cx: number;
+  act: number;
+  /** Largura (m) que precisa caber no quadro; 0 = sem exigência. */
+  span?: number;
 };
 const KEYS: Key[] = [
-  { p: 0.0, rot: -2.3, dist: 9.6, y: 1.05, elev: 0.5, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.09, rot: -0.7, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.24, rot: -0.42, dist: 3.4, y: 1.78, elev: 0.15, explode: 0, glow: 0, ultra: 1, cx: 0 },
-  { p: 0.4, rot: -0.95, dist: 3.5, y: 0.28, elev: 1.0, explode: 0, glow: 1, ultra: 0, cx: -0.12 },
-  { p: 0.57, rot: -0.12, dist: 2.25, y: 1.42, elev: 0.05, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.73, rot: -0.12, dist: 2.25, y: 1.42, elev: 0.05, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.86, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0 },
-  { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.0, rot: -2.3, dist: 9.6, y: 1.05, elev: 0.5, explode: 0, glow: 0, ultra: 0, cx: 0, act: 0 },
+  { p: 0.05, rot: -0.7, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0, act: 0 },
+  // Identificação: a criança chega, sobe na plataforma e digita o número na tela
+  { p: 0.1, rot: -0.55, dist: 6.4, y: 1.0, elev: 0.45, explode: 0, glow: 0, ultra: 0, cx: 0, act: 1, span: 2.2 },
+  { p: 0.135, rot: -0.85, dist: 4.4, y: 1.15, elev: 0.3, explode: 0, glow: 0, ultra: 0, cx: 0, act: 2.4 },
+  { p: 0.165, rot: -0.95, dist: 3.9, y: 1.22, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: 0, act: 3 },
+  // Altura: ondas do sensor descem até a cabeça
+  { p: 0.235, rot: -0.42, dist: 3.6, y: 1.72, elev: 0.15, explode: 0, glow: 0, ultra: 1, cx: 0, act: 4 },
+  // Composição corporal: eletrodos sob os pés
+  { p: 0.315, rot: -0.95, dist: 3.6, y: 0.32, elev: 1.0, explode: 0, glow: 1, ultra: 0, cx: -0.12, act: 5 },
+  // Equilíbrio: numa perna só
+  { p: 0.4, rot: -1.15, dist: 4.8, y: 0.95, elev: 0.3, explode: 0, glow: 0, ultra: 0, cx: 0, act: 6 },
+  // Agilidade: toques na tela
+  { p: 0.48, rot: -0.78, dist: 3.4, y: 1.3, elev: 0.22, explode: 0, glow: 0, ultra: 0, cx: 0, act: 7 },
+  // Fôlego: espirômetro
+  { p: 0.56, rot: -1.05, dist: 3.4, y: 1.28, elev: 0.18, explode: 0, glow: 0, ultra: 0, cx: 0, act: 8 },
+  // Visão: a criança recua até 2,5 m; vista de perfil mostra a distância
+  { p: 0.6, rot: -1.3, dist: 6.4, y: 1.0, elev: 0.35, explode: 0, glow: 0, ultra: 0, cx: -0.6, act: 9, span: 2.8 },
+  { p: 0.655, rot: -1.55, dist: 7.6, y: 1.0, elev: 0.35, explode: 0, glow: 0, ultra: 0, cx: -1.2, act: 10, span: 3.5 },
+  // Postura: de frente para a câmera da estação e depois de lado (de lado, ela fica de frente para nós)
+  { p: 0.725, rot: -1.55, dist: 6.6, y: 0.95, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: -1.05, act: 11, span: 3.2 },
+  { p: 0.77, rot: -1.55, dist: 6.6, y: 0.95, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: -1.05, act: 12, span: 3.2 },
+  // Resultado: a criança volta para a tela
+  { p: 0.835, rot: -0.3, dist: 2.6, y: 1.4, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0, act: 13 },
+  { p: 0.865, rot: -0.3, dist: 2.6, y: 1.4, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0, act: 13.4 },
+  // Instalação: vista explodida (a criança sai de cena)
+  { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0, act: 14 },
+  { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0, act: 14 },
+];
+
+// Telas reais da estação ao longo da rolagem: mesma tela entre dois pontos → o progresso t avança
+const SCREEN_TRACK: [number, ScreenId, number][] = [
+  [0.0, "inicio", 0],
+  [0.12, "inicio", 0],
+  [0.16, "inicio", 1],
+  [0.175, "consentimento", 0],
+  [0.19, "consentimento", 1],
+  [0.2, "composicao", 0],
+  [0.25, "composicao", 0.45],
+  [0.33, "composicao", 1],
+  [0.36, "equilibrio", 0],
+  [0.44, "equilibrio", 1],
+  [0.445, "agilidade", 0],
+  [0.52, "agilidade", 1],
+  [0.525, "espirometria", 0],
+  [0.59, "espirometria", 1],
+  [0.62, "visao", 0],
+  [0.7, "visao", 1],
+  [0.705, "postura", 0],
+  [0.79, "postura", 1],
+  [0.8, "pontuacao", 0],
+  [0.845, "pontuacao", 1],
+  [0.85, "evolucao", 0],
+  [0.875, "evolucao", 1],
+  [0.88, "relatorio", 1],
+  [0.95, "pontuacao", 1],
+  [1.0, "pontuacao", 1],
 ];
 
 const CHAPTERS = [
   {
-    at: 0.06,
+    at: 0.03,
     kicker: "Conheça a estação",
     title: "Uma estação. Sete avaliações.",
-    text: "Torre de vidro temperado, tela de 32″, dossel de medição e plataforma de bioimpedância. Role para ver cada parte em ação.",
+    text: "Torre de vidro temperado, tela de 32″, dossel de medição e plataforma de bioimpedância. Role para ver um aluno passar por cada etapa.",
   },
   {
-    at: 0.24,
+    at: 0.135,
+    kicker: "Identificação",
+    title: "Começa com o número do aluno.",
+    text: "O aluno digita a matrícula na tela e confirma o consentimento. A partir daí a estação conduz cada etapa, na tela e por voz.",
+  },
+  {
+    at: 0.235,
     kicker: "Altura",
     title: "Sem régua, sem toque.",
     text: "O sensor ultrassônico no topo mede a altura em segundos. Cada avaliação vira um ponto na curva de crescimento.",
     stat: { v: "148", u: "cm" },
   },
   {
-    at: 0.4,
+    at: 0.315,
     kicker: "Composição corporal",
     title: "Uma corrente que ninguém sente.",
     text: "Quatro eletrodos de aço inox 304 e corrente abaixo de 280 µA. A bioimpedância separa água, proteína, gordura e minerais.",
     stat: { v: "21,3%", u: "de gordura" },
   },
   {
-    at: 0.62,
-    kicker: "A tela",
-    title: "Cada teste, guiado na tela e por voz.",
-    text: "Postura por visão computacional, equilíbrio, reação, fôlego e visão. O resultado aparece na hora, na tela de 32 polegadas.",
+    at: 0.4,
+    kicker: "Equilíbrio",
+    title: "Numa perna só, de olhos fechados.",
+    text: "Mãos juntas, olhos fechados, dez segundos sobre a plataforma. A tela mostra a capacidade de equilíbrio.",
   },
   {
-    at: 0.84,
+    at: 0.48,
+    kicker: "Agilidade",
+    title: "Cinco toques, contra o relógio.",
+    text: "O botão acende cinco vezes na tela e o aluno toca o mais rápido que puder. O tempo médio de reação sai em milissegundos.",
+  },
+  {
+    at: 0.56,
+    kicker: "Fôlego",
+    title: "Um sopro no espirômetro.",
+    text: "Espirômetro sem fio com bocal descartável. A tela mostra a capacidade vital em mililitros enquanto o aluno sopra.",
+  },
+  {
+    at: 0.655,
+    kicker: "Visão",
+    title: "A 2,5 metros da tela.",
+    text: "Cobrindo um olho de cada vez, o aluno indica para onde aponta o E. A tela registra a acuidade de cada olho.",
+  },
+  {
+    at: 0.745,
+    kicker: "Postura",
+    title: "De frente e de lado para a câmera.",
+    text: "A visão computacional marca os pontos do corpo e aponta desvios de postura, além de medidas como ombros e quadril.",
+  },
+  {
+    at: 0.845,
+    kicker: "Resultado",
+    title: "Pontuação, curva e relatório na hora.",
+    text: "Ao final, a tela mostra a pontuação de saúde e a curva de crescimento. O relatório sai impresso ou pelo QR code, para a família.",
+    stat: { v: "86", u: "pontuação de saúde" },
+  },
+  {
+    at: 0.92,
     kicker: "Instalação",
     title: "Chega desmontada. Montada no local.",
     text: "Torre com tela, plataforma de medição e dossel ultrassônico são montados no local.",
   },
   {
-    at: 0.97,
+    at: 0.985,
     kicker: "Pronta para a escola",
     title: "Pequena no espaço. Grande no cuidado.",
     text: "Ocupa uma base de 48 × 93,5 cm, funciona sem internet e guarda mais de 100 mil avaliações.",
@@ -93,7 +184,7 @@ function applyKeys(state: StationState, p: number) {
   const a = KEYS[i];
   const b = KEYS[i + 1];
   const t = sm(p, a.p, b.p);
-  const L = (k: keyof Key) => a[k] + (b[k] - a[k]) * t;
+  const L = (k: Exclude<keyof Key, "span">) => a[k] + (b[k] - a[k]) * t;
   state.rotY = L("rot");
   state.camDist = L("dist");
   state.camY = L("y");
@@ -102,9 +193,17 @@ function applyKeys(state: StationState, p: number) {
   state.glow = L("glow");
   state.ultra = L("ultra");
   state.camX = L("cx");
-  // Na aproximação da tela, as telas se alternam: postura, equilíbrio, crescimento
-  state.screen =
-    p > 0.5 && p < 0.79 ? 2 + Math.min(2, Math.floor(sm(p, 0.55, 0.76) * 3)) : p >= 0.37 && p <= 0.5 ? 1 : 0;
+  state.span = (a.span ?? 0) + ((b.span ?? 0) - (a.span ?? 0)) * t;
+  // A coreografia avança em ritmo linear dentro de cada trecho (a suavização fica no próprio manequim)
+  state.act = a.act + (b.act - a.act) * Math.min(1, Math.max(0, (p - a.p) / (b.p - a.p)));
+  // Tela real da estação: segura a tela do ponto anterior até o próximo; na mesma tela, o progresso avança
+  let j = 0;
+  while (j < SCREEN_TRACK.length - 2 && p >= SCREEN_TRACK[j + 1][0]) j++;
+  const [p0, id0, t0] = SCREEN_TRACK[j];
+  const [p1, id1, t1] = SCREEN_TRACK[j + 1];
+  const u = Math.min(1, Math.max(0, (p - p0) / (p1 - p0)));
+  state.screen = SCREENS.indexOf(id0);
+  state.screenT = id0 === id1 ? t0 + (t1 - t0) * u : t0;
 }
 
 export default function ProductStory() {
@@ -266,7 +365,7 @@ export default function ProductStory() {
             ))}
           </div>
           <div className={s.staticList}>
-            {CHAPTERS.slice(1, 5).map((c) => (
+            {CHAPTERS.slice(2, 9).map((c) => (
               <div key={c.title}>
                 <p className={s.kicker}>{c.kicker}</p>
                 <h3>{c.title}</h3>

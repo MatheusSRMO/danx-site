@@ -13,7 +13,7 @@ import {
   slabGeometry,
   towerBodyGeometry,
 } from "./stationGeometry";
-import { drawScreen, SCREEN_COUNT } from "./screenUi";
+import { drawDeviceScreen, loadScreenFonts, SCREEN_H, SCREEN_STEPS, SCREEN_W, SCREENS } from "./screenUi";
 import { GLASS_LOGO_ASPECT, glassLogoTexture } from "./glassLogo";
 import StationGlassReflection, { type MirrorRegion } from "./StationGlassReflection";
 import StationTowerReflection from "./StationTowerReflection";
@@ -376,7 +376,8 @@ function Ultrasound({ state }: { state: StationState }) {
     for (let i = 0; i < g.children.length; i++) {
       const c = g.children[i];
       const ph = (t * 0.45 + rings[i]) % 1;
-      c.position.y = THREE.MathUtils.lerp(CANOPY.sensorY, 1.05, ph);
+      // As ondas descem até a altura da cabeça de uma criança sobre a plataforma
+      c.position.y = THREE.MathUtils.lerp(CANOPY.sensorY, 1.58, ph);
       const r = 0.03 + ph * 0.24;
       c.scale.set(r, r, r);
       mats[i].opacity = w * Math.sin(ph * Math.PI) * 0.55;
@@ -427,30 +428,29 @@ export default function StationModel({ state: station, low = false }: { state: S
   const glassMaterials = useMemo(() => [m.glass, m.glassEdge], [m]);
   const plateMaterials = useMemo(() => [m.canopyPlate, m.canopyEdge], [m]);
 
-  // Telas (geradas após a fonte carregar, para o texto sair certo)
-  const screens = useRef<THREE.CanvasTexture[]>([]);
+  // Tela real da estação: um canvas redesenhado só quando muda a tela ou o passo do progresso (após carregar as fontes)
+  const screen = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = SCREEN_W;
+    canvas.height = SCREEN_H;
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 8;
+    return { g: canvas.getContext("2d")!, tex, ready: false, id: -1, step: -1 };
+  }, []);
   useEffect(() => {
     let alive = true;
-    document.fonts.ready.then(() => {
+    loadScreenFonts().then(() => {
       if (!alive) return;
-      screens.current = Array.from({ length: SCREEN_COUNT }, (_, i) => {
-        const t = new THREE.CanvasTexture(drawScreen(i));
-        t.colorSpace = THREE.SRGBColorSpace;
-        t.anisotropy = 8;
-        return t;
-      });
-      if (screenMat.current) {
-        screenMat.current.map = screens.current[station.screen] ?? screens.current[0];
-        screenMat.current.needsUpdate = true;
-      }
+      screen.ready = true;
+      screen.id = -1;
     });
     return () => {
       alive = false;
-      screens.current.forEach((t) => t.dispose());
+      screen.tex.dispose();
     };
-  }, [station]);
+  }, [screen]);
 
-  const shown = useRef(-1);
   useFrame((_, dt) => {
     const k = 1 - Math.pow(0.0008, dt);
     station.rotSmooth += (station.rotY + station.drag - station.rotSmooth) * k;
@@ -466,11 +466,17 @@ export default function StationModel({ state: station, low = false }: { state: S
     // Eletrodos acendem quando o assunto é bioimpedância
     m.steel.emissiveIntensity = station.glowSmooth * (0.55 + 0.25 * Math.sin(performance.now() / 260));
 
-    const want = station.screen;
-    if (want !== shown.current && screens.current[want] && screenMat.current) {
-      shown.current = want;
-      screenMat.current.map = screens.current[want];
-      screenMat.current.needsUpdate = true;
+    if (screen.ready) {
+      const id = THREE.MathUtils.clamp(Math.round(station.screen), 0, SCREENS.length - 1);
+      const steps = SCREEN_STEPS[SCREENS[id]];
+      const step = Math.round(THREE.MathUtils.clamp(station.screenT, 0, 1) * steps);
+      if (id !== screen.id || step !== screen.step) {
+        screen.id = id;
+        screen.step = step;
+        screen.g.setTransform(1, 0, 0, 1, 0, 0);
+        drawDeviceScreen(screen.g, SCREENS[id], steps ? step / steps : 1);
+        screen.tex.needsUpdate = true;
+      }
     }
   });
 
@@ -496,7 +502,7 @@ export default function StationModel({ state: station, low = false }: { state: S
         <mesh geometry={geometry.glass} position={[0, (TOWER.y0 + TOWER.y1) / 2, TOWER.glassZ]} material={glassMaterials} />
         <mesh position={[0, TOWER.y1 - TOWER.screenMargin - SCREEN.h / 2, TOWER.glassZ + 0.0003]}>
           <planeGeometry args={[SCREEN.w, SCREEN.h]} />
-          <meshBasicMaterial ref={screenMat} color="#e6e6e6" toneMapped={false} />
+          <meshBasicMaterial ref={screenMat} map={screen.tex} color="#e6e6e6" toneMapped={false} />
         </mesh>
         <mesh name="glass-logo" position={[0, GLASS_LOGO.y, TOWER.glassZ + 0.0003]}>
           <planeGeometry args={[GLASS_LOGO.h * GLASS_LOGO_ASPECT, GLASS_LOGO.h]} />
