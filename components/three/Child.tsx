@@ -209,6 +209,7 @@ function buildRig(scene: THREE.Object3D) {
   const idx: Record<string, number> = {};
   bones.forEach((b, i) => (idx[b.name] = i));
   const parent = bones.map((b) => ((b.parent as THREE.Bone)?.isBone ? idx[b.parent!.name] : -1));
+  const kids = bones.map((_, i) => parent.flatMap((p, k) => (p === i ? [k] : [])));
   const W0 = bones.map((b) => b.getWorldQuaternion(new THREE.Quaternion()));
   const P0 = bones.map((b) => b.getWorldPosition(new THREE.Vector3()));
   const L0 = bones.map((b) => b.quaternion.clone());
@@ -275,6 +276,7 @@ function buildRig(scene: THREE.Object3D) {
     n,
     idx,
     parent,
+    kids,
     W0,
     P0,
     L0,
@@ -292,15 +294,19 @@ function buildRig(scene: THREE.Object3D) {
   };
 }
 
+const _fx = new THREE.Vector3(), _fy = new THREE.Vector3(), _fz = new THREE.Vector3(), _fm = new THREE.Matrix4();
 /** Quatérnio da base ortonormal (d, n', d × n') com n' = n sem a componente em d. */
 function frame(d: THREE.Vector3, n: THREE.Vector3, out: THREE.Quaternion) {
-  const x = d.clone().normalize();
-  const y = n.clone().addScaledVector(x, -n.dot(x)).normalize();
-  const z = new THREE.Vector3().crossVectors(x, y);
-  return out.setFromRotationMatrix(new THREE.Matrix4().makeBasis(x, y, z));
+  _fx.copy(d).normalize();
+  _fy.copy(n).addScaledVector(_fx, -n.dot(_fx)).normalize();
+  _fz.crossVectors(_fx, _fy);
+  return out.setFromRotationMatrix(_fm.makeBasis(_fx, _fy, _fz));
 }
 
 const ARM_FRAME0 = frame(DOWN, HINGE_ARM, new THREE.Quaternion());
+const FORWARD = new THREE.Vector3(0, 0, 1);
+// Braço que toca a tela: cotovelo para baixo e para fora, mão meio de lado, punho um pouco erguido
+const SCREEN_ARM: Arm = { space: "body", tip: [0, 0, 0], pole: [-0.5, -1, -0.15], twist: 45, bend: [-12, 0, 0] };
 
 /** Contexto da resolução de uma pose: corpo no mundo da estação e estado da tela. */
 type Ctx = { at: V3; face: number; state: StationState };
@@ -319,6 +325,11 @@ class Solver {
   private e = new THREE.Euler();
   private v = new THREE.Vector3();
   private v2 = new THREE.Vector3();
+  // rascunho (sem alocar por quadro)
+  private E: THREE.Quaternion[];
+  private hasE: boolean[];
+  private s = Array.from({ length: 12 }, () => new THREE.Vector3());
+  private sq = Array.from({ length: 6 }, () => new THREE.Quaternion());
 
   constructor(rig: Rig) {
     this.rig = rig;
@@ -326,6 +337,8 @@ class Solver {
     this.P = rig.bones.map(() => new THREE.Vector3());
     this.D = rig.bones.map(() => new THREE.Quaternion());
     this.out = rig.bones.map(() => new THREE.Quaternion());
+    this.E = rig.bones.map(() => new THREE.Quaternion());
+    this.hasE = rig.bones.map(() => false);
   }
 
   /** Converte um ponto da estação para o corpo posicionado em `ctx`. */
@@ -341,8 +354,8 @@ class Solver {
     const st = ctx.state;
     const id = SCREENS[THREE.MathUtils.clamp(Math.round(st.screen), 0, SCREENS.length - 1)];
     const t = st.screenT;
-    const a = new THREE.Vector3();
-    const b = new THREE.Vector3();
+    const a = this.s[10];
+    const b = this.s[11];
     let press = 0;
     const win = (x: number, x0: number, x1: number, e = 0.08) => Math.min(smooth(clamp01((x - x0) / e)), smooth(clamp01((x1 - x) / e)));
     if (id === "inicio") {
@@ -401,20 +414,25 @@ class Solver {
     const free = pose.free ?? [];
 
     // 1) Cinemática direta
-    const E = new Map<number, THREE.Quaternion>();
+    const { E, hasE } = this;
+    hasE.fill(false);
     for (const j of JOINTS) {
       const [ax, ay, az] = angles(j);
       if (!ax && !ay && !az) continue;
-      const q = new THREE.Quaternion().setFromEuler(this.e.set(ax * D2R, ay * D2R, az * D2R, "XYZ"));
+      const q = this.q.setFromEuler(this.e.set(ax * D2R, ay * D2R, az * D2R, "XYZ"));
       const list = JOINT_BONES[j];
-      list.forEach((b) => E.set(idx[b], list.length > 1 ? new THREE.Quaternion().slerp(q, 1 / list.length) : q));
+      for (const b of list) {
+        const i = idx[b];
+        hasE[i] = true;
+        if (list.length > 1) E[i].identity().slerp(q, 1 / list.length);
+        else E[i].copy(q);
+      }
     }
     this.pelvisOff.set(...(pose.pelvis ?? [0, 0, 0]));
     for (let i = 0; i < rig.n; i++) {
       const p = parent[i];
       D[i].copy(p >= 0 ? D[p] : this.q.identity());
-      const e = E.get(i);
-      if (e) D[i].multiply(e);
+      if (hasE[i]) D[i].multiply(E[i]);
       // Cabeça: olha para o alvo (pescoço 40%, cabeça 60%)
       if ((i === idx.neck_01 || i === idx.head) && pose.look && (pose.look !== "hand" || this.hasGoalR)) {
         const target = this.v2;
@@ -439,7 +457,7 @@ class Solver {
       if (free.includes(s)) continue;
       const l = s.toLowerCase();
       const target = this.v.set(s === "L" ? STANCE_X : -STANCE_X, rig.ankle0[s].y, rig.ankle0[s].z);
-      this.twoBone(idx[`thigh_${l}`], idx[`calf_${l}`], idx[`foot_${l}`], target, new THREE.Vector3(0, 0, 1), rig.legFrame0[s][0], rig.legFrame0[s][1], 0, null, true);
+      this.twoBone(idx[`thigh_${l}`], idx[`calf_${l}`], idx[`foot_${l}`], target, FORWARD, rig.legFrame0[s][0], rig.legFrame0[s][1], 0, null, true);
     }
 
     // 3) Braços com alvo
@@ -450,9 +468,9 @@ class Solver {
       const sh = idx[`upperarm_${l}`], el = idx[`lowerarm_${l}`], wr = idx[`hand_${l}`];
       const side = s === "L" ? 1 : -1;
       let spec: Arm;
-      const goal = new THREE.Vector3();
+      const goal = this.s[0];
       if (arm === "screen") {
-        spec = { space: "body", tip: [0, 0, 0], pole: [-0.5, -1, -0.15], twist: 45, bend: [-12, 0, 0] };
+        spec = SCREEN_ARM;
         goal.copy(this.goalR);
       } else {
         spec = arm;
@@ -466,14 +484,14 @@ class Solver {
           goal.add(this.v.copy(base).sub(rig.head0)).applyQuaternion(D[h]).add(P[h]);
         }
       }
-      const pole = new THREE.Vector3(...spec.pole);
-      const palm = spec.palm ? new THREE.Vector3(...spec.palm).normalize() : null;
-      const fingers = spec.fingers ? new THREE.Vector3(...spec.fingers).normalize() : null;
+      const pole = this.s[1].set(...spec.pole);
+      const palm = spec.palm ? this.s[2].set(...spec.palm).normalize() : null;
+      const fingers = spec.fingers ? this.s[3].set(...spec.fingers).normalize() : null;
       const twist = (spec.twist ?? 0) * D2R * -side;
-      const bend = spec.bend ? new THREE.Quaternion().setFromEuler(this.e.set(spec.bend[0] * D2R, spec.bend[1] * D2R, spec.bend[2] * D2R, "XYZ")) : null;
+      const bend = spec.bend ? this.sq[5].setFromEuler(this.e.set(spec.bend[0] * D2R, spec.bend[1] * D2R, spec.bend[2] * D2R, "XYZ")) : null;
       if (spec.tip) {
         // Ponta do dedo no alvo: corrige o alvo do punho algumas vezes
-        const wt = goal.clone();
+        const wt = this.s[4].copy(goal);
         for (let it = 0; it < 4; it++) {
           this.twoBone(sh, el, wr, wt, pole, ARM_FRAME0, ARM_FRAME0, twist, bend, false, palm, s, fingers);
           const tip = this.fingerTip(s, (s === "L" ? pose.handL : pose.handR) ?? "relax");
@@ -531,7 +549,7 @@ class Solver {
     const { rig } = this;
     const l = s.toLowerCase();
     const c = rig.idx[`foot_${l}`];
-    this.twoBone(rig.idx[`thigh_${l}`], rig.idx[`calf_${l}`], c, target, new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw)), rig.legFrame0[s][0], rig.legFrame0[s][1], 0, null, true);
+    this.twoBone(rig.idx[`thigh_${l}`], rig.idx[`calf_${l}`], c, target, this.s[11].set(Math.sin(yaw), 0, Math.cos(yaw)), rig.legFrame0[s][0], rig.legFrame0[s][1], 0, null, true);
     this.W[c].setFromAxisAngle(AXIS_Y, yaw).multiply(this.q.setFromAxisAngle(AXIS_X, pitch)).multiply(rig.W0[c]);
   }
 
@@ -566,11 +584,11 @@ class Solver {
     const chain = rig.fingers[s][0];
     const ax = rig.fingerAxes[s][0];
     const wr = rig.idx[`hand_${l}`];
-    const pos = P[wr].clone();
-    let q = W[wr].clone();
+    const pos = this.s[7].copy(P[wr]);
+    const q = this.sq[3].copy(W[wr]);
     chain.forEach((bi, k) => {
       pos.add(this.v.copy(rig.off[bi]).applyQuaternion(q));
-      q = q.clone().multiply(rig.L0[bi]);
+      q.multiply(rig.L0[bi]);
       if (k === 0) q.multiply(this.q.setFromAxisAngle(ax.spread, ax.ang * SPREAD[grip]));
       q.multiply(this.q.setFromAxisAngle(ax.curl[k], GRIPS[grip][0][k] * D2R));
     });
@@ -586,30 +604,26 @@ class Solver {
     twist: number, bend: THREE.Quaternion | null, leg: boolean, palm: THREE.Vector3 | null = null, side: "L" | "R" = "R",
     fingers: THREE.Vector3 | null = null,
   ) {
-    const { rig, W, P } = this;
+    const { rig, W, P, s: sv, sq } = this;
     const la = rig.off[b].length(), lb = rig.off[c].length();
     const S = P[a];
-    const d = this.v.copy(target).sub(S);
-    const dist = THREE.MathUtils.clamp(d.length(), Math.abs(la - lb) + 1e-3, la + lb - 1e-4);
-    const u = d.normalize().clone();
-    const v = pole.clone().addScaledVector(u, -pole.dot(u));
+    const u = sv[5].copy(target).sub(S);
+    const dist = THREE.MathUtils.clamp(u.length(), Math.abs(la - lb) + 1e-3, la + lb - 1e-4);
+    u.normalize();
+    const v = sv[6].copy(pole).addScaledVector(u, -pole.dot(u));
     if (v.lengthSq() < 1e-8) v.set(0, 0, 1).addScaledVector(u, -u.z);
     v.normalize();
     const cosA = (la * la + dist * dist - lb * lb) / (2 * la * dist);
     const sinA = Math.sqrt(Math.max(0, 1 - cosA * cosA));
-    const Ep = S.clone().addScaledVector(u, la * cosA).addScaledVector(v, la * sinA);
-    const Tp = S.clone().addScaledVector(u, dist);
-    const u1 = Ep.clone().sub(S).normalize();
-    const l1 = Tp.clone().sub(Ep).normalize();
+    const u1 = sv[7].copy(u).multiplyScalar(cosA).addScaledVector(v, sinA); // ombro → cotovelo (unitário)
+    const l1 = sv[8].copy(u).multiplyScalar(dist).addScaledVector(u1, -la).normalize(); // cotovelo → punho
     // Eixo da dobra: braço (-x) e perna (+x) na referência; perna/braço esticados usam o polo
-    const n1 = new THREE.Vector3().crossVectors(u1, l1);
+    const n1 = sv[9].crossVectors(u1, l1);
     if (n1.lengthSq() < 1e-6) n1.crossVectors(u1, v).negate();
     n1.normalize();
     // Braço: a referência é a pose "pendurada" (R); perna: o repouso
-    const fa = frame(u1, n1, new THREE.Quaternion());
-    const fb = frame(l1, n1, new THREE.Quaternion());
-    const Da = fa.multiply(f0a.clone().invert());
-    const Db = fb.multiply(f0b.clone().invert());
+    const Da = frame(u1, n1, sq[0]).multiply(sq[2].copy(f0a).invert());
+    const Db = frame(l1, n1, sq[1]).multiply(sq[2].copy(f0b).invert());
     if (leg) {
       // perna: base de repouso já contém a direção real do osso
       W[a].copy(Da).multiply(rig.W0[a]);
@@ -619,15 +633,15 @@ class Solver {
     } else {
       if (palm) {
         // Giro que leva a palma (com giro zero) até a direção pedida, em torno do antebraço
-        const hand0 = Db.clone();
+        const hand0 = sq[3].copy(Db);
         if (bend) hand0.multiply(bend);
         hand0.multiply(rig.R[c]).multiply(rig.W0[c]);
-        const p0 = rig.palm[side].clone().applyQuaternion(hand0);
+        const p0 = this.v.copy(rig.palm[side]).applyQuaternion(hand0);
         p0.addScaledVector(l1, -p0.dot(l1));
-        const pw = palm.clone().addScaledVector(l1, -palm.dot(l1));
-        twist = Math.atan2(l1.dot(new THREE.Vector3().crossVectors(p0, pw)), p0.dot(pw));
+        const pw = this.v2.copy(palm).addScaledVector(l1, -palm.dot(l1));
+        twist = Math.atan2(l1.dot(sv[10].crossVectors(p0, pw)), p0.dot(pw));
       }
-      const tw = new THREE.Quaternion().setFromAxisAngle(l1, twist);
+      const tw = sq[4].setFromAxisAngle(l1, twist);
       W[a].copy(Da).multiply(rig.R[a]).multiply(rig.W0[a]);
       W[b].copy(tw).slerp(this.q.identity(), 0.6).multiply(Db).multiply(rig.R[b]).multiply(rig.W0[b]);
       if (fingers && palm) {
@@ -641,17 +655,17 @@ class Solver {
     }
     P[b].copy(rig.off[b]).applyQuaternion(W[a]).add(S);
     P[c].copy(rig.off[c]).applyQuaternion(W[b]).add(P[b]);
-    // descendentes de c: rotação local de repouso
-    const walk = (i: number) => {
-      rig.bones[i].children.forEach((ch) => {
-        const k = rig.idx[ch.name];
-        if (k === undefined) return;
-        W[k].copy(W[i]).multiply(rig.L0[k]);
-        P[k].copy(rig.off[k]).applyQuaternion(W[i]).add(P[i]);
-        walk(k);
-      });
-    };
-    walk(c);
+    this.restChildren(c);
+  }
+
+  /** Descendentes de i com a rotação local de repouso. */
+  restChildren(i: number) {
+    const { rig, W, P } = this;
+    for (const k of rig.kids[i]) {
+      W[k].copy(W[i]).multiply(rig.L0[k]);
+      P[k].copy(rig.off[k]).applyQuaternion(W[i]).add(P[i]);
+      this.restChildren(k);
+    }
   }
 }
 
