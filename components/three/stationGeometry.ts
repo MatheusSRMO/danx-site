@@ -161,7 +161,22 @@ export function canopyPlateGeometry(w: number, d: number, rFront: number, rBack:
   });
   g.rotateX(Math.PI / 2);
   g.translate(0, -bevel, 0);
-  return flatPlateNormals(g, h);
+  // Normais analíticas (como em slabGeometry, com raios de frente e de trás diferentes): as faces planas ficam planas
+  // e só os biséis e os cantos variam.
+  const pos = g.getAttribute("position"), nor = g.getAttribute("normal");
+  const zf = d / 2 - rFront, zb = -d / 2 + rBack, hxF = w / 2 - rFront, hxB = w / 2 - rBack;
+  for (let i = 0; i < pos.count; i++) {
+    const y = pos.getY(i), px = pos.getX(i), pz = pos.getZ(i);
+    const ny = y > -bevel ? (y + bevel) / bevel : y < -h + bevel ? (y + h - bevel) / bevel : 0;
+    const vertical = THREE.MathUtils.clamp(ny, -1, 1);
+    const horizontal = Math.sqrt(1 - vertical * vertical);
+    let cx = 0, cz = pz;
+    if (pz > zf) { cx = THREE.MathUtils.clamp(px, -hxF, hxF); cz = zf; }
+    else if (pz < zb) { cx = THREE.MathUtils.clamp(px, -hxB, hxB); cz = zb; }
+    const nx = px - cx, nz = pz - cz, len = Math.hypot(nx, nz) || 1;
+    nor.setXYZ(i, (nx / len) * horizontal, vertical, (nz / len) * horizontal);
+  }
+  return g;
 }
 
 /** Moldura vazada sob o vidro: o centro deixa aparecer o tampo através da chapa. */
@@ -399,6 +414,8 @@ export function towerBodyGeometry(w: number, bottom: number, top: number, b: Tow
 export type CanopyBarSpec = {
   x: number; z: number; wx: number; wt: number; fillet: number;
   rise: number; R: number; pitch: number; zEnd: number;
+  /** Se definido, só o montante reto, de `bottom` até esta altura (sem cotovelo nem trecho reto). */
+  stopAt?: number;
 };
 
 /** Seção retangular com filetes: pontos e normais no plano (u = x, v = normal ao eixo no plano y/z). */
@@ -424,16 +441,18 @@ function filletedSection(wx: number, wt: number, f: number, seg = 3) {
 export function canopyBarGeometry(side: number, c: CanopyBarSpec, bottom: number) {
   const pitchAngle = Math.atan(c.pitch);
   const path: { y: number; z: number; ty: number; tz: number }[] = [];
-  for (let i = 0; i <= 8; i++) path.push({ y: THREE.MathUtils.lerp(bottom, c.rise, i / 8), z: c.z, ty: 1, tz: 0 });
+  for (let i = 0; i <= 8; i++) path.push({ y: THREE.MathUtils.lerp(bottom, c.stopAt ?? c.rise, i / 8), z: c.z, ty: 1, tz: 0 });
   const arcPoint = (a: number) => ({
     y: c.rise + Math.sin(a) * c.R, z: c.z + c.R * (1 - Math.cos(a)), ty: Math.cos(a), tz: Math.sin(a),
   });
-  for (let i = 1; i <= 48; i++) path.push(arcPoint((i / 48) * (Math.PI / 2)));
-  const end = arcPoint(Math.PI / 2 + pitchAngle);
-  path.push(end);
-  for (let i = 1; i <= 12; i++) {
-    const z = THREE.MathUtils.lerp(end.z, c.zEnd, i / 12);
-    path.push({ y: end.y - (z - end.z) * c.pitch, z, ty: end.ty, tz: end.tz });
+  if (c.stopAt === undefined) {
+    for (let i = 1; i <= 48; i++) path.push(arcPoint((i / 48) * (Math.PI / 2)));
+    const end = arcPoint(Math.PI / 2 + pitchAngle);
+    path.push(end);
+    for (let i = 1; i <= 12; i++) {
+      const z = THREE.MathUtils.lerp(end.z, c.zEnd, i / 12);
+      path.push({ y: end.y - (z - end.z) * c.pitch, z, ty: end.ty, tz: end.tz });
+    }
   }
   const { pts, nrm } = filletedSection(c.wx, c.wt, c.fillet);
   const count = pts.length, steps = path.length - 1;

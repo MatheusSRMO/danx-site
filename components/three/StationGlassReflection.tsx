@@ -25,8 +25,12 @@ const DEFAULT_REGION: MirrorRegion = { w: 0.3986, d: 0.4336, r: 0.0263, cz: 0.47
  * bronze), sem fotografia ou iluminação incorporada à textura. Cada região tem sua altura e intensidade.
  */
 export default function StationGlassReflection({
-  state, y = 0.0685, region = DEFAULT_REGION, strength = 0.4, opacity = 0.85,
-}: { state: StationState; y?: number; region?: MirrorRegion; strength?: number; opacity?: number }) {
+  state, y = 0.0685, region = DEFAULT_REGION, strength = 0.4, opacity = 0.85, hide,
+}: {
+  state: StationState; y?: number; region?: MirrorRegion; strength?: number; opacity?: number;
+  /** Nomes de objetos que somem só na captura deste espelho (continuam visíveis na cena): ex.: o logotipo do vidro. */
+  hide?: readonly string[];
+}) {
   // Resolução do espelho: metade dos pixels da tela, até 512 px (reflexo de vidro brilhante tolera leve desfoque; é recapturado a cada quadro em que a câmera anda)
   const size = useThree((st) => st.size), dpr = useThree((st) => st.viewport.dpr);
   const tw = THREE.MathUtils.clamp(Math.round((size.width * dpr) / 2), 128, 512);
@@ -84,6 +88,7 @@ export default function StationGlassReflection({
     const waveOpacities = new Float64Array(5);
     let valid = false, screen = -1, wavesVisible = false, screenVersion = -1;
     let screenTexture: THREE.Texture | null = null;
+    let hidden: THREE.Object3D[] | null = null;
     mirror.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
       // A silhueta usa o material substituto da bancada; não precisa de captura.
       if (scene.overrideMaterial || reflectionGuard.busy) return;
@@ -111,16 +116,20 @@ export default function StationGlassReflection({
       const background = scene.background, alpha = renderer.getClearAlpha();
       renderer.getClearColor(clearColor);
       const wasVisible = base.visible;
+      if (hide?.length && !hidden) hidden = hide.map((n) => root.getObjectByName(n)).filter((o): o is THREE.Object3D => !!o);
+      const hiddenWas = hidden ? hidden.map((o) => o.visible) : null;
       reflectionGuard.busy = true;
       try {
         // A captura contém só a geometria acima do vidro; fundo transparente conserva o ambiente PBR.
         base.visible = false;
+        if (hidden) for (const o of hidden) o.visible = false;
         scene.background = null;
         renderer.setClearColor(0x000000, 0);
         renderReflection.call(mirror, renderer, scene, camera, geometry, material, group);
       } finally {
         reflectionGuard.busy = false;
         base.visible = wasVisible;
+        if (hidden && hiddenWas) for (let i = 0; i < hidden.length; i++) hidden[i].visible = hiddenWas[i];
         scene.background = background;
         renderer.setClearColor(clearColor, alpha);
       }
@@ -140,7 +149,7 @@ export default function StationGlassReflection({
       valid = true;
     };
     return mirror;
-  }, [state, y, region, strength, opacity, tw, th]);
+  }, [state, y, region, strength, opacity, hide, tw, th]);
 
   useEffect(() => () => {
     reflection.dispose();
