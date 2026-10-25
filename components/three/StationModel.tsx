@@ -28,16 +28,8 @@ import type { StationState } from "./stationState";
 const BASE = { w: 0.48, d: 0.935, h: 0.0699, z0: -0.21, radius: 0.0337, plate: 0.0044, bottomBevel: 0.004 };
 // Vidro dos eletrodos assentado 1,6 mm abaixo do tampo; os eletrodos ficam rentes à face dele.
 const PAD = { cz: 0.47, w: 0.4, d: 0.435, r: 0.027, thick: 0.003, top: 0.0683, hole: 0.0045 };
-// Posição fina da bandeja em relação à torre: no render 3/4 oficial a bandeja só casa com um pequeno giro (0,33° em roll,
-// 0,12° em yaw) e um deslocamento de poucos milímetros em torno do centro dela, a mesma ordem de grandeza do que o
-// dossel pede. Fica abaixo do que se enxerga a olho; melhora o contorno da base no 3/4 sem piorar a base de perto, e
-// mantém a caixa envolvente em 0,482 × 0,936 m (o chão não é atravessado: o ponto mais baixo fica em y ≈ 0).
-const BASE_TILT = (() => {
-  const euler = new THREE.Euler(-0.00012, -0.00209, -0.0058, "YXZ");
-  const pivot = new THREE.Vector3(0, 0, 0.25);
-  const position = pivot.clone().sub(pivot.clone().applyEuler(euler)).add(new THREE.Vector3(-0.00331, 0.00144, -0.00476));
-  return { euler, position };
-})();
+// O produto é ortogonal: bandeja, torre e dossel sem giros (a câmera da bancada é que imita a perspectiva dos renders).
+const BASE_TILT = { euler: new THREE.Euler(0, 0, 0), position: new THREE.Vector3(0, 0, 0) };
 // Regiões dos espelhos planares da bandeja: o vidro (altura do vidro) e o tampo em volta dele (altura do tampo).
 const GLASS_MIRROR: MirrorRegion = { w: PAD.w - 0.0014, d: PAD.d - 0.0014, r: PAD.r - 0.0007, cz: PAD.cz };
 // O espelho do tampo não mostra o logotipo do vidro (o render oficial não tem esse reflexo no tampo).
@@ -51,14 +43,7 @@ const TOWER = {
   y0: 0.109, y1: 1.76615, w: 0.43851, bodyW: 0.4422, step: 0.7556, chamfer: 0.02135,
   front: 0.02694, rear: -0.01661, rear2: -0.04439, glassZ: 0.0383, glassT: 0.0142, screenMargin: 0.0345,
 };
-// Giro fino da torre em torno de y = 0,9 m (0,08° em roll): alinha as arestas verticais do vidro e do alumínio com as do
-// render 3/4 (a aresta de trás-direita do oficial não converge para cima como a de uma câmera real inclinada).
-const TOWER_TILT = (() => {
-  const euler = new THREE.Euler(0, -0.00001, -0.0014, "YXZ");
-  const pivot = new THREE.Vector3(0, 0.9, 0);
-  const position = pivot.clone().sub(pivot.clone().applyEuler(euler)).add(new THREE.Vector3(-0.00038, 0, -0.00012));
-  return { euler, position };
-})();
+const TOWER_TILT = { euler: new THREE.Euler(0, 0, 0), position: new THREE.Vector3(0, 0, 0) };
 const SCREEN = { w: 0.36, h: 0.708 };
 // Logotipo no vidro: mesmo lugar e tamanho da inscrição do render oficial (centro a 236 mm do chão, 30 mm de altura)
 const GLASS_LOGO = { y: 0.236, h: 0.03 };
@@ -72,16 +57,14 @@ const FAIRING = {
 // (queda frontal de ~3,7°) até a placa. A placa tem a mesma espessura das barras (+0,8 mm) e o mesmo plano de cima:
 // a aresta de cima da barra continua direto na da placa, e as faces de fora das barras e das pontas da placa ficam no
 // mesmo plano. Os cantos da frente da placa são de raio grande (44 mm); os de trás somem dentro das barras.
-// Medido sobre o render 3/4 oficial (ajuste offline da silhueta em 1080 px). Dois ajustes finos que o render exige e
-// que ficam abaixo de 2 mm no objeto: o cotovelo sobe 5,6 mm acima de 2,100 m (o render mostra o dossel mais alto em
-// relação ao topo da torre do que a altura nominal prevê) e a parte de cima do dossel (acima do topo da torre) fica
-// girada 0,34° em roll e 0,27° em yaw em torno do ponto em que as barras saem da torre.
+// Medido sobre o render 3/4 oficial (ajuste da silhueta em 1080 px). O ponto mais alto (cotovelo) fica na altura
+// nominal de 2,100 m.
 const CANOPY = {
   x: 0.20043, z: -0.00368, wx: 0.02474, wt: 0.03207, fillet: 0.0025,
-  R: 0.11448, top: 2.10561, pitch: 0.06554,
+  R: 0.11448, top: 2.1, pitch: 0.06554,
   plateW: 0, plateD: 0.11781, plateZ: 0.48535, plateY: 0, plateH: 0, plateR: 0.04411, plateRBack: 0.005,
   plateBevel: 0.0025, barOverlap: 0.06, outerShift: -0.00004, dH: 0.0008,
-  roll: -0.00598, yaw: -0.00465, pivotY: 1.76, pivotZ: -0.00415,
+  roll: 0, yaw: 0, pivotY: 1.76, pivotZ: -0.00415,
   rise: 0, sensorX: 0, sensorZ: 0, sensorY: 0,
 };
 CANOPY.rise = CANOPY.top - CANOPY.R - CANOPY.wt / 2;
