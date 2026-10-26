@@ -33,15 +33,15 @@ export const hero = {
   product: "Estação de Saúde DANX",
   title: "Triagem de saúde de cada aluno,",
   titleEnd: "dentro da escola.",
-  lead: "Altura, composição corporal, equilíbrio, agilidade, capacidade pulmonar, acuidade visual e postura em uma só estação, com relatório para a família e dados para a gestão.",
+  lead: "Sete avaliações em uma só estação, com relatório para a família e painel para a gestão: a escola acompanha a saúde de cada aluno, ano a ano.",
   note: "Vendida apenas a redes públicas, Sistema S e escolas particulares.",
 };
 
 export const manifesto = {
   title: "Crescer é rápido. Perceber o que muda, nem sempre.",
-  text: "A DANX transforma uma passagem pela estação em dados que escola, família e gestão acompanham, ano após ano.",
+  text: "Cada aluno que passa pela estação gera dados que escola, família e gestão acompanham, ano após ano.",
   bridge:
-    "A estação acompanha esses sinais aluno a aluno, ano a ano: postura, composição corporal, equilíbrio e agilidade. Ela não diagnostica: aponta cedo o que merece atenção e apoia as ações do Programa Saúde na Escola.",
+    "Postura, composição corporal, equilíbrio e agilidade mudam devagar, e o problema costuma aparecer só quando vira queixa. A estação registra cada medida, aluno a aluno, para a escola ver a tendência cedo. É triagem: indica sinais de atenção e apoia as ações do Programa Saúde na Escola.",
   stats: [
     {
       value: 84,
@@ -97,7 +97,7 @@ export const management = {
 };
 
 export const audience = {
-  title: "Vendida só para quem cuida de crianças e adolescentes.",
+  title: "Vendida a quem cuida de crianças e adolescentes.",
   lead: "A Estação de Saúde DANX não é vendida no varejo. A distribuição é exclusiva para instituições que atendem o público infantil e juvenil.",
   segments: [
     {
@@ -112,7 +112,7 @@ export const audience = {
       sub: "Sesi, Sesc, Senac e outros",
       cta: "Solicitar cotação para o seu programa",
       tipo: "Sistema S",
-      text: "Avaliação padronizada para programas de esporte, saúde e educação, com histórico de cada participante.",
+      text: "Avaliação padronizada para programas de esporte, saúde e educação: histórico de cada participante, relatório com o nome da unidade e uso de 3 a 99 anos.",
     },
     {
       title: "Escolas particulares",
@@ -123,8 +123,8 @@ export const audience = {
     },
   ],
   exclusive: {
-    title: "Um único canal de venda no Brasil.",
-    text: "A DANX tem a exclusividade de venda deste equipamento no Brasil para o poder público, o Sistema S e escolas particulares.",
+    title: "Compra direta com a DANX.",
+    text: "A DANX é o único canal de venda deste equipamento no Brasil, para o poder público, o Sistema S e escolas particulares. A declaração de exclusividade acompanha o seu processo de compra.",
   },
 };
 
@@ -205,6 +205,7 @@ export const pricing = {
     { text: "Treinamento da equipe", tbc: true },
     { text: "Garantia", tbc: true },
     { text: "Acesso ao painel da gestão", tbc: true },
+  { text: "Tratamento dos dados dos alunos (LGPD)", tbc: true },
   ],
 };
 
@@ -224,7 +225,7 @@ export const faq = [
     a: "Os dados são armazenados com criptografia e acesso por permissão. A política de consentimento dos responsáveis e o tratamento de dados de crianças, conforme o art. 14 da LGPD, serão detalhados aqui.",
     tbc: true,
     // Na produção, enquanto a resposta completa não é confirmada: só o que o produto já mostra
-    pub: "Antes de cada avaliação, a estação exibe o aviso de coleta de dados, e o aluno é identificado pelo número de matrícula. Para dados de crianças, a LGPD pede o consentimento de um dos pais ou do responsável legal. Fale com a nossa equipe para alinhar esse fluxo na sua instituição e conhecer como os dados são guardados e quem tem acesso a eles.",
+    pub: "O aluno é identificado só pelo número de matrícula, e a estação exibe o aviso de coleta de dados antes de cada avaliação. Para menores, a LGPD pede o consentimento de um dos pais ou do responsável legal: esse fluxo é combinado com a sua instituição. Onde os dados ficam e quem tem acesso a eles é detalhado na proposta.",
   },
   {
     q: "A estação faz diagnóstico?",
@@ -245,6 +246,14 @@ export const faq = [
     q: "Qual é a garantia e como funciona a manutenção?",
     a: "Garantia, assistência técnica e manutenção preventiva serão detalhadas aqui.",
     tbc: true,
+  },
+  {
+    q: "Quem opera a estação?",
+    a: "O aluno sobe na plataforma e segue as instruções da própria estação, na tela e por voz. O relatório sai na hora: na tela, impresso ou pelo QR code.",
+  },
+  {
+    q: "O que preparar na escola?",
+    a: "Uma base de 48 × 93,5 cm, 2,5 m livres à frente da tela para a triagem de acuidade visual e um ambiente entre 10 e 40 °C, com umidade de até 80%, sem condensação.",
   },
   {
     q: "Precisa de internet para funcionar?",

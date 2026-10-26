@@ -110,7 +110,7 @@ export default function Quote() {
       "Olá! Quero uma cotação da Estação de Saúde DANX.",
       `Instituição: ${data.instituicao} (${data.tipo})`,
       data.cnpj && `CNPJ: ${data.cnpj}`,
-      `Cidade: ${data.cidade}/${data.uf}`,
+      data.cidade && `Cidade: ${data.cidade}${data.uf ? `/${data.uf}` : ""}`,
       `Responsável: ${data.nome}${data.cargo ? `, ${data.cargo}` : ""}`,
       data.email && `E-mail: ${data.email}`,
       data.telefone && `Telefone: ${data.telefone}`,
@@ -207,25 +207,14 @@ export default function Quote() {
                 </select>
               </label>
             </div>
-            <div className={s.row3}>
+            <div className={s.row}>
               <label className={s.field}>
                 <span>Seu nome *</span>
                 <input name="nome" required maxLength={160} autoComplete="name" />
               </label>
               <label className={s.field}>
-                <span>Cidade *</span>
-                <input name="cidade" required maxLength={120} autoComplete="address-level2" />
-              </label>
-              <label className={s.field}>
-                <span>UF *</span>
-                <select name="uf" required defaultValue="">
-                  <option value="" disabled>
-                    UF
-                  </option>
-                  {UFS.map((u) => (
-                    <option key={u}>{u}</option>
-                  ))}
-                </select>
+                <span>Cargo</span>
+                <input name="cargo" maxLength={120} autoComplete="organization-title" />
               </label>
             </div>
             <p className={s.hint}>Para o contato, preencha ao menos um: e-mail ou telefone.</p>
@@ -253,17 +242,37 @@ export default function Quote() {
                 />
               </label>
             </div>
+            <fieldset className={s.docs}>
+              <legend>Receber junto com a proposta (opcional)</legend>
+              <div>
+                {quote.docs.map((d) => (
+                  <label key={d}>
+                    <input type="checkbox" name="documentos" value={d} />
+                    <span>{d}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
             <details ref={extra} className={s.extra}>
               <summary>Mais detalhes (opcional)</summary>
               <div className={s.extraBody}>
-                <div className={s.row3}>
+                <div className={s.row4}>
+                  <label className={s.field}>
+                    <span>Cidade</span>
+                    <input name="cidade" maxLength={120} autoComplete="address-level2" />
+                  </label>
+                  <label className={s.field}>
+                    <span>UF</span>
+                    <select name="uf" defaultValue="">
+                      <option value="">UF</option>
+                      {UFS.map((u) => (
+                        <option key={u}>{u}</option>
+                      ))}
+                    </select>
+                  </label>
                   <label className={s.field}>
                     <span>CNPJ</span>
                     <input name="cnpj" autoCapitalize="characters" maxLength={30} placeholder="00.000.000/0000-00" />
-                  </label>
-                  <label className={s.field}>
-                    <span>Cargo</span>
-                    <input name="cargo" maxLength={120} autoComplete="organization-title" />
                   </label>
                   <label className={s.field}>
                     <span>Quantidade estimada</span>
@@ -286,17 +295,6 @@ export default function Quote() {
                     placeholder="Quantas escolas ou alunos? Prazo previsto para a compra?"
                   />
                 </label>
-                <fieldset className={s.docs}>
-                  <legend>Quer receber algum documento junto com a proposta?</legend>
-                  <div>
-                    {quote.docs.map((d) => (
-                      <label key={d}>
-                        <input type="checkbox" name="documentos" value={d} />
-                        <span>{d}</span>
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
               </div>
             </details>
             <input className={s.hp} name="hp_x7" tabIndex={-1} autoComplete="off" aria-hidden="true" />

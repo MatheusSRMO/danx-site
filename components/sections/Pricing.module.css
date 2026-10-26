@@ -190,15 +190,13 @@
 .docs ul {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 12px 0 0;
-  padding: 0;
-  list-style: none;
+  gap: 6px 22px;
+  margin: 10px 0 0;
+  padding: 0 0 0 18px;
 }
 .docs li {
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: var(--bg-2);
-  font-size: 0.92rem;
   font-weight: 500;
+}
+.docs li::marker {
+  color: var(--accent);
 }

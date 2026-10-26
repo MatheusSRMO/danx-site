@@ -192,6 +192,17 @@
   font-weight: 600;
 }
 
+.sample {
+  position: absolute;
+  left: max(var(--gutter), calc((100vw - var(--maxw-wide)) / 2));
+  bottom: 28px;
+  font-size: 0.875rem;
+  color: var(--ink-2);
+}
+.sample a {
+  color: var(--accent);
+  font-weight: 500;
+}
 .hint {
   position: absolute;
   right: max(var(--gutter), calc((100vw - var(--maxw-wide)) / 2));
@@ -263,6 +274,13 @@
   .hint {
     display: none;
   }
+  .sample {
+    top: 64px;
+    bottom: auto;
+    left: auto;
+    right: var(--gutter);
+    font-size: 0.8rem;
+  }
 }
 
 /* Versão estática */
@@ -317,7 +335,7 @@
 .loupe figcaption {
   margin-top: 10px;
   max-width: 300px;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   line-height: 1.4;
   color: var(--ink-2);
 }
@@ -332,14 +350,13 @@
   }
 }
 @media (max-width: 900px) {
-  /* No celular a lupa fica acima do texto, sobre a parte de baixo da estação */
+  /* No celular a lupa fica à direita, acima do texto; a estação vai para a esquerda (viewX) */
   .loupe {
     position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%;
-    width: min(250px, 66vw);
+    bottom: calc(100% + 18px);
+    right: 0;
+    width: 56%;
     margin: 0;
-    transform: translateX(-50%);
   }
   .loupe canvas {
     width: 100%;
@@ -347,11 +364,7 @@
   .loupe figcaption {
     margin-top: 6px;
     font-size: 0.78rem;
-    text-align: center;
+    text-align: left;
   }
 }
 
-.skip {
-  display: inline-block;
-  margin-top: 20px;
-}

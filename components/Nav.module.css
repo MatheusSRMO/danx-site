@@ -59,8 +59,8 @@
   margin-left: auto;
 }
 .links a {
-  font-size: 0.78rem;
-  color: var(--ink-2);
+  font-size: 0.875rem;
+  color: #3d3a35;
   transition: color 0.2s;
 }
 .links a:hover {
@@ -127,7 +127,7 @@
   border-bottom: 0;
 }
 
-@media (max-width: 1040px) {
+@media (max-width: 1180px) {
   .links {
     display: none;
   }

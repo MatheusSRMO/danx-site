@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 // Recebe o pedido de cotação.
 // Para entregar por e-mail/CRM, defina QUOTE_WEBHOOK_URL (ex.: Zapier, Make, n8n ou um endpoint próprio):
 // o JSON do pedido é repassado para essa URL.
-const REQUIRED = ["instituicao", "tipo", "cidade", "uf", "nome", "consentimento"];
+const REQUIRED = ["instituicao", "tipo", "nome", "consentimento"];
 // Só estes campos seguem adiante, com tamanho máximo de cada um
 const FIELDS: Record<string, number> = {
   instituicao: 200,

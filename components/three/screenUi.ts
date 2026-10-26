@@ -122,11 +122,11 @@ export type Region = [number, number, number, number];
 
 /** Desenha só a região `r` da tela, ampliada para ocupar um canvas de `w` × `h` pixels (a lupa da história). */
 export function drawScreenRegion(g: G, id: ScreenId, t: number, r: Region, w: number, h: number): void {
-  const s = Math.max(w / (r[2] * K), h / (r[3] * K));
+  const s = Math.min(w / (r[2] * K), h / (r[3] * K));
   g.setTransform(1, 0, 0, 1, 0, 0);
   g.fillStyle = "#000";
   g.fillRect(0, 0, w, h);
-  // Centra a região no canvas (se a proporção não bater, sobra um pouco de tela em volta)
+  // A região inteira cabe no canvas, centrada (se a proporção não bater, sobra um pouco de tela em volta)
   const ox = (w - r[2] * K * s) / 2 - r[0] * K * s;
   const oy = (h - r[3] * K * s) / 2 - (OY + r[1] * K) * s;
   g.setTransform(s, 0, 0, s, ox, oy);

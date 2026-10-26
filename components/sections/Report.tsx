@@ -77,7 +77,7 @@ function A4() {
         </div>
         <div className={s.a4Foot}>
           <i />
-          <span>Sugestões de atividade física e hábitos alimentares · contato da escola</span>
+          <span>Sugestões e contato da escola</span>
         </div>
       </div>
     </div>

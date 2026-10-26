@@ -191,7 +191,7 @@ p {
 
 .section {
   position: relative;
-  padding-block: clamp(72px, 9vw, 128px);
+  padding-block: clamp(64px, 7.5vw, 108px);
 }
 .alt {
   background: var(--bg-2);

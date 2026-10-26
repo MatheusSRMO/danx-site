@@ -98,10 +98,10 @@ const SCREEN_TRACK: [number, ScreenId, number][] = [
 const LOUPE: Record<ScreenId, Region> = {
   inicio: [240, 560, 600, 450],
   consentimento: [300, 760, 480, 360],
-  composicao: [220, 250, 640, 480],
-  equilibrio: [260, 640, 560, 420],
-  agilidade: [220, 320, 640, 480],
-  espirometria: [240, 470, 600, 450],
+  composicao: [73, 230, 933, 700],
+  equilibrio: [140, 600, 800, 600],
+  agilidade: [194, 280, 693, 520],
+  espirometria: [127, 440, 827, 620],
   visao: [330, 860, 420, 315],
   postura: [380, 700, 700, 525],
   pontuacao: [140, 250, 800, 600],
@@ -109,7 +109,7 @@ const LOUPE: Record<ScreenId, Region> = {
   relatorio: [0, 150, 1080, 810],
 };
 // Na medição da altura, a lupa fica nos números do centro do anel
-const LOUPE_ALTURA: Region = [330, 440, 420, 315];
+const LOUPE_ALTURA: Region = [300, 410, 480, 360];
 
 function drawLoupe(canvas: HTMLCanvasElement, state: StationState) {
   const id = SCREENS[Math.min(SCREENS.length - 1, Math.max(0, Math.round(state.screen)))];
@@ -139,7 +139,7 @@ const CHAPTERS = [
     at: 0.135,
     kicker: "Identificação",
     title: "Começa com o número do aluno.",
-    text: "O aluno digita o número de matrícula, e a tela exibe o aviso de coleta de dados antes de começar. A partir daí a estação conduz cada etapa, na tela e por voz.",
+    text: "O aluno digita o número de matrícula, e a tela exibe o aviso de coleta de dados; o consentimento dos responsáveis é combinado antes com a instituição. A partir daí a estação conduz cada etapa, na tela e por voz.",
     screen: "teclado da matrícula e aviso de coleta de dados.",
   },
   {
@@ -162,7 +162,7 @@ const CHAPTERS = [
     at: 0.4,
     kicker: "Equilíbrio",
     title: "Numa perna só, de olhos fechados.",
-    text: "Mãos juntas, olhos fechados, dez segundos sobre a plataforma. A tela mostra a capacidade de equilíbrio.",
+    text: "Em uma perna só, mãos juntas e olhos fechados, por dez segundos sobre a plataforma. A tela mostra a capacidade de equilíbrio.",
     stat: { v: "88%", u: "capacidade de equilíbrio" },
     screen: "cronômetro de 10 segundos e a capacidade de equilíbrio.",
   },
@@ -170,7 +170,7 @@ const CHAPTERS = [
     at: 0.48,
     kicker: "Agilidade",
     title: "Cinco toques, contra o relógio.",
-    text: "O botão acende cinco vezes na tela e o aluno toca o mais rápido que puder. O tempo médio de reação sai em milissegundos.",
+    text: "O botão acende cinco vezes na tela e o aluno toca o mais rápido que puder. O tempo médio de reação sai em milissegundos, já com a classificação.",
     stat: { v: "412", u: "ms de tempo médio de reação" },
     screen: "o botão que acende e o tempo médio de reação.",
   },
@@ -200,7 +200,7 @@ const CHAPTERS = [
     at: 0.845,
     kicker: "Resultado",
     title: "Pontuação, curva e relatório na hora.",
-    text: "Ao final, a tela mostra a pontuação de saúde e a curva de crescimento. O relatório sai impresso ou pelo QR code, para a família.",
+    text: "Ao final, a tela mostra a pontuação de saúde e a curva de crescimento, com cada medida na faixa de referência para a idade e o sexo. O relatório sai impresso ou pelo QR code.",
     stat: { v: "86", u: "pontuação de saúde" },
     screen: "pontuação de saúde, curva de crescimento e relatório.",
   },
@@ -214,7 +214,7 @@ const CHAPTERS = [
     at: 0.985,
     kicker: "Pronta para a escola",
     title: "Pequena no espaço. Grande no cuidado.",
-    text: "Pronta para receber a escola inteira, turma após turma.",
+    text: "Base de 48 × 93,5 cm. Funciona sem internet e guarda mais de 100 mil avaliações. Pronta para a escola inteira, turma após turma.",
     cta: true,
   },
 ];
@@ -385,12 +385,14 @@ export default function ProductStory() {
 
           // Cada capítulo aparece perto do seu quadro-chave
           let current = 0;
+          let withLoupe = 0;
           CHAPTERS.forEach((c, i) => {
             const next = CHAPTERS[i + 1]?.at ?? 1.2;
             const prev = CHAPTERS[i - 1]?.at ?? -0.2;
             const start = (prev + c.at) / 2;
             const end = (c.at + next) / 2;
             const w = sm(p, start, start + 0.018) * (1 - sm(p, end - 0.018, end));
+            if (c.screen) withLoupe += w;
             const el = chapters[i];
             el.style.opacity = String(w);
             el.style.transform = `translateY(${(1 - w) * 24}px)`;
@@ -400,6 +402,8 @@ export default function ProductStory() {
             if (p >= start) current = i;
           });
           dots.forEach((d, i) => d.classList.toggle(s.on, i === current));
+          // No celular, nas etapas com lupa, a estação vai para a esquerda e a lupa fica ao lado dela
+          if (window.innerWidth <= 900) state.viewX = -0.2 * withLoupe;
           cur = current;
           paintLoupe();
           fill.style.transform = `scaleY(${p})`;
@@ -468,7 +472,6 @@ export default function ProductStory() {
               {c.stat && (
                 <p className={s.stat}>
                   <span>{c.stat.v}</span> {c.stat.u}
-                  <small>Exemplo ilustrativo</small>
                 </p>
               )}
               {c.screen && (
@@ -482,11 +485,6 @@ export default function ProductStory() {
               {c.cta && (
                 <a className={`btn btn-primary ${s.cta}`} href="#cotacao">
                   Solicitar cotação
-                </a>
-              )}
-              {i === 0 && (
-                <a className={`link ${s.cta} ${s.skip}`} href="#para-quem">
-                  Pular para quem pode comprar
                 </a>
               )}
             </article>
@@ -517,6 +515,9 @@ export default function ProductStory() {
           </ol>
         </div>
 
+        <p className={s.sample}>
+          Números de um aluno de exemplo · <a href="#para-quem">Pular a apresentação</a>
+        </p>
         <p className={s.hint} aria-hidden="true">
           {touch ? "Arraste para girar" : "Clique e arraste para girar"}
         </p>
