@@ -65,9 +65,9 @@ export default function Nav() {
           className={s.toggle}
           aria-expanded={open}
           aria-controls="menu-local"
-          aria-label={open ? "Fechar menu" : "Abrir menu"}
           onClick={() => setOpen((v) => !v)}
         >
+          Menu
           <svg viewBox="0 0 18 18" aria-hidden="true">
             <path d="M3 7l6 6 6-6" />
           </svg>

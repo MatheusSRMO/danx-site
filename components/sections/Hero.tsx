@@ -56,6 +56,7 @@ export default function Hero() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img {...tallImg} className={s.img} alt={ALT} />
         </picture>
+        <span className="illus">Imagem ilustrativa</span>
       </div>
       <div className={`container-wide ${s.copy}`}>
         <h1 id="hero-title" className={s.product} data-in>

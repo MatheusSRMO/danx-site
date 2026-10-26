@@ -182,8 +182,8 @@
 .programs h3 {
   font-size: var(--t-3);
 }
-.programs .btn {
-  margin-top: 32px;
+.programs :global(.btn) {
+  margin-top: 40px;
 }
 .programs ul {
   display: flex;

@@ -1,0 +1,38 @@
+.fab {
+  display: none;
+}
+@media (max-width: 900px) {
+  .fab {
+    position: fixed;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 40;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 16px 0 12px;
+    border-radius: 999px;
+    background: #146c43;
+    color: #fff;
+    font-size: 0.88rem;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    transition:
+      opacity 0.3s,
+      transform 0.3s var(--ease-out);
+  }
+  .fab svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+  }
+  .hidden {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+  }
+}

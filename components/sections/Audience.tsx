@@ -20,8 +20,8 @@ export default function Audience() {
               <p className={s.sub}>{seg.sub}</p>
               <h3>{seg.title}</h3>
               <p className={s.text}>{seg.text}</p>
-              <a className="link" href="#cotacao">
-                Solicitar cotação
+              <a className="link" href="#cotacao" data-tipo={seg.tipo}>
+                {seg.cta}
               </a>
             </article>
           ))}

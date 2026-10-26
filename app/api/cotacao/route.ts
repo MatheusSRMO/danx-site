@@ -17,6 +17,7 @@ const FIELDS: Record<string, number> = {
   telefone: 40,
   quantidade: 6,
   mensagem: 3000,
+  documentos: 200,
   consentimento: 10,
 };
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -261,11 +261,12 @@ const KIND_COLORS: Record<Row["kind"], [string, string]> = {
   muito: ["#ff7a7a", "#ff2a0a"],
 };
 
-function rows(g: G, p: number) {
-  // p: 0..1 progresso das barras (cada linha começa um pouco depois da anterior)
+function rows(g: G, ph: number, p: number) {
+  // ph: 0..1 medição da altura (primeira linha); p: 0..1 demais barras (cada linha começa um pouco depois da anterior)
+  const n = ROWS.length - 1;
   ROWS.forEach((r, i) => {
     const y = ROW_Y0 + i * ROW_DY;
-    const k = easeOut(seg(p, (i / ROWS.length) * 0.5, (i / ROWS.length) * 0.5 + 0.5));
+    const k = i === 0 ? easeOut(ph) : easeOut(seg(p, ((i - 1) / n) * 0.5, ((i - 1) / n) * 0.5 + 0.5));
     // valor
     const v = r.num * k;
     const s = k <= 0 ? (r.unit === "kcal" ? "0" : r.unit === "cm" ? "0" : r.value === "2.0" ? "0" : "0") : v.toFixed(r.dec);
@@ -477,7 +478,7 @@ function valuesCenter(g: G, h: number, w: number) {
 }
 
 export const composicao: Page = {
-  steps: 40,
+  steps: 60,
   bg(g) {
     g.fillStyle = "#000";
     g.fillRect(0, 0, U_W, 1920);
@@ -487,8 +488,9 @@ export const composicao: Page = {
     bars(g);
   },
   fg(g, t) {
-    const p = seg(t, 0.3, 0.8); // medição
-    const res = seg(t, 0.8, 0.92); // resultado final: radar acende
+    const ph = seg(t, 0.2, 0.45); // altura (sensor ultrassônico)
+    const p = seg(t, 0.5, 0.82); // composição corporal (bioimpedância)
+    const res = seg(t, 0.84, 0.94); // resultado final: radar acende
     radar(g, easeOut(res));
     // fundo do anel
     g.fillStyle = "#000";
@@ -496,16 +498,26 @@ export const composicao: Page = {
     g.fill();
     // anel externo: o fundo escuro cobre o radar dentro do raio 166, então pílulas e marcas ficam por cima
     rainbowRing(g);
-    tickRing(g, t < 0.3 ? 0.55 : p);
+    tickRing(g, t < 0.2 ? 0.55 : 0.3 * ph + 0.7 * p);
     pills(g);
-    if (t < 0.3) {
+    if (t < 0.2) {
       innerGauge(g, 0.5);
-      iniciar(g, t >= 0.22 ? 2 : 0);
+      iniciar(g, t >= 0.15 ? 2 : 0);
     } else {
-      innerGauge(g, p);
-      const k = easeOut(p);
-      valuesCenter(g, 148 * k, 44.2 * k);
+      innerGauge(g, 0.3 * ph + 0.7 * p);
+      valuesCenter(g, 148 * easeOut(ph), 44.2 * easeOut(p));
     }
-    rows(g, p);
+    // Enquanto a altura é medida, a linha dela fica em destaque
+    const hl = Math.min(seg(t, 0.18, 0.22), 1 - seg(t, 0.47, 0.52));
+    if (hl > 0) {
+      g.save();
+      g.globalAlpha = hl;
+      g.strokeStyle = "#2de6dc";
+      g.lineWidth = 4;
+      rrect(g, 24, ROW_Y0 - 30, 1032, 60, 30);
+      g.stroke();
+      g.restore();
+    }
+    rows(g, ph, p);
   },
 };

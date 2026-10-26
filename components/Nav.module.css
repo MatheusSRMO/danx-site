@@ -74,14 +74,21 @@
 .toggle {
   display: none;
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  padding: 7px;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 6px 0 10px;
   border: 0;
   background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
   cursor: pointer;
 }
 .toggle svg {
+  width: 16px;
+  height: 16px;
   fill: none;
   stroke: var(--ink);
   stroke-width: 1.6;
@@ -128,7 +135,7 @@
     margin-left: auto;
   }
   .toggle {
-    display: block;
+    display: inline-flex;
   }
 }
 @media (max-width: 520px) {

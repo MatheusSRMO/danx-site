@@ -191,7 +191,7 @@ p {
 
 .section {
   position: relative;
-  padding-block: clamp(88px, 12vw, 160px);
+  padding-block: clamp(72px, 9vw, 128px);
 }
 .alt {
   background: var(--bg-2);
@@ -400,4 +400,21 @@ p {
   *::after {
     scroll-behavior: auto !important;
   }
+}
+
+/* Selo discreto nas fotos geradas para ilustrar o uso da estação */
+.illus {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #3a3833;
+  font-family: var(--f-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.4;
+  pointer-events: none;
 }

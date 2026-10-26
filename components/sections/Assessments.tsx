@@ -207,66 +207,25 @@ function Balance({ on }: { on: boolean }) {
   );
 }
 
-function Reaction({ on }: { on: boolean }) {
-  const [cell, setCell] = useState(4);
-  const [ms, setMs] = useState(312);
-  useEffect(() => {
-    if (!on) return;
-    const id = window.setInterval(() => {
-      setCell((c) => {
-        let n = c;
-        while (n === c) n = Math.floor(Math.random() * 9);
-        return n;
-      });
-      setMs(260 + Math.round(Math.random() * 140));
-    }, 950);
-    return () => window.clearInterval(id);
-  }, [on]);
+// Os três testes que a história 3D já mostra em detalhe ficam em uma lista curta
+const MORE = [
+  { cat: "Agilidade e reação", color: "var(--accent)", text: "Estímulos aleatórios na tela, resposta cronometrada." },
+  { cat: "Capacidade pulmonar", color: "var(--c-water)", text: "Espirômetro com sensor de pressão de alta precisão." },
+  { cat: "Acuidade visual", color: "var(--c-mineral)", text: "Triagem na própria tela, guiada por voz." },
+];
+function More() {
   return (
-    <div className={s.reaction}>
-      <div className={s.grid9} aria-hidden="true">
-        {Array.from({ length: 9 }, (_, i) => (
-          <span key={i} className={i === cell ? s.lit : ""} />
-        ))}
-      </div>
-      <p className={s.score}>
-        <span className="num">{ms}</span>
-        <small>ms</small>
-      </p>
-    </div>
-  );
-}
-
-function Lungs({ on }: { on: boolean }) {
-  return (
-    <div className={s.lungs}>
-      <svg viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx={60} cy={60} r={48} className={s.ringBg} />
-        <circle cx={60} cy={60} r={48} className={`${s.ring} ${on ? s.ringOn : ""}`} pathLength={1} />
-      </svg>
-      <p className={s.score}>
-        <span className="num">2.340</span>
-        <small>mL</small>
-      </p>
-    </div>
-  );
-}
-
-function Vision({ on }: { on: boolean }) {
-  const [step, setStep] = useState(0);
-  useEffect(() => {
-    if (!on) return;
-    const id = window.setInterval(() => setStep((v) => (v + 1) % 8), 1400);
-    return () => window.clearInterval(id);
-  }, [on]);
-  const rot = [0, 90, 180, 270, 90, 0, 270, 180][step];
-  const size = [1, 1, 0.78, 0.78, 0.6, 0.6, 0.44, 0.44][step];
-  return (
-    <div className={s.vision} aria-hidden="true">
-      <svg viewBox="0 0 50 50" style={{ transform: `rotate(${rot}deg) scale(${size})` }}>
-        <path d="M0 0H50V10H0Z M0 20H50V30H0Z M0 40H50V50H0Z M0 0H10V50H0Z" />
-      </svg>
-    </div>
+    <ul className={s.more}>
+      {MORE.map((m) => (
+        <li key={m.cat}>
+          <b>
+            <i style={{ background: m.color }} aria-hidden="true" />
+            {m.cat}
+          </b>
+          <span>{m.text}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -334,24 +293,18 @@ type Tile = {
   title: string;
   text: string;
   wide?: boolean;
+  full?: boolean;
   tbc?: boolean;
   photo?: { src: string; alt: string };
 };
 const TILES: Tile[] = [
   {
-    id: "composicao",
-    cat: "Composição corporal",
-    color: "var(--c-protein)",
-    title: "Água, proteína, gordura e minerais.",
-    text: "Bioimpedância com quatro eletrodos de aço inox 304 e algoritmo específico para quem ainda está crescendo.",
+    id: "crescimento",
+    cat: "Altura e crescimento",
+    color: "var(--accent)",
+    title: "Cada medida, um ponto na curva.",
+    text: "O sensor ultrassônico mede a altura sem contato, e a estação acompanha os percentis por idade e sexo, ano após ano.",
     wide: true,
-  },
-  {
-    id: "postura",
-    cat: "Postura",
-    color: "var(--warn)",
-    title: "A câmera vê o que o espelho esconde.",
-    text: "Visão computacional mapeia ombros, coluna, pelve e joelhos e aponta sinais de atenção.",
   },
   {
     id: "equilibrio",
@@ -365,33 +318,26 @@ const TILES: Tile[] = [
     },
   },
   {
-    id: "reacao",
-    cat: "Agilidade e reação",
-    color: "var(--accent)",
-    title: "Tempo de reação, em milissegundos.",
-    text: "Estímulos aleatórios na tela, resposta cronometrada.",
-  },
-  {
-    id: "pulmao",
-    cat: "Capacidade pulmonar",
-    color: "var(--c-water)",
-    title: "Fôlego, em mililitros.",
-    text: "Espirômetro com sensor de pressão de alta precisão.",
-  },
-  {
-    id: "crescimento",
-    cat: "Altura e crescimento",
-    color: "var(--accent)",
-    title: "Cada medida, um ponto na curva.",
-    text: "O sensor ultrassônico mede a altura sem contato, e a estação acompanha os percentis por idade e sexo, ano após ano.",
+    id: "composicao",
+    cat: "Composição corporal",
+    color: "var(--c-protein)",
+    title: "Água, proteína, gordura e minerais.",
+    text: "Bioimpedância com quatro eletrodos de aço inox 304 e algoritmo específico para quem ainda está crescendo.",
     wide: true,
   },
   {
-    id: "visao",
-    cat: "Acuidade visual",
-    color: "var(--c-mineral)",
-    title: "Triagem visual na própria tela.",
-    text: "Optotipo “E” em quatro direções.",
+    id: "mais",
+    cat: "E mais três testes",
+    color: "var(--ink)",
+    title: "Na mesma passagem pela estação.",
+    text: "",
+  },
+  {
+    id: "postura",
+    cat: "Postura",
+    color: "var(--warn)",
+    title: "A câmera vê o que o espelho esconde.",
+    text: "Visão computacional mapeia ombros, coluna, pelve e joelhos e aponta sinais de atenção.",
   },
   {
     id: "indicadores",
@@ -408,6 +354,7 @@ const TILES: Tile[] = [
     title: "Um minuto, cada salto contado.",
     text: "Corda com Bluetooth integrada ao relatório.",
     tbc: true,
+    full: true,
   },
 ];
 
@@ -425,14 +372,10 @@ export default function Assessments() {
         return <Posture />;
       case "equilibrio":
         return <Balance on={on} />;
-      case "reacao":
-        return <Reaction on={loop} />;
-      case "pulmao":
-        return <Lungs on={on} />;
+      case "mais":
+        return <More />;
       case "crescimento":
         return <Growth on={on} />;
-      case "visao":
-        return <Vision on={loop} />;
       case "indicadores":
         return <Indicators />;
       default:
@@ -450,8 +393,8 @@ export default function Assessments() {
             <span className="grad-text">Um só relatório.</span>
           </h2>
           <p className="lead" data-reveal>
-            Altura, composição corporal, postura, equilíbrio, agilidade, capacidade pulmonar e visão, com curva de
-            crescimento por idade e sexo. A estação conduz cada teste <strong>pela tela e por voz</strong>.
+            Altura, composição corporal, equilíbrio, agilidade, capacidade pulmonar, acuidade visual e postura, com
+            curva de crescimento por idade e sexo. A estação conduz cada teste <strong>pela tela e por voz</strong>.
           </p>
         </div>
         <div ref={ref} className={s.grid}>
@@ -464,6 +407,7 @@ export default function Assessments() {
                   fill
                   sizes="(max-width: 680px) 100vw, (max-width: 1000px) 50vw, 33vw"
                 />
+                <span className="illus">Imagem ilustrativa</span>
                 <header className={s.photoCap}>
                   <p className={s.cat}>{t.cat}</p>
                   <h3>{t.title}</h3>
@@ -471,7 +415,7 @@ export default function Assessments() {
                 </header>
               </article>
             ) : (
-              <article key={t.id} className={`${s.tile} ${t.wide ? s.wide : ""} ${s[t.id] ?? ""}`} data-reveal>
+              <article key={t.id} className={`${s.tile} ${t.wide ? s.wide : ""} ${t.full ? s.full : ""} ${s[t.id] ?? ""}`} data-reveal>
                 <header>
                   <p className={s.cat}>
                     <i style={{ background: t.color }} aria-hidden="true" />
@@ -479,7 +423,7 @@ export default function Assessments() {
                     {t.tbc && <span className="tbc">A confirmar</span>}
                   </p>
                   <h3>{t.title}</h3>
-                  <p className={s.text}>{t.text}</p>
+                  {t.text && <p className={s.text}>{t.text}</p>}
                 </header>
                 <div className={s.visual}>{visual(t.id)}</div>
               </article>

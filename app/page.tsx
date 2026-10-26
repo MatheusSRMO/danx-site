@@ -1,5 +1,6 @@
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import Hero from "@/components/sections/Hero";
 import Manifesto from "@/components/sections/Manifesto";
 import ProductStory from "@/components/sections/ProductStory";
@@ -34,6 +35,7 @@ export default function Home() {
         <Quote />
       </main>
       <Footer />
+      <WhatsAppButton />
     </>
   );
 }

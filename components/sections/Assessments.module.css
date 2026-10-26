@@ -30,6 +30,10 @@
 .wide {
   grid-column: span 2;
 }
+.full {
+  grid-column: 1 / -1;
+  min-height: 0;
+}
 
 .cat {
   display: flex;
@@ -264,57 +268,35 @@
   stroke-dashoffset: 0;
 }
 
-/* Reação */
-.grid9 {
+/* E mais três testes */
+.more {
   display: grid;
-  grid-template-columns: repeat(3, 36px);
+  gap: 18px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.more li {
+  display: grid;
+  gap: 2px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.more b {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  justify-content: center;
+  font-weight: 600;
 }
-.grid9 span {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--bg-2);
-  transition:
-    background-color 0.15s,
-    transform 0.2s var(--ease-out);
+.more i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
-.grid9 .lit {
-  background: var(--accent);
-  transform: scale(1.06);
-}
-
-/* Fôlego */
-.lungs svg {
-  width: 140px;
-  margin-inline: auto;
-  transform: rotate(-90deg);
-}
-.ringBg {
-  fill: none;
-  stroke: rgba(14, 151, 154, 0.15);
-  stroke-width: 14;
-}
-.ring {
-  fill: none;
-  stroke: var(--c-water);
-  stroke-width: 14;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 1.8s var(--ease-out);
-}
-.ringOn {
-  stroke-dashoffset: 0.22;
-}
-
-/* Visão */
-.vision svg {
-  width: 96px;
-  height: 96px;
-  fill: var(--ink);
-  transition: transform 0.6s var(--ease-out);
+.more span {
+  color: var(--ink-2);
+  font-size: 0.95rem;
 }
 
 /* 62 indicadores */
@@ -374,6 +356,10 @@
   .grid {
     grid-template-columns: 1fr;
   }
+  /* O gráfico encolhe com a largura: o texto dele cresce para continuar legível (≈ 11 px na tela) */
+  .axis {
+    font-size: 19px;
+  }
   .wide {
     grid-column: auto;
   }
@@ -412,4 +398,8 @@
 .photoCap .cat,
 .photoCap .text {
   color: #fff;
+}
+.photoTile :global(.illus) {
+  top: 12px;
+  bottom: auto;
 }

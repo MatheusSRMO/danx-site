@@ -41,6 +41,7 @@ export default function Report() {
             fill
             sizes="(max-width: 900px) 96vw, 760px"
           />
+          <span className="illus">Imagem ilustrativa</span>
         </div>
 
         <div className={s.phoneCard} data-reveal>

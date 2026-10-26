@@ -7,6 +7,7 @@ export default function Footer({ base = "", notes = true }: { base?: string; not
   return (
     <footer className={s.footer}>
       <div className="container-wide">
+        {notes && <h2 className={s.notesTitle}>Fontes e avisos</h2>}
         {notes && (
           <ol className={s.notes}>
             <li>
@@ -16,7 +17,7 @@ export default function Footer({ base = "", notes = true }: { base?: string; not
             </li>
             <li>
               Valores de avaliação exibidos no site são ilustrativos. Peso, gordura, músculo e IMC vêm de um relatório
-              de exemplo (aluno de 10 anos, 148 cm).
+              de exemplo (aluno de 10 anos, 148 cm). As fotos de uso da estação são imagens ilustrativas.
             </li>
             <li>
               A Estação de Saúde DANX realiza triagem e avaliação. Ela não faz diagnóstico: os resultados apoiam o

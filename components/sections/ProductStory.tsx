@@ -33,7 +33,8 @@ const KEYS: Key[] = [
   // Altura: ondas do sensor descem do dossel
   { p: 0.235, rot: -0.42, dist: 3.6, y: 1.72, elev: 0.15, explode: 0, glow: 0, ultra: 1, cx: 0 },
   // Composição corporal: eletrodos acesos na plataforma e o gráfico da composição na tela
-  { p: 0.315, rot: -0.8, dist: 4.6, y: 0.78, elev: 0.75, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
+  { p: 0.315, rot: -0.8, dist: 5.6, y: 0.95, elev: 0.95, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
+  { p: 0.335, rot: -0.74, dist: 5.5, y: 0.97, elev: 0.9, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
   // Do equilíbrio à postura, a tela é a protagonista: a câmera orbita devagar diante dela
   { p: 0.4, rot: -0.2, dist: 1.9, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
   { p: 0.48, rot: -0.08, dist: 1.85, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
@@ -51,13 +52,16 @@ const KEYS: Key[] = [
 // Telas reais da estação ao longo da rolagem: mesma tela entre dois pontos → o progresso t avança
 const SCREEN_TRACK: [number, ScreenId, number][] = [
   [0.0, "inicio", 0],
-  [0.12, "inicio", 0],
-  [0.16, "inicio", 1],
-  [0.175, "consentimento", 0],
-  [0.19, "consentimento", 1],
-  [0.2, "composicao", 0],
-  [0.25, "composicao", 0.45],
-  [0.33, "composicao", 1],
+  [0.105, "inicio", 0],
+  [0.14, "inicio", 1],
+  [0.148, "consentimento", 0],
+  [0.166, "consentimento", 1],
+  [0.172, "composicao", 0],
+  [0.19, "composicao", 0.2],
+  [0.255, "composicao", 0.46],
+  [0.282, "composicao", 0.5],
+  [0.34, "composicao", 0.95],
+  [0.35, "composicao", 1],
   [0.355, "equilibrio", 0],
   [0.365, "equilibrio", 0.02],
   [0.44, "equilibrio", 1],

@@ -24,7 +24,11 @@ export default function Docs() {
                 <h3>{d.title}</h3>
                 <p>{d.text}</p>
               </div>
-              <span className={s.status}>{d.tbc && REVISAO ? <span className="tbc">A confirmar</span> : "Sob pedido"}</span>
+              <span className={s.status}>{d.tbc && REVISAO ? (
+                  <span className="tbc">A confirmar</span>
+                ) : (
+                  <a href="#cotacao">Peça no formulário</a>
+                )}</span>
             </li>
           ))}
         </ul>

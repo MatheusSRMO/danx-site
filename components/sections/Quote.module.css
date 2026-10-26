@@ -154,3 +154,42 @@
   color: var(--ink-2);
   font-size: 0.95rem;
 }
+
+/* Documentos pedidos junto com a proposta */
+.docs {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.docs legend {
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.docs div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.docs label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #948f86;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.docs label:has(input:checked) {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(26, 99, 196, 0.14);
+}
+.docs input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}

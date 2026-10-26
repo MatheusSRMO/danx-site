@@ -66,6 +66,7 @@ export default function Lifestyle() {
             fill
             sizes="(max-width: 1340px) 96vw, 1260px"
           />
+          <span className="illus">Imagem ilustrativa</span>
         </div>
         <ul className={s.points}>
           {POINTS.map((p) => (

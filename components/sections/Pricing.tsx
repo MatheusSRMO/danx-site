@@ -75,6 +75,16 @@ export default function Pricing() {
               ))}
             </ul>
 
+            <h3 className={s.h3}>Como é a compra</h3>
+            <ol className={s.steps}>
+              {pricing.steps.map((st) => (
+                <li key={st.title}>
+                  <b>{st.title}</b>
+                  <span>{st.text}</span>
+                </li>
+              ))}
+            </ol>
+
             <div className={s.ctas}>
               <a className="btn btn-primary" href="#cotacao">
                 Solicitar cotação

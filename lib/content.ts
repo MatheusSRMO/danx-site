@@ -17,7 +17,7 @@ export const site = {
   cnpj: { value: "00.000.000/0000-00", tbc: true },
   razaoSocial: { value: "Razão social da DANX", tbc: true },
   description:
-    "Triagem e avaliação corporal de crianças e adolescentes na escola: altura, composição corporal, postura, equilíbrio, reação, fôlego e visão em uma só estação.",
+    "Triagem e avaliação corporal de crianças e adolescentes na escola: altura, composição corporal, equilíbrio, agilidade, capacidade pulmonar, acuidade visual e postura em uma só estação.",
 };
 
 export const nav = [
@@ -26,7 +26,7 @@ export const nav = [
   { href: "#relatorio", label: "Relatório" },
   { href: "#para-quem", label: "Para quem" },
   { href: "#especificacoes", label: "Especificações" },
-  { href: "#investimento", label: "Preço" },
+  { href: "#investimento", label: "Investimento" },
   { href: "#faq", label: "Dúvidas" },
 ];
 
@@ -34,13 +34,14 @@ export const hero = {
   product: "Estação de Saúde DANX",
   title: "Triagem de saúde de cada aluno,",
   titleEnd: "dentro da escola.",
-  lead: "Altura, composição corporal, postura, equilíbrio, agilidade, capacidade pulmonar e acuidade visual em uma só estação, com relatório para a família e dados para a gestão.",
+  lead: "Altura, composição corporal, equilíbrio, agilidade, capacidade pulmonar, acuidade visual e postura em uma só estação, com relatório para a família e dados para a gestão.",
   note: "Exclusiva para redes públicas, Sistema S e escolas particulares.",
 };
 
 export const manifesto = {
   text: "Crescer é rápido. Perceber o que muda, nem sempre. A DANX transforma uma passagem pela estação em dados que escola, família e gestão conseguem acompanhar, ano após ano.",
-  bridge: "A estação mede, em cada aluno e todo ano, o que esses números apontam: postura, composição corporal, equilíbrio e agilidade.",
+  bridge:
+    "A estação acompanha, aluno a aluno e ano a ano, os indicadores ligados a esses números: postura, composição corporal, equilíbrio e agilidade.",
   stats: [
     {
       value: 55.7,
@@ -90,11 +91,11 @@ export const management = {
     },
     {
       title: "Proximidade com as famílias",
-      text: "Cada família recebe um retorno concreto sobre cada estudante, o que fortalece a confiança na escola e na gestão.",
+      text: "Cada família recebe um retorno concreto sobre cada estudante, o que aproxima a escola das famílias.",
     },
     {
       title: "Diferencial para escolas particulares",
-      text: "Um cuidado com a saúde que as famílias enxergam no relatório de cada filho, e que pesa na matrícula e na rematrícula.",
+      text: "Um cuidado com a saúde que as famílias enxergam no relatório de cada filho, e que a escola pode usar na matrícula e na rematrícula.",
     },
   ],
   programs: [
@@ -115,16 +116,22 @@ export const audience = {
     {
       title: "Prefeituras e secretarias",
       sub: "Saúde e Educação",
+      cta: "Solicitar cotação para a rede",
+      tipo: "Prefeitura / Secretaria de Educação",
       text: "Uma linha de base anual da saúde dos alunos da rede, para apoiar ações de alimentação saudável, atividade física e saúde ocular, temas do Programa Saúde na Escola.",
     },
     {
       title: "Sistema S",
       sub: "Sesi, Sesc, Senac e outros",
+      cta: "Solicitar cotação para o seu programa",
+      tipo: "Sistema S",
       text: "Avaliação padronizada para programas de esporte, saúde e educação, com histórico de cada participante.",
     },
     {
       title: "Escolas particulares",
       sub: "Educação infantil, ensino fundamental e médio",
+      cta: "Solicitar cotação para a sua escola",
+      tipo: "Escola particular",
       text: "Um cuidado que as famílias enxergam, com relatório individual, acompanhamento anual e o nome da escola no relatório.",
     },
   ],
@@ -194,6 +201,12 @@ export const pricing = {
     lead: "Informe a sua rede ou escola e receba o valor, as condições de pagamento e o prazo em uma proposta comercial formal, pronta para o processo de compra.",
     includesTitle: "Na proposta detalhamos",
   },
+  // Como a compra acontece (só passos que não dependem de dado a confirmar)
+  steps: [
+    { title: "Você pede a cotação", text: "Pelo formulário, WhatsApp ou telefone." },
+    { title: "Recebe a proposta formal", text: "Com valor, condições de pagamento e prazo." },
+    { title: "A estação chega e é montada", text: "No local, pronta para as avaliações." },
+  ],
   price: { value: "R$ 00.000,00", per: "por estação", tbc: true },
   conditions: [
     { title: "À vista", text: "Condição especial para pagamento à vista.", tbc: true },
@@ -217,23 +230,12 @@ export const docs = [
 
 export const faq = [
   {
-    q: "A estação faz diagnóstico?",
-    a: "Não. A Estação de Saúde DANX faz triagem e avaliação: identifica sinais de atenção e apoia o encaminhamento para profissionais de saúde. O diagnóstico é sempre feito por um profissional habilitado.",
+    q: "Quais documentos a DANX fornece?",
+    a: "Ficha técnica, proposta comercial modelo e declaração de exclusividade. Marque os que precisa no formulário de cotação e eles seguem junto com a proposta.",
   },
   {
-    q: "Para qual faixa etária ela serve?",
-    a: "O algoritmo usa curvas de crescimento por idade e sexo, próprias para crianças e adolescentes. A estação avalia pessoas de 3 a 99 anos, então também pode ser usada com professores e funcionários.",
-  },
-  {
-    q: "Precisa de internet para funcionar?",
-    a: "Não. As avaliações ficam salvas no próprio equipamento, com capacidade para mais de 100 mil registros, e são sincronizadas com a nuvem quando há conexão.",
-  },
-  {
-    q: "Como ficam os dados das crianças (LGPD)?",
-    a: "Os dados são armazenados com criptografia e acesso por permissão. A política de consentimento dos responsáveis e o tratamento de dados de crianças, conforme o art. 14 da LGPD, serão detalhados aqui.",
-    tbc: true,
-    // Na produção, enquanto a resposta completa não é confirmada: só o que o produto já mostra
-    pub: "Antes de cada avaliação, a estação pede o consentimento na própria tela. Fale com a nossa equipe para conhecer como os dados são guardados e quem tem acesso a eles na sua instituição.",
+    q: "Quem recebe o relatório e em que formato?",
+    a: "O relatório aparece na tela da estação logo após a avaliação, pode ser impresso em A4 em impressora laser ou jato de tinta e chega à família no celular, pelo QR code. Ele traz o nome e o contato da instituição.",
   },
   {
     q: "Como funciona a compra por órgãos públicos?",
@@ -251,6 +253,25 @@ export const faq = [
     a: "Garantia, assistência técnica e manutenção preventiva serão detalhadas aqui.",
     tbc: true,
   },
+  {
+    q: "Precisa de internet para funcionar?",
+    a: "Não. As avaliações ficam salvas no próprio equipamento, com capacidade para mais de 100 mil registros, e são sincronizadas com a nuvem quando há conexão.",
+  },
+  {
+    q: "Como ficam os dados das crianças (LGPD)?",
+    a: "Os dados são armazenados com criptografia e acesso por permissão. A política de consentimento dos responsáveis e o tratamento de dados de crianças, conforme o art. 14 da LGPD, serão detalhados aqui.",
+    tbc: true,
+    // Na produção, enquanto a resposta completa não é confirmada: só o que o produto já mostra
+    pub: "Antes de cada avaliação, a estação pede o consentimento na própria tela. Fale com a nossa equipe para conhecer como os dados são guardados e quem tem acesso a eles na sua instituição.",
+  },
+  {
+    q: "A estação faz diagnóstico?",
+    a: "Não. A Estação de Saúde DANX faz triagem e avaliação: identifica sinais de atenção e apoia o encaminhamento para profissionais de saúde. O diagnóstico é sempre feito por um profissional habilitado.",
+  },
+  {
+    q: "Para qual faixa etária ela serve?",
+    a: "O algoritmo usa curvas de crescimento por idade e sexo, próprias para crianças e adolescentes. A estação avalia pessoas de 3 a 99 anos, então também pode ser usada com professores e funcionários.",
+  },
 ];
 
 export const quote = {
@@ -258,7 +279,8 @@ export const quote = {
   lead: "Receba o valor, as condições e uma proposta formal. Respondemos em até um dia útil.",
   leadTbc: true,
   leadPub: "Receba o valor, as condições e uma proposta comercial formal.",
-  next: "Depois do envio, a equipe da DANX entra em contato com a proposta.",
+  next: "Depois do envio, a equipe da DANX entra em contato para apresentar a proposta.",
+  docs: ["Ficha técnica", "Proposta comercial modelo", "Declaração de exclusividade"],
   types: [
     "Prefeitura / Secretaria de Saúde",
     "Prefeitura / Secretaria de Educação",

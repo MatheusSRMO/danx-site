@@ -132,3 +132,39 @@
   border-radius: 50%;
   background: var(--accent);
 }
+
+/* Passos da compra */
+.steps {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.steps li {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  column-gap: 12px;
+  counter-increment: step;
+}
+.steps li::before {
+  content: counter(step);
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+.steps b {
+  font-weight: 600;
+}
+.steps span {
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}

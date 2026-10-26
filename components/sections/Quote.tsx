@@ -46,7 +46,9 @@ const LABELS: Record<string, string> = {
   telefone: "telefone",
   consentimento: "consentimento",
   mensagem: "mensagem",
+  documentos: "documentos",
 };
+const WA_TEXT = "Olá! Quero uma cotação da Estação de Saúde DANX.";
 
 export default function Quote() {
   const [status, setStatus] = useState<Status>("idle");
@@ -54,6 +56,18 @@ export default function Quote() {
   const [error, setError] = useState("");
   const result = useRef<HTMLDivElement>(null);
   const send = useRef<HTMLButtonElement>(null);
+  const tipo = useRef<HTMLSelectElement>(null);
+
+  // As chamadas de "Para quem" já chegam com o tipo de instituição escolhido (links com data-tipo)
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const a = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>("a[data-tipo]") : null;
+      const t = a?.dataset.tipo;
+      if (t && tipo.current && quote.types.includes(t)) tipo.current.value = t;
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
 
   // Quando o formulário dá lugar à resposta, leva o foco (e a tela) até ela
   useEffect(() => {
@@ -70,7 +84,10 @@ export default function Quote() {
     e.preventDefault();
     const form = e.currentTarget;
     if (!form.reportValidity()) return;
-    const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+    const fd = new FormData(form);
+    const data = Object.fromEntries(fd.entries()) as Record<string, string>;
+    const docs = fd.getAll("documentos").join(", ");
+    if (docs) data.documentos = docs;
     setError("");
     setStatus("sending");
     const summary = [
@@ -78,10 +95,11 @@ export default function Quote() {
       `Instituição: ${data.instituicao} (${data.tipo})`,
       data.cnpj && `CNPJ: ${data.cnpj}`,
       `Cidade: ${data.cidade}/${data.uf}`,
-      `Responsável: ${data.nome}, ${data.cargo}`,
+      `Responsável: ${data.nome}${data.cargo ? `, ${data.cargo}` : ""}`,
       `E-mail: ${data.email}`,
       `Telefone: ${data.telefone}`,
       `Estações: ${data.quantidade || "a definir"}`,
+      docs && `Documentos: ${docs}`,
       data.mensagem,
     ]
       .filter(Boolean)
@@ -163,7 +181,7 @@ export default function Quote() {
               </label>
               <label className={s.field}>
                 <span>Tipo de instituição *</span>
-                <select name="tipo" required defaultValue="">
+                <select ref={tipo} name="tipo" required defaultValue="">
                   <option value="" disabled>
                     Selecione
                   </option>
@@ -230,7 +248,7 @@ export default function Quote() {
               </label>
               <label className={s.field}>
                 <span>Quantidade estimada</span>
-                <input name="quantidade" type="number" min={1} max={99999} defaultValue={1} />
+                <input name="quantidade" type="number" inputMode="numeric" min={1} max={99999} placeholder="Ex.: 3" />
               </label>
             </div>
             <label className={s.field}>
@@ -242,6 +260,17 @@ export default function Quote() {
                 placeholder="Conte um pouco sobre a rede, as escolas ou o programa."
               />
             </label>
+            <fieldset className={s.docs}>
+              <legend>Quer receber algum documento junto com a proposta?</legend>
+              <div>
+                {quote.docs.map((d) => (
+                  <label key={d}>
+                    <input type="checkbox" name="documentos" value={d} />
+                    <span>{d}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
             <input className={s.hp} name="hp_x7" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <label className={s.consent}>
               <input type="checkbox" name="consentimento" value="sim" required />
@@ -262,7 +291,12 @@ export default function Quote() {
               <button ref={send} className="btn btn-primary" type="submit" disabled={status === "sending"}>
                 {status === "sending" ? "Enviando…" : "Solicitar cotação"}
               </button>
-              <a className="link" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener noreferrer">
+              <a
+                className="link"
+                href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(WA_TEXT)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Falar no WhatsApp
               </a>
               <p>
