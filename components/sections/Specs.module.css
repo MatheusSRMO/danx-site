@@ -96,6 +96,7 @@
 
 .groups {
   display: grid;
+  max-width: 980px;
 }
 .group {
   display: grid;

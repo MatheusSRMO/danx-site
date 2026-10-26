@@ -147,3 +147,21 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+.tests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.tests li {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+}

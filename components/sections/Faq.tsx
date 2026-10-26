@@ -31,8 +31,7 @@ export default function Faq() {
         </div>
         {!REVISAO && (
           <p className={s.more}>
-            Garantia, manutenção e condições de compra pública constam da proposta formal. Outras dúvidas? Fale com a
-            nossa equipe pelo{" "}
+            Garantia e manutenção constam da proposta formal. Outras dúvidas? Fale com a nossa equipe pelo{" "}
             <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener noreferrer">
               WhatsApp {site.phone}
             </a>

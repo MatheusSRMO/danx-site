@@ -7,11 +7,12 @@
     right: 16px;
     bottom: calc(16px + env(safe-area-inset-bottom));
     z-index: 40;
-    display: inline-grid;
-    place-items: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 14px 0 11px;
+    border-radius: 999px;
     background: #146c43;
     color: #fff;
     font-size: 0.88rem;
@@ -22,8 +23,8 @@
       transform 0.3s var(--ease-out);
   }
   .fab svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.8;
@@ -33,5 +34,12 @@
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
+  }
+}
+@media (max-width: 900px) {
+  /* Folga no fim do rodapé para o botão não cobrir a última linha */
+  :global(body > footer),
+  :global(body > div > footer) {
+    padding-bottom: 88px;
   }
 }

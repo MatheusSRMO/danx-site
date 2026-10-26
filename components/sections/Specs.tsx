@@ -5,9 +5,10 @@ import s from "./Specs.module.css";
 export default function Specs() {
   return (
     <section id="especificacoes" className="section" aria-labelledby="specs-title">
-      <div className="container">
+      <div className="container-wide">
+        <p className="eyebrow eyebrow-accent">Especificações</p>
         <h2 id="specs-title" className="headline-2" data-reveal>
-          Especificações técnicas
+          Sete testes em uma estação de 2,1 m.
         </h2>
 
         <div className={s.dims} data-reveal>

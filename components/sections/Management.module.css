@@ -178,11 +178,11 @@
 .benefits p {
   margin-top: 6px;
   color: var(--ink-2);
-  font-size: 0.98rem;
+  font-size: 1.05rem;
 }
 
 .programs {
-  margin-top: clamp(48px, 7vw, 96px);
+  margin-top: clamp(32px, 4vw, 56px);
   text-align: center;
 }
 .programs h3 {

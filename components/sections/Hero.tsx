@@ -68,6 +68,11 @@ export default function Hero() {
         <p className={`lead ${s.lead}`} data-in>
           {hero.lead}
         </p>
+        <ul className={s.tests} aria-label="Os sete testes" data-in>
+          {hero.tests.map((t) => (
+            <li key={t}>{t}</li>
+          ))}
+        </ul>
         <p className={s.note} data-in>
           {hero.note}
         </p>

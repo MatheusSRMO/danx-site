@@ -34,12 +34,13 @@ export const hero = {
   title: "Triagem de saúde de cada aluno,",
   titleEnd: "dentro da escola.",
   lead: "Sete testes em uma só estação, com relatório para a família e painel para a gestão: a escola acompanha a saúde de cada aluno, ano a ano.",
+  tests: ["Altura", "Composição corporal", "Equilíbrio", "Agilidade", "Capacidade pulmonar", "Acuidade visual", "Postura"],
   note: "Vendida apenas a redes públicas, Sistema S e escolas particulares.",
 };
 
 export const manifesto = {
   title: "Crescer é rápido. Perceber o que muda, nem sempre.",
-  text: "Cada aluno que passa pela estação gera dados que escola, família e gestão acompanham ao longo dos anos.",
+  text: "Na escola, a triagem chega a todos os alunos, com o mesmo protocolo, todo ano. A família recebe o resultado e a gestão enxerga a tendência.",
   bridge:
     "Postura, composição corporal, equilíbrio e agilidade mudam devagar, e o problema costuma aparecer só quando vira queixa. A estação registra cada medida, aluno a aluno, para a escola ver a tendência cedo. É triagem: indica sinais de atenção e apoia as ações do Programa Saúde na Escola.",
   stats: [
@@ -152,7 +153,7 @@ export const specs = [
   {
     group: "Medição",
     rows: [
-      ["Composição corporal", "Bioimpedância (BIA) multifrequência, 4 eletrodos"],
+      ["Composição corporal", "Bioimpedância multifrequência (BIA): leitura pelos pés, com 4 eletrodos"],
       ["Altura", "Sensor ultrassônico de alta frequência"],
       ["Capacidade pulmonar", "Sensor de pressão de ar de alta precisão"],
       ["Postura", "Câmera com visão computacional (IA)"],
@@ -162,7 +163,7 @@ export const specs = [
       ["Faixa de peso", "0 a 160 kg, resolução de 0,1 kg", true],
       ["Faixa de altura", "80 a 200 cm", true],
       ["Faixa etária", "3 a 99 anos"],
-      ["Corrente de medição", "< 280 µA"],
+      ["Corrente de medição", "Abaixo de 280 µA (corrente de baixa intensidade)"],
     ],
   },
   {
@@ -237,9 +238,10 @@ export const faq = [
     a: "Não. A Estação de Saúde DANX faz triagem e avaliação: identifica sinais de atenção e apoia o encaminhamento para profissionais de saúde. O diagnóstico é sempre feito por um profissional habilitado.",
   },
   {
-    q: "Como funciona a compra por órgãos públicos?",
+    q: "Como uma prefeitura ou secretaria compra a estação?",
     a: "O preço é público e emitimos proposta comercial formal para processos de compra. A modalidade adequada e a documentação de exclusividade devem ser confirmadas com o jurídico de cada órgão.",
     tbc: true,
+    pub: "A DANX é o único canal de venda da estação no Brasil. A proposta formal e a declaração de exclusividade acompanham o processo de compra, e a modalidade de contratação é definida pelo setor de compras do órgão.",
   },
   {
     q: "Como é a instalação?",
@@ -275,7 +277,6 @@ export const quote = {
   lead: "Receba o valor, as condições e uma proposta formal. Respondemos em até um dia útil.",
   leadTbc: true,
   leadPub: "Receba o valor, as condições e uma proposta comercial formal.",
-  next: "Depois do envio, a equipe da DANX entra em contato para apresentar a proposta.",
   docs: ["Ficha técnica", "Proposta comercial modelo", "Declaração de exclusividade", "Relatório de exemplo"],
   types: [
     "Prefeitura / Secretaria de Saúde",

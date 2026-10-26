@@ -31,6 +31,12 @@ function Growth({ on }: { on: boolean }) {
   const x = (a: number) => L + ((a - 4) / 14) * (W - L - R);
   const y = (h: number) => T + (1 - (h - 88) / 104) * (H - T - B);
   const d = (v: number[]) => v.map((h, i) => `${i ? "L" : "M"}${x(AGES[i]).toFixed(1)} ${y(h).toFixed(1)}`).join(" ");
+  // Faixa de referência entre os percentis 3 e 97
+  const band = `${d(CURVES[0].v)} ${[...CURVES[2].v]
+    .map((h, i) => [h, AGES[i]] as const)
+    .reverse()
+    .map(([h, a]) => `L${x(a).toFixed(1)} ${y(h).toFixed(1)}`)
+    .join(" ")} Z`;
   return (
     <svg
       className={`${s.growth} ${on ? s.draw : ""}`}
@@ -51,6 +57,7 @@ function Growth({ on }: { on: boolean }) {
           {a} anos
         </text>
       ))}
+      <path d={band} className={s.band} />
       {CURVES.map((c) => (
         <g key={c.k}>
           <path d={d(c.v)} stroke={c.c} className={s.curve} pathLength={1} />
@@ -59,7 +66,7 @@ function Growth({ on }: { on: boolean }) {
           </text>
         </g>
       ))}
-      <circle cx={x(10)} cy={y(148)} r={7} className={s.dot}>
+      <circle cx={x(10)} cy={y(148)} r={5.5} className={s.dot}>
         <title>Aluno de exemplo: 10 anos, 148 cm</title>
       </circle>
     </svg>
@@ -154,7 +161,9 @@ export default function Insights() {
         </header>
         <div>
           <Growth on={on} />
-          <p className={s.legend}>P3, P50 e P97: faixas de referência de crescimento (percentis).</p>
+          <p className={s.legend}>
+            Faixa azul: referência de crescimento entre os percentis 3 e 97. O aluno de exemplo está dentro dela.
+          </p>
         </div>
       </article>
       <article className={s.tile} data-reveal>

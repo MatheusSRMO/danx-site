@@ -112,12 +112,10 @@ export default function Report() {
         <div className={s.data} data-reveal>
           <h3>Dados das crianças</h3>
           <p>
-            O aluno é identificado pelo número de matrícula, e a estação exibe o aviso de coleta de dados antes de cada
-            avaliação. As avaliações ficam salvas no próprio equipamento e são sincronizadas com a nuvem quando há
-            conexão. Para dados de crianças, a LGPD pede o consentimento de um dos pais ou do responsável legal.
+            Identificação só pelo número de matrícula, e o consentimento dos responsáveis é combinado com a escola.
           </p>
           <a className="link" href="#lgpd">
-            LGPD nas perguntas frequentes
+            Resposta completa sobre LGPD
           </a>
         </div>
         <ReportSheet />

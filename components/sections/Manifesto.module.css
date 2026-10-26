@@ -80,11 +80,11 @@
 
 .bridge {
   margin-top: clamp(40px, 5vw, 64px);
-  max-width: 34em;
-  font-size: var(--t-3, 1.35rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--ink);
+  max-width: 38em;
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink-2);
 }
 
 /* Atalho para os cartões de cada comprador */

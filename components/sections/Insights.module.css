@@ -142,3 +142,6 @@
   font-size: 0.85rem;
   color: var(--ink-2);
 }
+.band {
+  fill: rgba(31, 111, 216, 0.08);
+}

@@ -7,10 +7,10 @@ import s from "./Lifestyle.module.css";
 const POINTS = [
   {
     t: "Pouco espaço no chão",
-    d: "Base de 48 × 93,5 cm e 2,1 m de altura. Para a triagem de acuidade visual, reserve 2,5 m livres à frente da tela.",
+    d: "Ocupa só 48 × 93,5 cm. Reserve 2,5 m à frente da tela apenas para o teste de visão.",
   },
   {
-    t: "Funciona sem internet",
+    t: "Avalia mesmo sem internet",
     d: "Guarda mais de 100 mil avaliações e sincroniza com a nuvem quando a conexão volta.",
   },
   {

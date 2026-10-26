@@ -193,7 +193,7 @@ const CHAPTERS = [
     at: 0.745,
     kicker: "Postura",
     title: "De frente e de lado.",
-    text: "A visão computacional marca os pontos do corpo e aponta sinais de atenção postural, com medidas como a inclinação dos ombros e do quadril.",
+    text: "A visão computacional marca os pontos do corpo e classifica o risco de cada região. O que não está baixo vira sinal de atenção no relatório.",
     screen: "os pontos do corpo, de frente e de lado.",
   },
   {
@@ -201,20 +201,19 @@ const CHAPTERS = [
     kicker: "Resultado",
     title: "Resultado na hora.",
     text: "A tela mostra a pontuação de saúde e a curva de crescimento. O relatório sai impresso ou pelo QR code.",
-    stat: { v: "86", u: "pontuação de saúde" },
     screen: "pontuação de saúde, curva de crescimento e relatório.",
   },
   {
     at: 0.92,
     kicker: "Instalação",
     title: "Chega desmontada. Montada no local.",
-    text: "Torre com tela, plataforma de medição e dossel ultrassônico são montados no local.",
+    text: "Torre com tela, plataforma de medição e dossel ultrassônico chegam separados e são montados na escola. Os detalhes de entrega e instalação vêm na proposta.",
   },
   {
     at: 0.985,
     kicker: "Pronta para a escola",
-    title: "Pequena no espaço. Grande no cuidado.",
-    text: "Pronta para receber a escola inteira, turma após turma.",
+    title: "Pronta para a rotina da escola.",
+    text: "Atende em sequência, turma após turma, e o relatório de cada aluno sai na hora.",
     cta: true,
   },
 ];
@@ -364,6 +363,8 @@ export default function ProductStory() {
       const ctas = chapters.map((c) => c.querySelector<HTMLElement>(`.${s.cta}`));
       const fill = q(`.${s.railFill}`)[0] as HTMLElement;
       const loupes = chapters.map((c) => c.querySelector<HTMLCanvasElement>("canvas[data-loupe]"));
+      const note = q(`.${s.sample}`)[0] as HTMLElement | undefined;
+      const bar = q(`.${s.progress} span`)[0] as HTMLElement | undefined;
       let cur = 0;
       const paintLoupe = () => {
         const lc = loupes[cur];
@@ -410,6 +411,9 @@ export default function ProductStory() {
           // Rótulos só com a estação aberta: somem por inteiro antes e depois da vista explodida
           const lab = sm(state.explode, 0.6, 1);
           callouts.forEach((c) => (c.style.opacity = String(lab)));
+          // O aviso sai de cena na vista explodida, para não disputar espaço com os rótulos das peças
+          if (note) note.style.opacity = String(1 - sm(state.explode, 0.1, 0.5));
+          if (bar) bar.style.transform = `scaleX(${p})`;
         },
       });
     },
@@ -472,6 +476,7 @@ export default function ProductStory() {
               {c.stat && (
                 <p className={s.stat}>
                   <span>{c.stat.v}</span> {c.stat.u}
+                  <em>· aluno de exemplo</em>
                 </p>
               )}
               {c.screen && (
@@ -515,6 +520,9 @@ export default function ProductStory() {
           </ol>
         </div>
 
+        <div className={s.progress} aria-hidden="true">
+          <span />
+        </div>
         <p className={s.sample}>
           <span>Números de um aluno de exemplo</span>
           <span className={s.sep}> · </span>
