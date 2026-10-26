@@ -193,7 +193,7 @@ const CHAPTERS = [
     at: 0.745,
     kicker: "Postura",
     title: "De frente e de lado.",
-    text: "A visão computacional marca os pontos do corpo e classifica o risco de cada região. O que não está baixo vira sinal de atenção no relatório.",
+    text: "A visão computacional marca os pontos do corpo e classifica o risco de cada região. Risco médio ou alto vira sinal de atenção no relatório, para a escola encaminhar a um profissional.",
     screen: "os pontos do corpo, de frente e de lado.",
   },
   {

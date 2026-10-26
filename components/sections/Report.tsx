@@ -25,14 +25,16 @@ function Rings() {
 export default function Report() {
   return (
     <section id="relatorio" className="section" aria-labelledby="relatorio-title">
-      <div className={`container-wide ${s.head}`}>
-        <h2 id="relatorio-title" className="headline" data-reveal>
-          O resultado chega à família.
-        </h2>
-        <p className="lead" data-reveal>
-          Na tela da estação, impresso em A4 ou direto no celular. O relatório sai com{" "}
-          <strong>o nome e o contato da sua instituição</strong>.
-        </p>
+      <div className="container-wide">
+        <div className={s.head}>
+          <h2 id="relatorio-title" className="headline" data-reveal>
+            O resultado chega à família.
+          </h2>
+          <p className="lead" data-reveal>
+            Na tela da estação, impresso em A4 ou direto no celular. O relatório sai com{" "}
+            <strong>o nome e o contato da sua instituição</strong>.
+          </p>
+        </div>
       </div>
 
       <div className={`container-wide ${s.grid}`}>

@@ -39,10 +39,10 @@ export const hero = {
 };
 
 export const manifesto = {
-  title: "Crescer é rápido. Perceber o que muda, nem sempre.",
+  title: "Muita coisa muda sem ninguém notar.",
   text: "Na escola, a triagem chega a todos os alunos, com o mesmo protocolo, todo ano. A família recebe o resultado e a gestão enxerga a tendência.",
   bridge:
-    "Postura, composição corporal, equilíbrio e agilidade mudam devagar, e o problema costuma aparecer só quando vira queixa. A estação registra cada medida, aluno a aluno, para a escola ver a tendência cedo. É triagem: indica sinais de atenção e apoia as ações do Programa Saúde na Escola.",
+    "Postura, composição corporal, equilíbrio e agilidade mudam aos poucos, e o problema costuma aparecer só quando vira queixa. A estação registra cada medida, aluno a aluno, para a escola ver a tendência cedo. É triagem: indica sinais de atenção e apoia as ações do Programa Saúde na Escola.",
   stats: [
     {
       value: 84,
@@ -58,7 +58,7 @@ export const manifesto = {
       suffix: "%",
       label:
         "dos estudantes de 11 a 16 anos relataram dor nas costas nos últimos três meses, em um estudo regional em Teutônia (RS).",
-      link: "Na estação: postura e equilíbrio.",
+      link: "Na estação: postura.",
       source: "Noll et al., Revista de Saúde Pública, 2016",
     },
   ],

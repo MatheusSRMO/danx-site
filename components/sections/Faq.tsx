@@ -33,7 +33,7 @@ export default function Faq() {
           <p className={s.more}>
             Garantia e manutenção constam da proposta formal. Outras dúvidas? Fale com a nossa equipe pelo{" "}
             <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener noreferrer">
-              WhatsApp {site.phone}
+              WhatsApp {site.phone.replace(" ", "\u00a0")}
             </a>
             .
           </p>
