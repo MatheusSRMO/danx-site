@@ -166,13 +166,13 @@ const CHAPTERS = [
     at: 0.92,
     kicker: "Instalação",
     title: "Chega desmontada. Montada no local.",
-    text: "Torre com tela, plataforma de medição e dossel ultrassônico chegam separados e são montados na escola. Os detalhes de entrega e instalação vêm na proposta.",
+    text: "Torre com tela, plataforma de medição e dossel ultrassônico chegam separados e são montados na escola.",
   },
   {
     at: 0.985,
     kicker: "Pronta para a escola",
-    title: "Turma após turma.",
-    text: "Atende em sequência, turma após turma, e o relatório de cada aluno sai na hora.",
+    title: "Pronta para a sua escola.",
+    text: "Peça a cotação: a proposta formal detalha entrega, instalação e treinamento da equipe.",
     cta: true,
   },
 ];

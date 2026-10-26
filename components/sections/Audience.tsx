@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { audience } from "@/lib/content";
 import s from "./Audience.module.css";
 
@@ -7,6 +6,7 @@ export default function Audience() {
     <section id="para-quem" className="section" aria-labelledby="para-quem-title">
       <div className="container-wide">
         <div className={s.head}>
+          <p className="eyebrow eyebrow-accent">Para quem</p>
           <h2 id="para-quem-title" className="headline" data-reveal>
             {audience.title}
           </h2>
@@ -25,24 +25,6 @@ export default function Audience() {
               </a>
             </article>
           ))}
-        </div>
-        <div className={s.banner} data-reveal>
-          <div className={s.bannerText}>
-            <h3>{audience.exclusive.title}</h3>
-            <p>{audience.exclusive.text}</p>
-            <a className="btn btn-primary" href="#cotacao">
-              Solicitar cotação
-            </a>
-          </div>
-          <div className={s.bannerMedia}>
-            <Image
-              src="/media/station-studio.webp"
-              alt=""
-              width={1024}
-              height={1536}
-              sizes="(max-width: 900px) 70vw, 420px"
-            />
-          </div>
         </div>
       </div>
     </section>

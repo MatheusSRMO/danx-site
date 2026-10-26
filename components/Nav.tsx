@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";
-import { nav } from "@/lib/content";
+import { nav, site } from "@/lib/content";
 import s from "./Nav.module.css";
 
 export default function Nav() {
@@ -56,8 +56,23 @@ export default function Nav() {
             </a>
           ))}
         </nav>
-        <a className={`btn btn-primary btn-sm ${s.cta}`} href={`${base}#cotacao`}>
-          Solicitar cotação
+        <a className={`btn btn-primary btn-sm ${s.cta}`} href={`${base}#cotacao`} aria-label="Solicitar cotação">
+          <span className={s.long}>Solicitar cotação</span>
+          <span className={s.short} aria-hidden="true">
+            Cotação
+          </span>
+        </a>
+        {/* No celular, o WhatsApp fica na barra (sem botão flutuante sobre o texto) */}
+        <a
+          className={s.wa}
+          href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Olá! Quero saber mais sobre a Estação de Saúde DANX.")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Fale no WhatsApp (abre em nova aba)"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5z" />
+          </svg>
         </a>
         <button
           ref={toggle}

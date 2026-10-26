@@ -27,6 +27,7 @@ export default function Report() {
     <section id="relatorio" className="section" aria-labelledby="relatorio-title">
       <div className="container-wide">
         <div className={s.head}>
+          <p className="eyebrow eyebrow-accent">Relatório</p>
           <h2 id="relatorio-title" className="headline" data-reveal>
             O resultado chega à família.
           </h2>

@@ -215,7 +215,16 @@
 }
 @media (max-width: 620px) {
   .kpis {
-    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .kpis > div {
+    padding: 12px;
+  }
+  .kpis p {
+    font-size: 0.72rem;
+  }
+  .kpis b {
+    font-size: 1.35rem;
   }
   .benefits {
     grid-template-columns: 1fr;

@@ -42,7 +42,7 @@ export const manifesto = {
   title: "Muita coisa muda sem ninguém notar.",
   text: "Na escola, a triagem chega a todos os alunos, com o mesmo protocolo, todo ano. A família recebe o resultado e a gestão enxerga a tendência.",
   bridge:
-    "Postura, composição corporal, equilíbrio e agilidade mudam aos poucos, e o problema costuma aparecer só quando vira queixa. A estação registra cada medida, aluno a aluno, para a escola ver a tendência cedo. É triagem: indica sinais de atenção e apoia as ações do Programa Saúde na Escola.",
+    "Sem uma medida anual, a escola não sabe em quais turmas agir. Postura, composição corporal, equilíbrio e agilidade mudam aos poucos, e o problema costuma aparecer só quando vira queixa. A estação registra cada medida, aluno a aluno, para a escola ver a tendência cedo. É triagem: indica sinais de atenção e apoia as ações do Programa Saúde na Escola.",
   stats: [
     {
       value: 84,
@@ -101,7 +101,7 @@ export const management = {
 
 export const audience = {
   title: "Para quem cuida de crianças e adolescentes.",
-  lead: "Vendida somente a instituições que atendem crianças e adolescentes, nunca no varejo.",
+  lead: "Cada instituição usa a estação de um jeito. Veja o seu caso.",
   segments: [
     {
       title: "Prefeituras e secretarias",

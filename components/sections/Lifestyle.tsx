@@ -15,7 +15,7 @@ const POINTS = [
   },
   {
     t: "Guiada na tela e por voz",
-    d: "O aluno sobe na plataforma e segue as instruções da própria estação. O relatório sai na hora.",
+    d: "O aluno sobe na plataforma e segue as instruções da estação, na tela e por voz.",
   },
 ];
 
@@ -51,6 +51,7 @@ export default function Lifestyle() {
   return (
     <section ref={root} className="section" aria-labelledby="rotina-title">
       <div className="container-wide">
+        <p className="eyebrow eyebrow-accent">Rotina</p>
         <h2 id="rotina-title" className="headline" data-reveal>
           Feita para a rotina da escola.
         </h2>

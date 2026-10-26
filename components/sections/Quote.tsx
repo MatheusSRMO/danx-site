@@ -161,6 +161,7 @@ export default function Quote() {
     <section id="cotacao" className="section" aria-labelledby="cotacao-title">
       <div className={`container-wide ${s.wrap}`}>
         <div className={s.head}>
+          <p className="eyebrow eyebrow-accent">Cotação</p>
           <h2 id="cotacao-title" className="headline-2" data-reveal>
             {quote.title}
           </h2>

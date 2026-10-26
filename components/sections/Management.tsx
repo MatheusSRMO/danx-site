@@ -28,7 +28,7 @@ function Dashboard() {
         <span />
         <span />
         <em>Painel da gestão</em>
-        <b className={s.sample}>Exemplo · dados fictícios</b>
+        <b className={s.sample}>Ilustração · dados fictícios</b>
       </div>
       <div className={s.body} aria-hidden="true">
         <div className={s.filters}>
@@ -72,6 +72,7 @@ export default function Management() {
     <section className="section alt" aria-labelledby="gestao-title">
       <div className="container-wide">
         <div className={s.head}>
+          <p className="eyebrow eyebrow-accent">Gestão</p>
           <h2 id="gestao-title" className="headline pre-line" data-reveal>
             Dados para decidir.
             <br />

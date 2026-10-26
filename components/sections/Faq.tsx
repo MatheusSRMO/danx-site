@@ -5,6 +5,7 @@ export default function Faq() {
   return (
     <section id="faq" className="section alt" aria-labelledby="faq-title">
       <div className={`container-wide ${s.wrap}`}>
+        <p className="eyebrow eyebrow-accent">Dúvidas</p>
         <h2 id="faq-title" className="headline-2" data-reveal>
           Perguntas frequentes.
         </h2>

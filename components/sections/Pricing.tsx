@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { docs, pricing, REVISAO, site } from "@/lib/content";
+import { audience, docs, pricing, REVISAO, site } from "@/lib/content";
 import s from "./Pricing.module.css";
 
 const Check = () => (
@@ -44,6 +44,9 @@ export default function Pricing() {
               </>
             )}
             <p className={s.lead}>{pending ? pricing.pending.lead : pricing.lead}</p>
+            <p className={s.direct}>
+              <b>{audience.exclusive.title}</b> {audience.exclusive.text}
+            </p>
 
             {conditions.length > 0 && (
               <>
