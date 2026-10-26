@@ -132,11 +132,12 @@ function Posture() {
 }
 
 // Curvas aproximadas de altura por idade (meninos), próximas às referências da OMS. Ilustrativas.
-const AGES = [2, 4, 6, 8, 10, 12, 14, 16, 18];
+// A partir dos 4 anos (a estação avalia a partir dos 3)
+const AGES = [4, 6, 8, 10, 12, 14, 16, 18];
 const CURVES = [
-  { k: "P97", v: [93, 111, 125, 137, 150, 162, 177, 184, 187], c: "#7fb0ee" },
-  { k: "P50", v: [87.5, 103, 116, 127, 138, 149, 163, 172, 176], c: "#1f6fd8" },
-  { k: "P3", v: [82, 94, 106, 117, 126, 136, 148, 157, 161], c: "#164f9c" },
+  { k: "P97", v: [111, 125, 137, 150, 162, 177, 184, 187], c: "#7fb0ee" },
+  { k: "P50", v: [103, 116, 127, 138, 149, 163, 172, 176], c: "#1f6fd8" },
+  { k: "P3", v: [94, 106, 117, 126, 136, 148, 157, 161], c: "#164f9c" },
 ];
 function Growth({ on }: { on: boolean }) {
   const W = 560,
@@ -145,8 +146,8 @@ function Growth({ on }: { on: boolean }) {
     R = 48,
     T = 10,
     B = 26;
-  const x = (a: number) => L + ((a - 2) / 16) * (W - L - R);
-  const y = (h: number) => T + (1 - (h - 75) / 117) * (H - T - B);
+  const x = (a: number) => L + ((a - 4) / 14) * (W - L - R);
+  const y = (h: number) => T + (1 - (h - 88) / 104) * (H - T - B);
   const d = (v: number[]) => v.map((h, i) => `${i ? "L" : "M"}${x(AGES[i]).toFixed(1)} ${y(h).toFixed(1)}`).join(" ");
   return (
     <svg
@@ -163,7 +164,7 @@ function Growth({ on }: { on: boolean }) {
           </text>
         </g>
       ))}
-      {[2, 6, 10, 14, 18].map((a) => (
+      {[4, 8, 12, 16].map((a) => (
         <text key={a} x={x(a)} y={H - 6} className={s.axis} textAnchor="middle">
           {a} anos
         </text>
@@ -171,7 +172,7 @@ function Growth({ on }: { on: boolean }) {
       {CURVES.map((c) => (
         <g key={c.k}>
           <path d={d(c.v)} stroke={c.c} className={s.curve} pathLength={1} />
-          <text x={W - R + 8} y={y(c.v[8]) + 4} className={s.axis}>
+          <text x={W - R + 8} y={y(c.v[c.v.length - 1]) + 4} className={s.axis}>
             {c.k}
           </text>
         </g>
@@ -388,13 +389,13 @@ export default function Assessments() {
       <div className="container-wide">
         <div className={s.head}>
           <h2 id="avaliacoes-title" className="headline" data-reveal>
-            Sete avaliações.
+            O que cada avaliação mostra.
             <br />
-            <span className="grad-text">Um só relatório.</span>
+            <span className="grad-text">Em um só relatório.</span>
           </h2>
           <p className="lead" data-reveal>
-            Altura, composição corporal, equilíbrio, agilidade, capacidade pulmonar, acuidade visual e postura, com
-            curva de crescimento por idade e sexo. A estação conduz cada teste <strong>pela tela e por voz</strong>.
+            Curva de crescimento por idade e sexo, sinais de atenção postural e <strong>62 indicadores</strong> em cada
+            avaliação.
           </p>
         </div>
         <div ref={ref} className={s.grid}>

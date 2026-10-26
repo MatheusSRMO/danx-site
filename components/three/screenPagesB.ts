@@ -192,7 +192,7 @@ export const equilibrio: Page = {
       arrow(g, EQ_CX + Math.cos(b) * 166, EQ_CY + Math.sin(b) * 166, base + fi, false);
     }
     // valor
-    const v = Math.round(100 - 14 * Math.pow(e, 0.85));
+    const v = Math.round(100 - 12 * Math.pow(e, 0.85));
     bigNum(g, String(v), 546, 962, 46);
     text(g, "%", 656, 984, { f: "num", w: 800, s: 14, c: "#fff", a: "center", sk: 12 });
   },

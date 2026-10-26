@@ -35,7 +35,7 @@ export const hero = {
   title: "Triagem de saúde de cada aluno,",
   titleEnd: "dentro da escola.",
   lead: "Altura, composição corporal, equilíbrio, agilidade, capacidade pulmonar, acuidade visual e postura em uma só estação, com relatório para a família e dados para a gestão.",
-  note: "Exclusiva para redes públicas, Sistema S e escolas particulares.",
+  note: "Vendida apenas a redes públicas, Sistema S e escolas particulares.",
 };
 
 export const manifesto = {
@@ -79,7 +79,7 @@ export const report = {
 };
 
 export const management = {
-  lead: "Cada avaliação alimenta uma base com a saúde da rede por escola, ano e turma.",
+  lead: "Cada avaliação alimenta o painel da gestão, com a saúde dos alunos por escola, ano e turma.",
   benefits: [
     {
       title: "Prevenção com dados",
@@ -106,11 +106,13 @@ export const management = {
     "Avaliação postural",
     "Desenvolvimento motor",
     "Programas esportivos",
+    "Relatório para as famílias",
+    "Matrícula e rematrícula",
   ],
 };
 
 export const audience = {
-  title: "Exclusiva para quem cuida de crianças e adolescentes.",
+  title: "Vendida só para quem cuida de crianças e adolescentes.",
   lead: "A Estação de Saúde DANX não é vendida no varejo. A distribuição é exclusiva para instituições que atendem o público infantil e juvenil.",
   segments: [
     {
@@ -118,7 +120,7 @@ export const audience = {
       sub: "Saúde e Educação",
       cta: "Solicitar cotação para a rede",
       tipo: "Prefeitura / Secretaria de Educação",
-      text: "Uma linha de base anual da saúde dos alunos da rede, para apoiar ações de alimentação saudável, atividade física e saúde ocular, temas do Programa Saúde na Escola.",
+      text: "Uma linha de base anual da saúde dos alunos da rede, para apoiar ações de alimentação saudável, atividade física e saúde ocular, temas do Programa Saúde na Escola. A proposta formal e a declaração de exclusividade acompanham o seu processo de compra.",
     },
     {
       title: "Sistema S",
@@ -136,7 +138,7 @@ export const audience = {
     },
   ],
   exclusive: {
-    title: "Um canal. Uma estação.",
+    title: "Um único canal de venda no Brasil.",
     text: "A DANX tem a exclusividade de venda deste equipamento no Brasil para o poder público, o Sistema S e escolas particulares.",
   },
 };
@@ -156,7 +158,7 @@ export const specs = [
     group: "Tela e sistema",
     rows: [
       ["Tela", "32″ IPS Full HD (1920 × 1080), sensível ao toque (capacitiva)"],
-      ["Sistema", "Android, com orientação por voz durante o teste"],
+      ["Sistema", "Sistema embarcado, com orientação por voz durante o teste"],
       ["Identificação", "Por número de identificação (ID)"],
     ],
   },
@@ -197,8 +199,8 @@ export const pricing = {
   lead: "Preço público, para que gestores encontrem o valor na pesquisa de preços. Emitimos proposta comercial formal para processos de compra.",
   // Enquanto o preço não é confirmado (produção)
   pending: {
-    price: "Valor sob proposta",
-    lead: "Informe a sua rede ou escola e receba o valor, as condições de pagamento e o prazo em uma proposta comercial formal, pronta para o processo de compra.",
+    title: "Proposta formal para a sua rede ou escola.",
+    lead: "Informe a instituição e a quantidade de estações. Você recebe valor, condições de pagamento e prazo em uma proposta pronta para o processo de compra.",
     includesTitle: "Na proposta detalhamos",
   },
   // Como a compra acontece (só passos que não dependem de dado a confirmar)
@@ -217,7 +219,7 @@ export const pricing = {
     { text: "Entrega e instalação no local", tbc: true },
     { text: "Treinamento da equipe", tbc: true },
     { text: "Garantia", tbc: true },
-    { text: "Acesso à plataforma de relatórios", tbc: true },
+    { text: "Acesso ao painel da gestão", tbc: true },
   ],
 };
 
@@ -225,13 +227,14 @@ export const docs = [
   { title: "Ficha técnica", text: "Especificações completas do equipamento.", tbc: true },
   { title: "Proposta comercial modelo", text: "Base para o processo de compra.", tbc: true },
   { title: "Declaração de exclusividade", text: "Documento do canal exclusivo de venda.", tbc: true },
+  { title: "Relatório de exemplo", text: "Um relatório completo, como a família recebe.", tbc: true },
   { title: "Registros e certificações", text: "Registros e certificações aplicáveis ao equipamento.", tbc: true, hide: true },
 ];
 
 export const faq = [
   {
     q: "Quais documentos a DANX fornece?",
-    a: "Ficha técnica, proposta comercial modelo e declaração de exclusividade. Marque os que precisa no formulário de cotação e eles seguem junto com a proposta.",
+    a: "Ficha técnica, proposta comercial modelo, declaração de exclusividade e um relatório de exemplo. Marque os que precisa no formulário de cotação e eles seguem junto com a proposta.",
   },
   {
     q: "Quem recebe o relatório e em que formato?",
@@ -258,6 +261,7 @@ export const faq = [
     a: "Não. As avaliações ficam salvas no próprio equipamento, com capacidade para mais de 100 mil registros, e são sincronizadas com a nuvem quando há conexão.",
   },
   {
+    id: "lgpd",
     q: "Como ficam os dados das crianças (LGPD)?",
     a: "Os dados são armazenados com criptografia e acesso por permissão. A política de consentimento dos responsáveis e o tratamento de dados de crianças, conforme o art. 14 da LGPD, serão detalhados aqui.",
     tbc: true,
@@ -280,7 +284,7 @@ export const quote = {
   leadTbc: true,
   leadPub: "Receba o valor, as condições e uma proposta comercial formal.",
   next: "Depois do envio, a equipe da DANX entra em contato para apresentar a proposta.",
-  docs: ["Ficha técnica", "Proposta comercial modelo", "Declaração de exclusividade"],
+  docs: ["Ficha técnica", "Proposta comercial modelo", "Declaração de exclusividade", "Relatório de exemplo"],
   types: [
     "Prefeitura / Secretaria de Saúde",
     "Prefeitura / Secretaria de Educação",

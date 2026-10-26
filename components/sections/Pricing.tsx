@@ -32,11 +32,9 @@ export default function Pricing() {
               Investimento
             </p>
             <h2 id="preco-title" className={s.name}>
-              Estação de Saúde DANX
+              {pending ? pricing.pending.title : "Estação de Saúde DANX"}
             </h2>
-            {pending ? (
-              <p className={`${s.price} ${s.onRequest}`}>{pricing.pending.price}</p>
-            ) : (
+            {pending ? null : (
               <>
                 <p className={s.price}>
                   <span className="num">{pricing.price.value}</span>

@@ -131,15 +131,21 @@
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--ink-2);
-  opacity: 0;
-  transition: opacity 0.2s;
 }
-.bar:hover .barLabel,
-.bar:nth-child(8) .barLabel {
-  opacity: 1;
+/* O ano com mais sinais de atenção fica em destaque: é a leitura que o gestor procura */
+.peak i {
+  background: var(--warn);
+}
+.peak .barLabel {
+  color: var(--ink);
 }
 .chart {
   padding-bottom: 34px;
+}
+.reading {
+  margin-top: 14px;
+  font-size: 0.9rem;
+  color: var(--ink-2);
 }
 
 .sample {

@@ -16,6 +16,7 @@ const BY_GRADE = [
 
 function Dashboard() {
   const max = 30;
+  const peak = Math.max(...BY_GRADE.map((b) => b.v));
   return (
     <div
       className={s.window}
@@ -53,7 +54,7 @@ function Dashboard() {
           <p className={s.chartTitle}>Alunos com sinais de atenção postural, por ano escolar (%)</p>
           <div className={s.bars}>
             {BY_GRADE.map((b) => (
-              <div key={b.g} className={s.bar} title={`${b.g} ano: ${b.v}%`}>
+              <div key={b.g} className={`${s.bar} ${b.v === peak ? s.peak : ""}`} title={`${b.g} ano: ${b.v}%`}>
                 <span className={s.barLabel}>{b.v}</span>
                 <i style={{ height: `${(b.v / max) * 100}%` }} />
                 <em>{b.g}</em>
@@ -83,6 +84,10 @@ export default function Management() {
 
         <div className={s.dash} data-reveal>
           <Dashboard />
+          <p className={s.reading}>
+            Exemplo de leitura: o painel mostra em quais anos há mais alunos com sinais de atenção postural, para a
+            escola ou a rede priorizar as ações.
+          </p>
         </div>
 
         <div className={s.split}>
@@ -97,7 +102,7 @@ export default function Management() {
         </div>
 
         <div className={s.programs} data-reveal>
-          <h3>Onde a estação entra na rotina da rede</h3>
+          <h3>Onde a estação entra na rotina da escola e da rede</h3>
           <ul>
             {management.programs.map((p) => (
               <li key={p}>{p}</li>

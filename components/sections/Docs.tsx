@@ -11,7 +11,7 @@ export default function Docs() {
         <p className="lead" data-reveal>
           {REVISAO
             ? "O que o processo de compra costuma pedir, reunido em um só lugar."
-            : "Peça junto com a cotação o que o processo de compra costuma exigir."}
+            : "Para instruir o processo de compra, peça junto com a cotação."}
         </p>
         <ul className={s.list}>
           {docs.filter((d) => REVISAO || !d.hide).map((d) => (

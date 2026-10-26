@@ -58,12 +58,17 @@ export default function Quote() {
   const send = useRef<HTMLButtonElement>(null);
   const tipo = useRef<HTMLSelectElement>(null);
 
-  // As chamadas de "Para quem" já chegam com o tipo de instituição escolhido (links com data-tipo)
+  // Links com data-tipo ou data-doc chegam ao formulário com o tipo de instituição ou o documento já marcados
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      const a = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>("a[data-tipo]") : null;
+      const a = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>("a[data-tipo], a[data-doc]") : null;
       const t = a?.dataset.tipo;
       if (t && tipo.current && quote.types.includes(t)) tipo.current.value = t;
+      const d = a?.dataset.doc;
+      if (d && quote.docs.includes(d)) {
+        const box = document.querySelector<HTMLInputElement>(`input[name="documentos"][value="${d}"]`);
+        if (box) box.checked = true;
+      }
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);

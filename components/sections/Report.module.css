@@ -205,3 +205,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Próximos passos para quem ainda não vai pedir a cotação */
+.more {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 32px;
+  margin-top: clamp(32px, 4vw, 48px);
+}

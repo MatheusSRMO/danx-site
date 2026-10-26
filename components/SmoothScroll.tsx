@@ -35,7 +35,10 @@ export default function SmoothScroll() {
       const el = document.getElementById(decodeURIComponent(id.slice(1)));
       if (!el) return;
       e.preventDefault();
-      if (lenis) lenis.scrollTo(el, { offset: 0, duration: 1.6 });
+      // Pergunta do FAQ: já chega aberta, logo abaixo da barra
+      const item = el instanceof HTMLDetailsElement;
+      if (item) el.open = true;
+      if (lenis) lenis.scrollTo(el, { offset: item ? -96 : 0, duration: 1.6 });
       else el.scrollIntoView();
       if (location.hash !== id) history.pushState(null, "", id);
       if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");

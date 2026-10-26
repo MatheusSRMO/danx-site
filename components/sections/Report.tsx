@@ -98,6 +98,14 @@ export default function Report() {
           </div>
         ))}
       </div>
+      <div className={`container-wide ${s.more}`} data-reveal>
+        <a className="link" href="#cotacao" data-doc="Relatório de exemplo">
+          Pedir um relatório de exemplo
+        </a>
+        <a className="link" href="#lgpd">
+          Dados das crianças e LGPD
+        </a>
+      </div>
     </section>
   );
 }

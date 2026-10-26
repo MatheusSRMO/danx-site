@@ -14,7 +14,8 @@ export default function Manifesto() {
       const q = gsap.utils.selector(root);
       gsap.fromTo(
         q(`.${s.word}`),
-        { opacity: 0.18 },
+        // Mesmo antes de acender, a palavra mantém contraste de leitura (≈ 4,5:1)
+        { opacity: 0.6 },
         {
           opacity: 1,
           stagger: 0.08,
@@ -29,13 +30,14 @@ export default function Manifesto() {
         const o = { v: 0 };
         const fmt = (v: number) =>
           v.toLocaleString("pt-BR", { minimumFractionDigits: dec, maximumFractionDigits: dec });
-        // Começa do zero já antes de aparecer (o HTML traz o valor final para quem não roda JS)
+        // Conta a partir do zero só se ainda está fora da tela; quem já o vê (ou não roda JS) fica com o valor final
+        if (node.getBoundingClientRect().top < window.innerHeight) return;
         node.textContent = fmt(0);
         gsap.to(o, {
           v: target,
-          duration: 2,
+          duration: 1.6,
           ease: "power3.out",
-          scrollTrigger: { trigger: node, start: "top 85%", once: true },
+          scrollTrigger: { trigger: node, start: "top bottom", once: true },
           onUpdate: () => void (node.textContent = fmt(o.v)),
         });
       });

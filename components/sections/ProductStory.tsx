@@ -62,12 +62,16 @@ const SCREEN_TRACK: [number, ScreenId, number][] = [
   [0.282, "composicao", 0.5],
   [0.34, "composicao", 0.95],
   [0.35, "composicao", 1],
+  // Cada teste termina no meio do capítulo: o resultado fica na tela enquanto o número aparece no texto
   [0.355, "equilibrio", 0],
-  [0.365, "equilibrio", 0.02],
+  [0.362, "equilibrio", 0.02],
+  [0.398, "equilibrio", 1],
   [0.44, "equilibrio", 1],
   [0.445, "agilidade", 0],
+  [0.478, "agilidade", 1],
   [0.52, "agilidade", 1],
   [0.525, "espirometria", 0],
+  [0.556, "espirometria", 1],
   [0.59, "espirometria", 1],
   [0.632, "visao", 0],
   [0.7, "visao", 1],
@@ -87,13 +91,13 @@ const CHAPTERS = [
     at: 0.03,
     kicker: "Conheça a estação",
     title: "Uma estação. Sete avaliações.",
-    text: "Torre de vidro temperado, tela de 32″, dossel de medição e plataforma de bioimpedância. Role para ver cada etapa na tela da estação.",
+    text: "Torre de vidro temperado, tela de 32″, dossel com sensor de altura e plataforma de bioimpedância. Role para ver cada etapa na tela da estação.",
   },
   {
     at: 0.135,
     kicker: "Identificação",
     title: "Começa com o número do aluno.",
-    text: "O aluno digita a matrícula na tela e confirma o consentimento. A partir daí a estação conduz cada etapa, na tela e por voz.",
+    text: "O aluno digita o número de matrícula na tela. A partir daí a estação conduz cada etapa, na tela e por voz.",
   },
   {
     at: 0.235,
@@ -114,18 +118,21 @@ const CHAPTERS = [
     kicker: "Equilíbrio",
     title: "Numa perna só, de olhos fechados.",
     text: "Mãos juntas, olhos fechados, dez segundos sobre a plataforma. A tela mostra a capacidade de equilíbrio.",
+    stat: { v: "88%", u: "capacidade de equilíbrio" },
   },
   {
     at: 0.48,
     kicker: "Agilidade",
     title: "Cinco toques, contra o relógio.",
     text: "O botão acende cinco vezes na tela e o aluno toca o mais rápido que puder. O tempo médio de reação sai em milissegundos.",
+    stat: { v: "412", u: "ms de tempo médio de reação" },
   },
   {
     at: 0.56,
     kicker: "Capacidade pulmonar",
     title: "Um sopro no espirômetro.",
     text: "Espirômetro sem fio com bocal descartável. A tela mostra a capacidade vital em mililitros enquanto o aluno sopra.",
+    stat: { v: "1.650", u: "mL de capacidade vital" },
   },
   {
     at: 0.655,
@@ -137,7 +144,7 @@ const CHAPTERS = [
     at: 0.745,
     kicker: "Postura",
     title: "De frente e de lado para a câmera.",
-    text: "A visão computacional marca os pontos do corpo e aponta desvios de postura, além de medidas como ombros e quadril.",
+    text: "A visão computacional marca os pontos do corpo e aponta sinais de atenção postural, com medidas como a inclinação dos ombros e do quadril.",
   },
   {
     at: 0.845,
@@ -156,7 +163,7 @@ const CHAPTERS = [
     at: 0.985,
     kicker: "Pronta para a escola",
     title: "Pequena no espaço. Grande no cuidado.",
-    text: "Ocupa uma base de 48 × 93,5 cm, funciona sem internet e guarda mais de 100 mil avaliações.",
+    text: "Cabe em um canto da escola e recebe uma turma depois da outra.",
     cta: true,
   },
 ];
@@ -332,7 +339,9 @@ export default function ProductStory() {
           });
           dots.forEach((d, i) => d.classList.toggle(s.on, i === current));
           fill.style.transform = `scaleY(${p})`;
-          callouts.forEach((c) => (c.style.opacity = String(state.explode)));
+          // Rótulos só com a estação aberta: somem por inteiro antes e depois da vista explodida
+          const lab = sm(state.explode, 0.6, 1);
+          callouts.forEach((c) => (c.style.opacity = String(lab)));
         },
       });
     },
