@@ -60,3 +60,6 @@
 .more a {
   color: var(--accent);
 }
+.wrap > * {
+  max-width: 960px;
+}

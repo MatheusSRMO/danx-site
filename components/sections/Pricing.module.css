@@ -190,9 +190,9 @@
 .docs ul {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 22px;
+  gap: 8px 34px;
   margin: 10px 0 0;
-  padding: 0 0 0 18px;
+  padding: 0 0 0 20px;
 }
 .docs li {
   font-weight: 500;

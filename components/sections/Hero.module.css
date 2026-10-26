@@ -72,8 +72,9 @@
   margin-top: 32px;
 }
 .note {
-  margin-top: 26px;
-  font-size: 0.85rem;
+  margin-top: 18px;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: #4a4741;
 }
 
@@ -109,9 +110,6 @@
   }
   .ctas {
     justify-content: center;
-  }
-  .note {
-    display: none;
   }
 }
 

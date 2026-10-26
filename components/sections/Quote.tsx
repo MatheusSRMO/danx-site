@@ -147,7 +147,7 @@ export default function Quote() {
 
   return (
     <section id="cotacao" className="section" aria-labelledby="cotacao-title">
-      <div className="container">
+      <div className={`container-wide ${s.wrap}`}>
         <div className={s.head}>
           <h2 id="cotacao-title" className="headline-2" data-reveal>
             {quote.title}

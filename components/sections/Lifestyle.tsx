@@ -50,7 +50,7 @@ export default function Lifestyle() {
   );
   return (
     <section ref={root} className="section" aria-labelledby="rotina-title">
-      <div className="container-wide center">
+      <div className="container-wide">
         <h2 id="rotina-title" className="headline" data-reveal>
           Feita para a rotina da escola.
         </h2>

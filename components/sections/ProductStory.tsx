@@ -103,7 +103,7 @@ const LOUPE: Record<ScreenId, Region> = {
   agilidade: [194, 280, 693, 520],
   espirometria: [127, 440, 827, 620],
   visao: [330, 860, 420, 315],
-  postura: [380, 700, 700, 525],
+  postura: [560, 680, 520, 390],
   pontuacao: [140, 250, 800, 600],
   evolucao: [0, 150, 1080, 810],
   relatorio: [0, 150, 1080, 810],
@@ -132,14 +132,14 @@ const CHAPTERS = [
   {
     at: 0.03,
     kicker: "Conheça a estação",
-    title: "Uma estação. Sete avaliações.",
+    title: "Uma estação. Sete testes.",
     text: "Torre de vidro temperado, tela de 32″, dossel com sensor de altura e plataforma de bioimpedância. Role para ver cada etapa na tela da estação.",
   },
   {
     at: 0.135,
     kicker: "Identificação",
     title: "Começa com o número do aluno.",
-    text: "O aluno digita o número de matrícula, e a tela exibe o aviso de coleta de dados; o consentimento dos responsáveis é combinado antes com a instituição. A partir daí a estação conduz cada etapa, na tela e por voz.",
+    text: "O aluno digita o número de matrícula, e a tela exibe o aviso de coleta de dados. O consentimento dos responsáveis é combinado antes com a escola.",
     screen: "teclado da matrícula e aviso de coleta de dados.",
   },
   {
@@ -161,7 +161,7 @@ const CHAPTERS = [
   {
     at: 0.4,
     kicker: "Equilíbrio",
-    title: "Numa perna só, de olhos fechados.",
+    title: "Uma perna só, olhos fechados.",
     text: "Em uma perna só, mãos juntas e olhos fechados, por dez segundos sobre a plataforma. A tela mostra a capacidade de equilíbrio.",
     stat: { v: "88%", u: "capacidade de equilíbrio" },
     screen: "cronômetro de 10 segundos e a capacidade de equilíbrio.",
@@ -192,15 +192,15 @@ const CHAPTERS = [
   {
     at: 0.745,
     kicker: "Postura",
-    title: "De frente e de lado para a câmera.",
+    title: "De frente e de lado.",
     text: "A visão computacional marca os pontos do corpo e aponta sinais de atenção postural, com medidas como a inclinação dos ombros e do quadril.",
     screen: "os pontos do corpo, de frente e de lado.",
   },
   {
     at: 0.845,
     kicker: "Resultado",
-    title: "Pontuação, curva e relatório na hora.",
-    text: "Ao final, a tela mostra a pontuação de saúde e a curva de crescimento, com cada medida na faixa de referência para a idade e o sexo. O relatório sai impresso ou pelo QR code.",
+    title: "Resultado na hora.",
+    text: "A tela mostra a pontuação de saúde e a curva de crescimento. O relatório sai impresso ou pelo QR code.",
     stat: { v: "86", u: "pontuação de saúde" },
     screen: "pontuação de saúde, curva de crescimento e relatório.",
   },
@@ -214,7 +214,7 @@ const CHAPTERS = [
     at: 0.985,
     kicker: "Pronta para a escola",
     title: "Pequena no espaço. Grande no cuidado.",
-    text: "Base de 48 × 93,5 cm. Funciona sem internet e guarda mais de 100 mil avaliações. Pronta para a escola inteira, turma após turma.",
+    text: "Pronta para receber a escola inteira, turma após turma.",
     cta: true,
   },
 ];
@@ -516,7 +516,9 @@ export default function ProductStory() {
         </div>
 
         <p className={s.sample}>
-          Números de um aluno de exemplo · <a href="#para-quem">Pular a apresentação</a>
+          <span>Números de um aluno de exemplo</span>
+          <span className={s.sep}> · </span>
+          <a href="#para-quem">Pular a apresentação</a>
         </p>
         <p className={s.hint} aria-hidden="true">
           {touch ? "Arraste para girar" : "Clique e arraste para girar"}

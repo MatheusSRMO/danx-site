@@ -123,7 +123,7 @@ h2,
 h3 {
   font-family: var(--f-display);
   font-weight: 650;
-  letter-spacing: -0.022em;
+  letter-spacing: -0.018em;
   line-height: 1.06;
   text-wrap: balance;
 }

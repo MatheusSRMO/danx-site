@@ -33,13 +33,13 @@ export const hero = {
   product: "Estação de Saúde DANX",
   title: "Triagem de saúde de cada aluno,",
   titleEnd: "dentro da escola.",
-  lead: "Sete avaliações em uma só estação, com relatório para a família e painel para a gestão: a escola acompanha a saúde de cada aluno, ano a ano.",
+  lead: "Sete testes em uma só estação, com relatório para a família e painel para a gestão: a escola acompanha a saúde de cada aluno, ano a ano.",
   note: "Vendida apenas a redes públicas, Sistema S e escolas particulares.",
 };
 
 export const manifesto = {
   title: "Crescer é rápido. Perceber o que muda, nem sempre.",
-  text: "Cada aluno que passa pela estação gera dados que escola, família e gestão acompanham, ano após ano.",
+  text: "Cada aluno que passa pela estação gera dados que escola, família e gestão acompanham ao longo dos anos.",
   bridge:
     "Postura, composição corporal, equilíbrio e agilidade mudam devagar, e o problema costuma aparecer só quando vira queixa. A estação registra cada medida, aluno a aluno, para a escola ver a tendência cedo. É triagem: indica sinais de atenção e apoia as ações do Programa Saúde na Escola.",
   stats: [
@@ -48,15 +48,17 @@ export const manifesto = {
       decimals: 0,
       suffix: "%",
       label: "dos adolescentes brasileiros não praticam os 60 minutos diários de atividade física recomendados.",
-      source: "OMS / The Lancet Child & Adolescent Health, 2019",
+      link: "Na estação: composição corporal, agilidade e capacidade pulmonar.",
+      source: "Guthold et al. (OMS), The Lancet Child & Adolescent Health, 2019",
     },
     {
       value: 55.7,
       decimals: 1,
       suffix: "%",
       label:
-        "dos estudantes de 11 a 16 anos avaliados em um estudo em Teutônia (RS) relataram dor nas costas nos últimos três meses.",
-      source: "Noll et al., Revista de Saúde Pública (USP), 2016",
+        "dos estudantes de 11 a 16 anos relataram dor nas costas nos últimos três meses, em um estudo regional em Teutônia (RS).",
+      link: "Na estação: postura e equilíbrio.",
+      source: "Noll et al., Revista de Saúde Pública, 2016",
     },
   ],
 };
@@ -87,7 +89,7 @@ export const management = {
     },
     {
       title: "Resultados visíveis",
-      text: "A evolução dos alunos ano a ano, útil para prestar contas e divulgar o programa.",
+      text: "A evolução dos alunos de um ano para o outro, útil para prestar contas e divulgar o programa.",
     },
     {
       title: "Uma medida comum",
@@ -97,15 +99,15 @@ export const management = {
 };
 
 export const audience = {
-  title: "Vendida a quem cuida de crianças e adolescentes.",
-  lead: "A Estação de Saúde DANX não é vendida no varejo. A distribuição é exclusiva para instituições que atendem o público infantil e juvenil.",
+  title: "Para quem cuida de crianças e adolescentes.",
+  lead: "Vendida somente a instituições que atendem crianças e adolescentes, nunca no varejo.",
   segments: [
     {
       title: "Prefeituras e secretarias",
       sub: "Saúde e Educação",
       cta: "Solicitar cotação para a rede",
       tipo: "Prefeitura / Secretaria de Educação",
-      text: "Uma linha de base anual da saúde dos alunos da rede, para apoiar ações de alimentação saudável, atividade física e saúde ocular, temas do Programa Saúde na Escola. A proposta formal e a declaração de exclusividade acompanham o seu processo de compra.",
+      text: "Uma linha de base anual da saúde dos alunos da rede, para apoiar ações de alimentação saudável, atividade física e saúde ocular, temas do Programa Saúde na Escola.",
     },
     {
       title: "Sistema S",
@@ -154,6 +156,9 @@ export const specs = [
       ["Altura", "Sensor ultrassônico de alta frequência"],
       ["Capacidade pulmonar", "Sensor de pressão de ar de alta precisão"],
       ["Postura", "Câmera com visão computacional (IA)"],
+      ["Equilíbrio", "Na plataforma: 10 s em uma perna, olhos fechados"],
+      ["Agilidade", "Tempo de reação na tela sensível ao toque (5 estímulos), em ms"],
+      ["Acuidade visual", "Optotipo E na tela, a 2,5 m, um olho de cada vez"],
       ["Faixa de peso", "0 a 160 kg, resolução de 0,1 kg", true],
       ["Faixa de altura", "80 a 200 cm", true],
       ["Faixa etária", "3 a 99 anos"],
@@ -163,7 +168,7 @@ export const specs = [
   {
     group: "Dados e conectividade",
     rows: [
-      ["Armazenamento local", "Mais de 100.000 registros"],
+      ["Armazenamento local", "Mais de 100 mil avaliações"],
       ["Nuvem", "Sem limite de registros, com backup automático", true],
       ["Conexões", "Wi-Fi 2,4 GHz e 5 GHz, rede cabeada (LAN), Bluetooth, 2 × USB 2.0"],
       ["Relatório", "Tela, A4 (impressora laser ou jato de tinta), web e celular"],
@@ -249,7 +254,7 @@ export const faq = [
   },
   {
     q: "Quem opera a estação?",
-    a: "O aluno sobe na plataforma e segue as instruções da própria estação, na tela e por voz. O relatório sai na hora: na tela, impresso ou pelo QR code.",
+    a: "Um profissional da escola acompanha a avaliação, e o aluno segue as instruções da própria estação, na tela e por voz. O relatório sai na hora. O treinamento da equipe é detalhado na proposta.",
   },
   {
     q: "O que preparar na escola?",
@@ -257,16 +262,16 @@ export const faq = [
   },
   {
     q: "Precisa de internet para funcionar?",
-    a: "Não. As avaliações ficam salvas no próprio equipamento, com capacidade para mais de 100 mil registros, e são sincronizadas com a nuvem quando há conexão.",
+    a: "Não para avaliar. As avaliações ficam salvas no próprio equipamento, com capacidade para mais de 100 mil, e são sincronizadas com a nuvem quando há conexão. O acesso pelo QR code e o painel da gestão usam os dados que chegam à nuvem.",
   },
   {
     q: "Para qual faixa etária ela serve?",
-    a: "O algoritmo usa curvas de crescimento por idade e sexo, próprias para crianças e adolescentes. A estação avalia pessoas de 3 a 99 anos, então também pode ser usada com professores e funcionários.",
+    a: "De 3 a 99 anos. Para crianças e adolescentes, o algoritmo usa curvas de crescimento por idade e sexo. A estação também pode ser usada com professores e funcionários.",
   },
 ];
 
 export const quote = {
-  title: "Leve a DANX para a sua escola ou rede.",
+  title: "Leve a Estação de Saúde DANX para a sua escola ou rede.",
   lead: "Receba o valor, as condições e uma proposta formal. Respondemos em até um dia útil.",
   leadTbc: true,
   leadPub: "Receba o valor, as condições e uma proposta comercial formal.",

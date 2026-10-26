@@ -68,6 +68,9 @@ export default function Specs() {
             </div>
           ))}
         </div>
+        <a className={`btn btn-secondary ${s.more}`} href="#cotacao" data-doc="Ficha técnica">
+          Pedir a ficha técnica completa
+        </a>
       </div>
     </section>
   );

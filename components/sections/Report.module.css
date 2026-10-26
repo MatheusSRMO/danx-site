@@ -390,3 +390,118 @@
   text-align: center;
   color: var(--ink-2);
 }
+.head {
+  max-width: 900px;
+}
+
+/* Pedido do relatório de exemplo por e-mail */
+.mini {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.mini input[type="email"] {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #948f86;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 1rem;
+}
+.mini input[type="email"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(26, 99, 196, 0.18);
+}
+.miniConsent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+.miniConsent input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+.miniConsent a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.mini .btn {
+  justify-self: start;
+}
+.sent {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--bg-2);
+  color: var(--ink);
+}
+.sent a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+/* A4 que amplia ao clicar */
+.zoom {
+  position: relative;
+  justify-self: end;
+  width: 100%;
+  max-width: 300px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+.zoom .a4 {
+  max-width: none;
+}
+.zoomHint {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(29, 29, 31, 0.78);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.dialog {
+  width: min(620px, 94vw);
+  max-height: 94vh;
+  padding: 20px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--bg-2);
+}
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+.dialog form {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+.a4Big {
+  max-width: none;
+  width: 300px;
+  margin-inline: auto;
+  transform: none;
+  zoom: 1.85;
+}
+@media (max-width: 560px) {
+  .a4Big {
+    zoom: 1.15;
+  }
+}
+@media (max-width: 1100px) {
+  .zoom {
+    justify-self: center;
+  }
+}

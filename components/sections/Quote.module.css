@@ -238,3 +238,6 @@
   font-weight: 500;
   color: var(--ink-2);
 }
+.wrap > * {
+  max-width: 960px;
+}

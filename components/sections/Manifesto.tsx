@@ -48,7 +48,7 @@ export default function Manifesto() {
   return (
     <section ref={root} className={`section ${s.manifesto}`} aria-labelledby="manifesto-title">
       <div className="container-wide">
-        <p className={`eyebrow ${s.label}`}>Por que na escola</p>
+        <p className="eyebrow eyebrow-accent">Por que na escola</p>
         <h2 id="manifesto-title" className={s.text}>
           {words.map((w, i) => (
             <span key={i} className={s.word}>
@@ -70,6 +70,7 @@ export default function Manifesto() {
               </p>
               <figcaption>
                 <p>{st.label}</p>
+                <p className={s.link}>{st.link}</p>
                 <cite>Fonte: {st.source}</cite>
               </figcaption>
             </figure>

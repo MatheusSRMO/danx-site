@@ -4,7 +4,7 @@ import s from "./Faq.module.css";
 export default function Faq() {
   return (
     <section id="faq" className="section alt" aria-labelledby="faq-title">
-      <div className="container">
+      <div className={`container-wide ${s.wrap}`}>
         <h2 id="faq-title" className="headline-2" data-reveal>
           Perguntas frequentes.
         </h2>

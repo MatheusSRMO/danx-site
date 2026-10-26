@@ -68,6 +68,9 @@ export default function Hero() {
         <p className={`lead ${s.lead}`} data-in>
           {hero.lead}
         </p>
+        <p className={s.note} data-in>
+          {hero.note}
+        </p>
         <div className={s.ctas} data-in>
           <a className="btn btn-primary" href="#cotacao">
             Solicitar cotação
@@ -76,9 +79,6 @@ export default function Hero() {
             Conheça a estação
           </a>
         </div>
-        <p className={s.note} data-in>
-          {hero.note}
-        </p>
         <p className={s.talk} data-in>
           Prefere conversar?{" "}
           <a

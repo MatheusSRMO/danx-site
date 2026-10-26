@@ -11,9 +11,9 @@ export default function Footer({ base = "", notes = true }: { base?: string; not
         {notes && (
           <ol className={s.notes}>
             <li>
-              Estatísticas: Noll et al., Revista de Saúde Pública (USP), 2016 (dor nas costas em estudantes de 11 a 16
-              anos de Teutônia, RS); OMS / The Lancet Child &amp; Adolescent Health, 2019 (atividade física de
-              adolescentes no Brasil).
+              Estatísticas: Guthold et al. (OMS), The Lancet Child &amp; Adolescent Health, 2019 (atividade física de
+              adolescentes no Brasil); Noll et al., Revista de Saúde Pública, 2016 (dor nas costas em estudantes de 11
+              a 16 anos de Teutônia, RS).
             </li>
             <li>
               Valores de avaliação exibidos no site são ilustrativos. Peso, gordura, músculo e IMC vêm de um relatório
@@ -48,7 +48,6 @@ export default function Footer({ base = "", notes = true }: { base?: string; not
             >
               WhatsApp {site.phone}
             </a>
-            <a href="https://www.danx.com.br">www.danx.com.br</a>
             {(REVISAO || !site.email.tbc) && (
               <span>
                 {site.email.value}

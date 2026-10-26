@@ -132,3 +132,7 @@
     grid-template-columns: 1fr;
   }
 }
+
+.more {
+  margin-top: clamp(32px, 4vw, 48px);
+}

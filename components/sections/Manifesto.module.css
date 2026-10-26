@@ -28,7 +28,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(24px, 4vw, 64px);
-  margin-top: clamp(72px, 9vw, 130px);
+  margin-top: clamp(40px, 5vw, 72px);
 }
 
 .stat {
@@ -67,7 +67,7 @@
   display: block;
   margin-top: 10px;
   font-style: normal;
-  font-size: 0.82rem;
+  font-size: 0.875rem;
   font-weight: 400;
   color: var(--ink-2);
 }
@@ -116,4 +116,10 @@
     font-size: 1.15rem;
     line-height: 1.45;
   }
+}
+.stat .link {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent);
 }

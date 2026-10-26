@@ -303,7 +303,7 @@ function overlayFront(g: G, u: number) {
   // indicadores à direita
   const R: [string, number, number, number, number, number][] = [
     ["Risco de rolamento da cabeça: BAIXO", 742, 267, head[1], 0.72, 0],
-    ["Risco de ombro: BAIXO", 955, 173, shR[1], 0.78, 0],
+    ["Risco de ombro: MÉDIO", 955, 173, shR[1], 0.78, 0],
     ["Risco de coluna: BAIXO", 1108, 176, mid[1], 0.84, 1],
     ["Risco de pernas X/O: BAIXO", 1476, 169, knR[1], 0.9, 0],
   ];
@@ -361,7 +361,7 @@ function overlaySide(g: G, u: number) {
   const R: [string, number, number, number, number][] = [
     ["Risco de avanço da cabeça: BAIXO", 735, 246, head[1], 0.7],
     ["Risco de corcunda na coluna: BAIXO", 967, 240, sh[1], 0.76],
-    ["Risco pélvico: BAIXO", 1313, 158, hip[1], 0.82],
+    ["Risco pélvico: MÉDIO", 1313, 158, hip[1], 0.82],
     ["Risco de hiperextensão do joelho: BAIXO", 1545, 277, kn[1], 0.88],
   ];
   R.forEach(([s, y, w, py, at], i) => {
