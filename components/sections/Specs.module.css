@@ -137,3 +137,34 @@
 .more {
   margin-top: clamp(32px, 4vw, 48px);
 }
+/* Sanfona no celular */
+.toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.toggle::after {
+  content: "+";
+  font-size: 1.3rem;
+  color: var(--accent);
+}
+.toggle[aria-expanded="true"]::after {
+  content: "−";
+}
+.group dl[hidden] {
+  display: none;
+}
+@media (max-width: 760px) {
+  .group {
+    padding: 18px 0;
+    gap: 14px;
+  }
+}

@@ -376,8 +376,9 @@ function Ultrasound({ state }: { state: StationState }) {
     for (let i = 0; i < g.children.length; i++) {
       const c = g.children[i];
       const ph = (t * 0.45 + rings[i]) % 1;
-      c.position.y = THREE.MathUtils.lerp(CANOPY.sensorY, 1.05, ph);
-      const r = 0.03 + ph * 0.24;
+      // Feixe estreito logo abaixo do sensor (anéis largos e soltos pareciam falha do render)
+      c.position.y = THREE.MathUtils.lerp(CANOPY.sensorY, 1.3, ph);
+      const r = 0.02 + ph * 0.09;
       c.scale.set(r, r, r);
       mats[i].opacity = w * Math.sin(ph * Math.PI) * 0.55;
     }

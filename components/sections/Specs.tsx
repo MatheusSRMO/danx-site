@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { REVISAO, specs } from "@/lib/content";
+import SpecGroups from "./SpecGroups";
 import s from "./Specs.module.css";
 
 export default function Specs() {
@@ -46,29 +46,7 @@ export default function Specs() {
           </figure>
         </div>
 
-        <div className={s.groups}>
-          {specs.map((g) => (
-            <div key={g.group} className={s.group}>
-              <h3>{g.group}</h3>
-              <dl>
-                {g.rows.map((row) => {
-                  const [label, value, tbc] = row as readonly [string, string, boolean?];
-                  // Na produção, só o que a DANX já confirmou
-                  if (tbc && !REVISAO) return null;
-                  return (
-                    <div key={label}>
-                      <dt>{label}</dt>
-                      <dd>
-                        {value}
-                        {tbc && <span className="tbc">A confirmar</span>}
-                      </dd>
-                    </div>
-                  );
-                })}
-              </dl>
-            </div>
-          ))}
-        </div>
+        <SpecGroups />
         <a className={`btn btn-secondary ${s.more}`} href="#cotacao" data-doc="Ficha técnica">
           Pedir a ficha técnica completa
         </a>

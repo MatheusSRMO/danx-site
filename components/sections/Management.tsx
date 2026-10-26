@@ -43,7 +43,7 @@ function Dashboard() {
           </div>
           <div>
             <p>Escolas</p>
-            <b className="num">12</b>
+            <b className="num">6</b>
           </div>
           <div>
             <p>Turmas</p>

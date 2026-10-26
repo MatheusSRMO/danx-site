@@ -83,7 +83,8 @@
     flex-direction: column;
     align-items: stretch;
     min-height: 0;
-    padding-top: calc(52px + 36px);
+    padding-top: 52px;
+    padding-bottom: 40px;
     text-align: center;
   }
   .copy {
@@ -93,17 +94,22 @@
   .copy > * {
     margin-inline: auto;
   }
+  /* No celular a foto vem primeiro, recortada, para o produto aparecer já na primeira tela */
   .media {
     position: relative;
-    order: 2;
-    margin-top: 24px;
+    order: 0;
+    height: min(34svh, 300px);
+    margin-bottom: 24px;
+    overflow: hidden;
   }
   .media::after {
-    background: linear-gradient(180deg, var(--bg-2) 0%, rgba(243, 241, 236, 0) 18%);
+    background: linear-gradient(0deg, var(--bg-2) 0%, rgba(243, 241, 236, 0) 22%);
   }
   .img {
-    position: static;
-    height: auto;
+    position: absolute;
+    height: 100%;
+    object-fit: cover;
+    object-position: 55% 38%;
   }
   .title {
     font-size: clamp(2.2rem, 9vw, 3.4rem);

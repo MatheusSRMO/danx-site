@@ -6,7 +6,7 @@ export default function Audience() {
     <section id="para-quem" className="section" aria-labelledby="para-quem-title">
       <div className="container-wide">
         <div className={s.head}>
-          <p className="eyebrow eyebrow-accent">Para quem</p>
+          <p className="eyebrow eyebrow-accent">Quem usa</p>
           <h2 id="para-quem-title" className="headline" data-reveal>
             {audience.title}
           </h2>

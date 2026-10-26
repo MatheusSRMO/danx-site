@@ -39,7 +39,7 @@ export const hero = {
 };
 
 export const manifesto = {
-  title: "Os sinais aparecem antes de alguém medir.",
+  title: "Os sinais de saúde aparecem antes de alguém medir.",
   text: "Na escola, a triagem chega a todos os alunos, com o mesmo protocolo, todo ano. A família recebe o resultado e a gestão enxerga a tendência.",
   bridge: [
     "Sem uma medida anual, a escola não sabe em quais turmas agir.",
@@ -51,7 +51,7 @@ export const manifesto = {
       decimals: 0,
       suffix: "%",
       label: "dos adolescentes brasileiros de 11 a 17 anos não faziam, em 2016, os 60 minutos diários de atividade física recomendados.",
-      link: "O que a estação mede sobre isso: composição corporal, agilidade e capacidade pulmonar.",
+      link: "A estação mede composição corporal, agilidade e capacidade pulmonar, indicadores ligados ao condicionamento.",
       source: "Guthold et al. (OMS), The Lancet Child & Adolescent Health, 2019",
     },
     {
@@ -60,7 +60,7 @@ export const manifesto = {
       suffix: "%",
       label:
         "dos alunos do 5º ao 8º ano relataram dor nas costas nos últimos três meses, em um estudo regional com 1.597 estudantes de Teutônia (RS).",
-      link: "O que a estação mede sobre isso: postura.",
+      link: "A estação mede a postura.",
       source: "Noll et al., Revista Brasileira de Ciências do Esporte, 2016",
     },
   ],

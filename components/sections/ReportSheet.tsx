@@ -39,16 +39,26 @@ function A4({ big = false }: { big?: boolean }) {
         <div className={s.a4Row}>
           <div className={s.a4Box}>
             <p>Crescimento</p>
-            <svg viewBox="0 0 100 44">
-              <path d="M2 40 L30 30 L58 19 L98 6" stroke="#9ec2f2" />
-              <path d="M2 42 L30 34 L58 25 L98 13" stroke="#1f6fd8" />
-              <circle cx="46" cy="22" r="2.6" fill="#1d1d1f" />
+            <svg viewBox="0 0 100 48">
+              <path d="M2 34 L30 25 L58 15 L98 4 L98 22 L58 33 L30 41 L2 46 Z" fill="rgba(31,111,216,0.12)" stroke="none" />
+              <path d="M2 40 L30 33 L58 24 L98 13" stroke="#1f6fd8" />
+              <path d="M2 47.5 H98" stroke="#d6d2ca" strokeWidth="1" />
+              <circle cx="46" cy="22" r="2.8" fill="#1d1d1f" stroke="none" />
             </svg>
           </div>
           <div className={s.a4Box}>
             <p>Postura</p>
-            <span>Ombros · atenção</span>
-            <span>Pelve · atenção</span>
+            <div className={s.a4Posture}>
+              <svg viewBox="0 0 40 60">
+                <circle cx="20" cy="7" r="4.5" fill="#d1d1d6" stroke="none" />
+                <path d="M20 12 V34 M11 17 L29 15 M14 36 L26 34 M14 36 L14 57 M26 34 L26 57 M11 17 L9 32 M29 15 L31 30" stroke="#b9b9bf" strokeWidth="2.4" />
+                <path d="M5 17.6 L35 14.4 M8 36.6 L32 33.4" stroke="#b46a00" strokeWidth="1.2" strokeDasharray="2 2" />
+              </svg>
+              <div>
+                <span>Ombros · atenção</span>
+                <span>Pelve · atenção</span>
+              </div>
+            </div>
           </div>
         </div>
         <div className={s.a4Tests}>
@@ -59,12 +69,8 @@ function A4({ big = false }: { big?: boolean }) {
         </div>
         <div className={s.a4Notes}>
           <p>Sugestões para a família</p>
-          <i />
-          <i />
-          <i />
-          <p>Observações da escola</p>
-          <i />
-          <i />
+          <span>Atividade física todos os dias, com brincadeiras e esportes.</span>
+          <span>Frutas, verduras e água na rotina da alimentação.</span>
         </div>
         <div className={s.a4Foot}>
           <i />
