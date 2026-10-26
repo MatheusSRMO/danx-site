@@ -5,14 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { getTier, isTouch, type Tier } from "@/lib/device";
 import { createStationState, type StationState } from "../three/stationState";
-import {
-  drawScreenRegion,
-  loadScreenFonts,
-  SCREEN_STEPS,
-  SCREENS,
-  type Region,
-  type ScreenId,
-} from "../three/screenUi";
+import { SCREENS, type ScreenId } from "../three/screenUi";
 import type { Anchor } from "../three/Projector";
 import s from "./ProductStory.module.css";
 
@@ -34,23 +27,23 @@ type Key = {
 const KEYS: Key[] = [
   { p: 0.0, rot: -2.3, dist: 9.6, y: 1.05, elev: 0.5, explode: 0, glow: 0, ultra: 0, cx: 0 },
   { p: 0.05, rot: -0.7, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  // Em cada etapa a estação aparece inteira; o que está na tela vem ampliado na lupa, ao lado do texto
-  { p: 0.135, rot: -0.32, dist: 6.5, y: 1.1, elev: 0.2, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.185, rot: -0.26, dist: 6.5, y: 1.1, elev: 0.2, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  // Altura: ondas do sensor descem do dossel
-  { p: 0.235, rot: -0.48, dist: 6.4, y: 1.12, elev: 0.3, explode: 0, glow: 0, ultra: 1, cx: 0 },
-  // Composição corporal: eletrodos acesos na plataforma
+  // Identificação: a câmera chega à tela enquanto a matrícula é digitada e o aviso aparece
+  { p: 0.135, rot: -0.3, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.185, rot: -0.22, dist: 2.25, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  // Altura: o dossel e a tela, com as ondas do sensor descendo
+  { p: 0.235, rot: -0.45, dist: 4.2, y: 1.55, elev: 0.2, explode: 0, glow: 0, ultra: 1, cx: 0 },
+  // Composição corporal: a estação inteira, com os eletrodos acesos na plataforma
   { p: 0.315, rot: -0.8, dist: 6.6, y: 1.02, elev: 0.95, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
   { p: 0.335, rot: -0.74, dist: 6.5, y: 1.04, elev: 0.9, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
-  // Do equilíbrio à postura, a câmera gira devagar em volta da estação
-  { p: 0.4, rot: -0.3, dist: 6.5, y: 1.1, elev: 0.2, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.48, rot: -0.12, dist: 6.5, y: 1.1, elev: 0.2, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.56, rot: 0.06, dist: 6.5, y: 1.1, elev: 0.2, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.655, rot: 0.2, dist: 6.5, y: 1.1, elev: 0.2, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.745, rot: 0.34, dist: 6.5, y: 1.1, elev: 0.2, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  // Resultado
-  { p: 0.835, rot: -0.15, dist: 6.5, y: 1.1, elev: 0.2, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.865, rot: -0.15, dist: 6.5, y: 1.1, elev: 0.2, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  // Do equilíbrio à postura, a tela é a protagonista: a câmera orbita devagar diante dela
+  { p: 0.4, rot: -0.2, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.48, rot: -0.08, dist: 2.25, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.56, rot: 0.06, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.655, rot: 0.16, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.745, rot: 0.24, dist: 2.35, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  // Resultado: a tela em destaque
+  { p: 0.835, rot: -0.15, dist: 2.4, y: 1.4, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.865, rot: -0.15, dist: 2.4, y: 1.4, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Instalação: vista explodida
   { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0 },
   { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
@@ -93,40 +86,6 @@ const SCREEN_TRACK: [number, ScreenId, number][] = [
   [0.95, "pontuacao", 1],
   [1.0, "pontuacao", 1],
 ];
-
-// Lupa: o trecho de cada tela que conta a história, ampliado para ler (unidades do desenho da tela, 1080 × 1920)
-const LOUPE: Record<ScreenId, Region> = {
-  inicio: [240, 560, 600, 450],
-  consentimento: [300, 760, 480, 360],
-  composicao: [73, 230, 933, 700],
-  equilibrio: [140, 600, 800, 600],
-  agilidade: [194, 280, 693, 520],
-  espirometria: [127, 440, 827, 620],
-  visao: [60, 260, 960, 1000],
-  postura: [560, 680, 520, 390],
-  pontuacao: [140, 250, 800, 600],
-  evolucao: [0, 150, 1080, 810],
-  relatorio: [0, 150, 1080, 810],
-};
-// Na medição da altura, a lupa fica nos números do centro do anel
-const LOUPE_ALTURA: Region = [300, 410, 480, 360];
-
-function drawLoupe(canvas: HTMLCanvasElement, state: StationState) {
-  const id = SCREENS[Math.min(SCREENS.length - 1, Math.max(0, Math.round(state.screen)))];
-  const steps = SCREEN_STEPS[id];
-  const step = Math.round(Math.min(1, Math.max(0, state.screenT)) * steps);
-  const t = steps ? step / steps : 1;
-  const w = Math.round(canvas.clientWidth * Math.min(2, window.devicePixelRatio || 1));
-  const h = Math.round(canvas.clientHeight * Math.min(2, window.devicePixelRatio || 1));
-  const key = `${id}:${step}:${w}x${h}`;
-  if (!w || !h || canvas.dataset.key === key) return;
-  canvas.dataset.key = key;
-  if (canvas.width !== w) canvas.width = w;
-  if (canvas.height !== h) canvas.height = h;
-  const g = canvas.getContext("2d");
-  if (!g) return;
-  drawScreenRegion(g, id, t, id === "composicao" && t < 0.48 ? LOUPE_ALTURA : LOUPE[id], w, h);
-}
 
 const CHAPTERS = [
   {
@@ -362,19 +321,8 @@ export default function ProductStory() {
       const callouts = q(`.${s.callout}`) as HTMLElement[];
       const ctas = chapters.map((c) => c.querySelector<HTMLElement>(`.${s.cta}`));
       const fill = q(`.${s.railFill}`)[0] as HTMLElement;
-      const loupes = chapters.map((c) => c.querySelector<HTMLCanvasElement>("canvas[data-loupe]"));
       const note = q(`.${s.sample}`)[0] as HTMLElement | undefined;
       const bar = q(`.${s.progress} span`)[0] as HTMLElement | undefined;
-      let cur = 0;
-      const paintLoupe = () => {
-        const lc = loupes[cur];
-        if (lc) drawLoupe(lc, state);
-      };
-      // Com as fontes da tela carregadas, a lupa é redesenhada com elas
-      loadScreenFonts().then(() => {
-        loupes.forEach((l) => l && delete l.dataset.key);
-        paintLoupe();
-      });
 
       ScrollTrigger.create({
         trigger: root.current,
@@ -386,14 +334,12 @@ export default function ProductStory() {
 
           // Cada capítulo aparece perto do seu quadro-chave
           let current = 0;
-          let withLoupe = 0;
           CHAPTERS.forEach((c, i) => {
             const next = CHAPTERS[i + 1]?.at ?? 1.2;
             const prev = CHAPTERS[i - 1]?.at ?? -0.2;
             const start = (prev + c.at) / 2;
             const end = (c.at + next) / 2;
             const w = sm(p, start, start + 0.018) * (1 - sm(p, end - 0.018, end));
-            if (c.screen) withLoupe += w;
             const el = chapters[i];
             el.style.opacity = String(w);
             el.style.transform = `translateY(${(1 - w) * 24}px)`;
@@ -403,10 +349,6 @@ export default function ProductStory() {
             if (p >= start) current = i;
           });
           dots.forEach((d, i) => d.classList.toggle(s.on, i === current));
-          // No celular, nas etapas com lupa, a estação vai para a esquerda e a lupa fica ao lado dela
-          if (window.innerWidth <= 900) state.viewX = -0.2 * withLoupe;
-          cur = current;
-          paintLoupe();
           fill.style.transform = `scaleY(${p})`;
           // Rótulos só com a estação aberta: somem por inteiro antes e depois da vista explodida
           const lab = sm(state.explode, 0.6, 1);
@@ -476,16 +418,13 @@ export default function ProductStory() {
               {c.stat && (
                 <p className={s.stat}>
                   <span>{c.stat.v}</span> {c.stat.u}
-                  <em>· aluno de exemplo</em>
+                  <em>Aluno de exemplo</em>
                 </p>
               )}
               {c.screen && (
-                <figure className={s.loupe}>
-                  <canvas data-loupe aria-hidden="true" />
-                  <figcaption>
-                    <b>Na tela:</b> {c.screen}
-                  </figcaption>
-                </figure>
+                <p className={s.onScreen}>
+                  <b>Na tela:</b> {c.screen}
+                </p>
               )}
               {c.cta && (
                 <a className={`btn btn-primary ${s.cta}`} href="#cotacao">

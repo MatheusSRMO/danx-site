@@ -68,11 +68,8 @@ function makeCanvas(w: number, h: number): HTMLCanvasElement | OffscreenCanvas {
   return c;
 }
 
-/**
- * Desenha a tela `id` no estado `t` (0 a 1 = progresso dentro da avaliação). Determinística: mesmo id e t → mesma imagem.
- * `direct` desenha o fundo na hora, sem o canvas guardado (para ampliações, que pediriam um cache enorme).
- */
-export function drawDeviceScreen(g: G, id: ScreenId, t: number, direct = false): void {
+/** Desenha a tela `id` no estado `t` (0 a 1 = progresso dentro da avaliação). Determinística: mesmo id e t → mesma imagem. */
+export function drawDeviceScreen(g: G, id: ScreenId, t: number): void {
   const page = PAGES[id];
   g.save();
   g.fillStyle = "#000";
@@ -85,13 +82,7 @@ export function drawDeviceScreen(g: G, id: ScreenId, t: number, direct = false):
   const m = g.getTransform();
   const scale = Math.max(1, Math.round(Math.hypot(m.a, m.b) * 4) / 4);
   g.imageSmoothingEnabled = true;
-  if (page.bg && direct) {
-    g.save();
-    g.translate(0, OY);
-    g.scale(K, K);
-    page.bg(g, page.variant ? page.variant(tt) : 0);
-    g.restore();
-  } else if (page.bg) {
+  if (page.bg) {
     const v = page.variant ? page.variant(tt) : 0;
     const key = `${id}:${v}@${scale}`;
     let c = fontsReady() ? cache.get(key) : undefined;
@@ -115,23 +106,6 @@ export function drawDeviceScreen(g: G, id: ScreenId, t: number, direct = false):
     page.fg(g, tt);
   }
   g.restore();
-}
-
-/** Região da tela, em unidades do desenho (1080 × 1920): x, y, largura, altura. */
-export type Region = [number, number, number, number];
-
-/** Desenha só a região `r` da tela, ampliada para ocupar um canvas de `w` × `h` pixels (a lupa da história). */
-export function drawScreenRegion(g: G, id: ScreenId, t: number, r: Region, w: number, h: number): void {
-  const s = Math.min(w / (r[2] * K), h / (r[3] * K));
-  g.setTransform(1, 0, 0, 1, 0, 0);
-  g.fillStyle = "#000";
-  g.fillRect(0, 0, w, h);
-  // A região inteira cabe no canvas, centrada (se a proporção não bater, sobra um pouco de tela em volta)
-  const ox = (w - r[2] * K * s) / 2 - r[0] * K * s;
-  const oy = (h - r[3] * K * s) / 2 - (OY + r[1] * K) * s;
-  g.setTransform(s, 0, 0, s, ox, oy);
-  drawDeviceScreen(g, id, t, true);
-  g.setTransform(1, 0, 0, 1, 0, 0);
 }
 
 // ---- Compatibilidade com o modelo 3D atual ----
