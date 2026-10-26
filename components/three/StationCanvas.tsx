@@ -1,10 +1,9 @@
 "use client";
-import { Suspense, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
 import StationModel from "./StationModel";
-import Child from "./Child";
 import StationStudio from "./StationStudio";
 import type { StationState } from "./stationState";
 
@@ -13,14 +12,8 @@ function Rig({ state }: { state: StationState }) {
   const tgt = useMemo(() => new THREE.Vector3(), []);
   const pos = useMemo(() => new THREE.Vector3(0, 1.1, 8), []);
   useFrame((_, dt) => {
-    const aspect = size.width / size.height;
-    const narrow = aspect < 0.8;
-    // Cenas largas (ex.: a criança a 2,5 m da torre) precisam caber na largura útil do quadro, descontado o texto
-    const cam0 = camera as THREE.PerspectiveCamera;
-    const usable = aspect * (1 - 2 * Math.abs(state.viewX));
-    // (só no layout de celular, em que o texto fica embaixo e o quadro é estreito)
-    const fit = state.span && size.width <= 900 ? state.span / 2 / (Math.tan(((cam0.fov * Math.PI) / 180) / 2) * usable) + 1.2 : 0;
-    const dist = Math.max(state.camDist * (narrow ? 1.25 : 1), fit);
+    const narrow = size.width / size.height < 0.8;
+    const dist = state.camDist * (narrow ? 1.25 : 1);
     const k = 1 - Math.pow(0.001, dt);
     pos.lerp(tgt.set(state.camX + state.pointerX * 0.25, state.camY + state.camElev, dist), k);
     camera.position.copy(pos);
@@ -90,10 +83,6 @@ export default function StationCanvas({
       <DevHook />
       <group position={[0, 0, -0.35]}>
         <StationModel state={state} low={low} />
-        {/* A criança carrega o próprio arquivo; a estação aparece antes, sem esperar por ela */}
-        <Suspense fallback={null}>
-          <Child state={state} />
-        </Suspense>
         <ContactShadows
           position={[0, 0.0005, 0.35]}
           scale={3.2}

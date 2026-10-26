@@ -23,78 +23,29 @@ type Key = {
   glow: number;
   ultra: number;
   cx: number;
-  /** Largura (m) que precisa caber no quadro; 0 = sem exigência. */
-  span?: number;
 };
 const KEYS: Key[] = [
   { p: 0.0, rot: -2.3, dist: 9.6, y: 1.05, elev: 0.5, explode: 0, glow: 0, ultra: 0, cx: 0 },
   { p: 0.05, rot: -0.7, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  // Identificação: a criança chega, sobe na plataforma e digita o número na tela
-  { p: 0.1, rot: -0.55, dist: 6.4, y: 1.0, elev: 0.45, explode: 0, glow: 0, ultra: 0, cx: 0, span: 2.2 },
-  { p: 0.135, rot: -0.85, dist: 5.2, y: 1.12, elev: 0.3, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.165, rot: -0.95, dist: 4.6, y: 1.25, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  // Altura: ondas do sensor descem até a cabeça
+  // Identificação: a câmera chega à tela enquanto a matrícula é digitada e o termo é aceito
+  { p: 0.135, rot: -0.34, dist: 2.75, y: 1.36, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.185, rot: -0.26, dist: 2.65, y: 1.37, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  // Altura: ondas do sensor descem do dossel
   { p: 0.235, rot: -0.42, dist: 3.6, y: 1.72, elev: 0.15, explode: 0, glow: 0, ultra: 1, cx: 0 },
-  // Composição corporal: eletrodos sob os pés
-  { p: 0.315, rot: -0.95, dist: 3.6, y: 0.32, elev: 1.0, explode: 0, glow: 1, ultra: 0, cx: -0.12 },
-  // Toque em INICIAR (o alto da tela) antes do equilíbrio
-  { p: 0.356, rot: -0.85, dist: 4.4, y: 1.15, elev: 0.25, explode: 0, glow: 0, ultra: 0, cx: -0.25 },
-  // Equilíbrio: numa perna só
-  { p: 0.4, rot: -1.15, dist: 4.8, y: 0.95, elev: 0.3, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  // Agilidade: toques na tela
-  { p: 0.48, rot: -0.78, dist: 3.4, y: 1.3, elev: 0.22, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  // Fôlego: espirômetro
-  { p: 0.56, rot: -1.05, dist: 3.4, y: 1.28, elev: 0.18, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  // Visão: a criança recua até 2,5 m; a câmera fica atrás dela, por cima do ombro, com a tela ao fundo
-  { p: 0.6, rot: -0.6, dist: 7.2, y: 1.0, elev: 0.35, explode: 0, glow: 0, ultra: 0, cx: -0.55 },
-  { p: 0.655, rot: -0.45, dist: 7.3, y: 1.0, elev: 0.3, explode: 0, glow: 0, ultra: 0, cx: -0.62 },
-  // Postura: de frente para a câmera da estação e depois de lado (de lado, ela mostra o perfil para nós)
-  { p: 0.725, rot: -0.45, dist: 7.3, y: 1.0, elev: 0.3, explode: 0, glow: 0, ultra: 0, cx: -0.5 },
-  { p: 0.77, rot: -0.45, dist: 7.3, y: 1.0, elev: 0.3, explode: 0, glow: 0, ultra: 0, cx: -0.5 },
-  // Resultado: a tela em destaque; a criança, ao lado da torre, olha a própria pontuação
-  { p: 0.835, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0, span: 1.5 },
-  { p: 0.865, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0, span: 1.5 },
-  // Instalação: vista explodida (a criança some enquanto as peças se separam)
+  // Composição corporal: eletrodos acesos na plataforma e o gráfico da composição na tela
+  { p: 0.315, rot: -0.8, dist: 4.6, y: 0.78, elev: 0.75, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
+  // Do equilíbrio à postura, a tela é a protagonista: a câmera orbita devagar diante dela
+  { p: 0.4, rot: -0.2, dist: 2.7, y: 1.37, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.48, rot: -0.08, dist: 2.6, y: 1.35, elev: 0.05, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.56, rot: 0.06, dist: 2.7, y: 1.38, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.655, rot: 0.16, dist: 2.75, y: 1.38, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.745, rot: 0.24, dist: 2.75, y: 1.36, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  // Resultado: a tela em destaque
+  { p: 0.835, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.865, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  // Instalação: vista explodida
   { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0 },
-  { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0, span: 1.9 },
-];
-
-// Coreografia da criança (chaves em components/three/Child.tsx), casada com a tela: cada toque cai no instante em que
-// a tela reage (tecla acesa, CONCORDO, INICIAR, alvo da agilidade).
-const ACT_TRACK: [number, number][] = [
-  [0.0, 0],
-  [0.05, 0],
-  [0.1, 1], // chega diante da estação
-  [0.11, 2], // sobe na plataforma
-  [0.117, 3], // leva a mão à tela: matrícula (0,12 → 0,16) e termo (0,175 → 0,19)
-  [0.192, 3],
-  [0.205, 4], // braços afastados: altura e composição corporal
-  [0.345, 5],
-  [0.354, 6], // toca INICIAR do equilíbrio (0,358 → 0,364)
-  [0.365, 6],
-  [0.376, 7], // equilíbrio
-  [0.432, 7],
-  [0.441, 8], // agilidade: INICIAR e os cinco alvos
-  [0.52, 8],
-  [0.528, 9], // espirometria
-  [0.59, 9],
-  [0.594, 10], // devolve o espirômetro
-  [0.602, 11], // vira no lugar
-  [0.608, 12], // desce da plataforma
-  [0.622, 13], // caminha até a marca de 2,5 m
-  [0.632, 14], // vira para a tela: visão
-  [0.7, 14],
-  [0.708, 15], // postura de frente
-  [0.75, 15],
-  [0.762, 16], // postura de lado
-  [0.79, 16],
-  [0.83, 17], // vai para o lado da torre e olha o resultado na tela
-  [0.85, 17],
-  [0.865, 18], // some antes de a estação se abrir
-  [0.95, 19], // troca de lado sem ser vista
-  [0.982, 19],
-  [0.997, 20], // reaparece no fecho, já sem os rótulos da vista explodida (o da torre fica à esquerda, onde ela para)
-  [1.0, 20],
+  { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
 ];
 
 // Telas reais da estação ao longo da rolagem: mesma tela entre dois pontos → o progresso t avança
@@ -132,7 +83,7 @@ const CHAPTERS = [
     at: 0.03,
     kicker: "Conheça a estação",
     title: "Uma estação. Sete avaliações.",
-    text: "Torre de vidro temperado, tela de 32″, dossel de medição e plataforma de bioimpedância. Role para ver um aluno passar por cada etapa.",
+    text: "Torre de vidro temperado, tela de 32″, dossel de medição e plataforma de bioimpedância. Role para ver cada etapa na tela da estação.",
   },
   {
     at: 0.135,
@@ -223,7 +174,7 @@ function applyKeys(state: StationState, p: number) {
   const a = KEYS[i];
   const b = KEYS[i + 1];
   const t = sm(p, a.p, b.p);
-  const L = (k: Exclude<keyof Key, "span">) => a[k] + (b[k] - a[k]) * t;
+  const L = (k: keyof Key) => a[k] + (b[k] - a[k]) * t;
   state.rotY = L("rot");
   state.camDist = L("dist");
   state.camY = L("y");
@@ -232,13 +183,6 @@ function applyKeys(state: StationState, p: number) {
   state.glow = L("glow");
   state.ultra = L("ultra");
   state.camX = L("cx");
-  state.span = (a.span ?? 0) + ((b.span ?? 0) - (a.span ?? 0)) * t;
-  // A coreografia avança em ritmo linear dentro de cada trecho (a suavização fica na própria criança)
-  let k = 0;
-  while (k < ACT_TRACK.length - 2 && p > ACT_TRACK[k + 1][0]) k++;
-  const [q0, a0] = ACT_TRACK[k];
-  const [q1, a1] = ACT_TRACK[k + 1];
-  state.act = a0 + (a1 - a0) * Math.min(1, Math.max(0, (p - q0) / (q1 - q0)));
   // Tela real da estação: segura a tela do ponto anterior até o próximo; na mesma tela, o progresso avança
   let j = 0;
   while (j < SCREEN_TRACK.length - 2 && p >= SCREEN_TRACK[j + 1][0]) j++;

@@ -376,8 +376,7 @@ function Ultrasound({ state }: { state: StationState }) {
     for (let i = 0; i < g.children.length; i++) {
       const c = g.children[i];
       const ph = (t * 0.45 + rings[i]) % 1;
-      // As ondas descem até a altura da cabeça de uma criança sobre a plataforma
-      c.position.y = THREE.MathUtils.lerp(CANOPY.sensorY, 1.58, ph);
+      c.position.y = THREE.MathUtils.lerp(CANOPY.sensorY, 1.05, ph);
       const r = 0.03 + ph * 0.24;
       c.scale.set(r, r, r);
       mats[i].opacity = w * Math.sin(ph * Math.PI) * 0.55;

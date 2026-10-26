@@ -21,12 +21,8 @@ export type StationState = {
   /** Ondas do sensor ultrassônico (0 a 1), no capítulo de altura. */
   ultra: number;
   ultraSmooth: number;
-  /** Tempo da cena da criança (0 = fora de cena; cada inteiro é uma chave da coreografia em Child). */
-  act: number;
   /** Progresso (0 a 1) da avaliação mostrada na tela. */
   screenT: number;
-  /** Largura mínima da cena (m) que precisa caber no quadro; afasta a câmera em telas estreitas. */
-  span: number;
   /** Deslocamento do enquadramento, em fração da tela (para abrir espaço ao texto). */
   viewX: number;
   viewY: number;
@@ -51,9 +47,7 @@ export function createStationState(init: Partial<StationState> = {}): StationSta
     glowSmooth: 0,
     ultra: 0,
     ultraSmooth: 0,
-    act: 0,
     screenT: 1,
-    span: 0,
     viewX: 0,
     viewY: 0,
     ...init,
