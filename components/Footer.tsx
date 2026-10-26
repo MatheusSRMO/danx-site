@@ -29,7 +29,7 @@ export default function Footer({ base = "", notes = true }: { base?: string; not
         <div className={s.main}>
           <div className={s.brand}>
             <Logo className={s.logo} />
-            <p>O futuro em foco.</p>
+            <p>Triagem de saúde dentro da escola.</p>
           </div>
           <nav className={s.links} aria-label="Rodapé">
             {nav.map((l) => (

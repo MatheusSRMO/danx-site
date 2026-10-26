@@ -45,6 +45,7 @@ const LABELS: Record<string, string> = {
   email: "e-mail",
   telefone: "telefone",
   consentimento: "consentimento",
+  contato: "e-mail ou telefone",
   mensagem: "mensagem",
   documentos: "documentos",
 };
@@ -57,6 +58,8 @@ export default function Quote() {
   const result = useRef<HTMLDivElement>(null);
   const send = useRef<HTMLButtonElement>(null);
   const tipo = useRef<HTMLSelectElement>(null);
+  const email = useRef<HTMLInputElement>(null);
+  const extra = useRef<HTMLDetailsElement>(null);
 
   // Links com data-tipo ou data-doc chegam ao formulário com o tipo de instituição ou o documento já marcados
   useEffect(() => {
@@ -65,9 +68,11 @@ export default function Quote() {
       const t = a?.dataset.tipo;
       if (t && tipo.current && quote.types.includes(t)) tipo.current.value = t;
       const d = a?.dataset.doc;
-      if (d && quote.docs.includes(d)) {
-        const box = document.querySelector<HTMLInputElement>(`input[name="documentos"][value="${d}"]`);
-        if (box) box.checked = true;
+      if (d && (d === "todos" || quote.docs.includes(d))) {
+        document
+          .querySelectorAll<HTMLInputElement>('input[name="documentos"]')
+          .forEach((box) => (box.checked ||= d === "todos" || box.value === d));
+        if (extra.current) extra.current.open = true;
       }
     };
     document.addEventListener("click", onClick);
@@ -89,6 +94,12 @@ export default function Quote() {
     e.preventDefault();
     const form = e.currentTarget;
     if (!form.reportValidity()) return;
+    const contact = new FormData(form);
+    if (!String(contact.get("email") ?? "").trim() && !String(contact.get("telefone") ?? "").trim()) {
+      setError("Informe um e-mail ou um telefone para o contato.");
+      email.current?.focus();
+      return;
+    }
     const fd = new FormData(form);
     const data = Object.fromEntries(fd.entries()) as Record<string, string>;
     const docs = fd.getAll("documentos").join(", ");
@@ -101,8 +112,8 @@ export default function Quote() {
       data.cnpj && `CNPJ: ${data.cnpj}`,
       `Cidade: ${data.cidade}/${data.uf}`,
       `Responsável: ${data.nome}${data.cargo ? `, ${data.cargo}` : ""}`,
-      `E-mail: ${data.email}`,
-      `Telefone: ${data.telefone}`,
+      data.email && `E-mail: ${data.email}`,
+      data.telefone && `Telefone: ${data.telefone}`,
       `Estações: ${data.quantidade || "a definir"}`,
       docs && `Documentos: ${docs}`,
       data.mensagem,
@@ -198,8 +209,8 @@ export default function Quote() {
             </div>
             <div className={s.row3}>
               <label className={s.field}>
-                <span>CNPJ</span>
-                <input name="cnpj" autoCapitalize="characters" maxLength={30} placeholder="00.000.000/0000-00" />
+                <span>Seu nome *</span>
+                <input name="nome" required maxLength={160} autoComplete="name" />
               </label>
               <label className={s.field}>
                 <span>Cidade *</span>
@@ -219,21 +230,11 @@ export default function Quote() {
             </div>
             <div className={s.row}>
               <label className={s.field}>
-                <span>Nome do responsável *</span>
-                <input name="nome" required maxLength={160} autoComplete="name" />
-              </label>
-              <label className={s.field}>
-                <span>Cargo</span>
-                <input name="cargo" maxLength={120} autoComplete="organization-title" />
-              </label>
-            </div>
-            <div className={s.row3}>
-              <label className={s.field}>
-                <span>E-mail *</span>
+                <span>E-mail **</span>
                 <input
+                  ref={email}
                   name="email"
                   type="email"
-                  required
                   maxLength={200}
                   autoComplete="email"
                   pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
@@ -241,41 +242,62 @@ export default function Quote() {
                 />
               </label>
               <label className={s.field}>
-                <span>Telefone / WhatsApp *</span>
+                <span>Telefone / WhatsApp **</span>
                 <input
                   name="telefone"
                   type="tel"
-                  required
                   maxLength={40}
                   autoComplete="tel"
                   placeholder="(00) 00000-0000"
                 />
               </label>
-              <label className={s.field}>
-                <span>Quantidade estimada</span>
-                <input name="quantidade" type="number" inputMode="numeric" min={1} max={99999} placeholder="Ex.: 3" />
-              </label>
             </div>
-            <label className={s.field}>
-              <span>Mensagem</span>
-              <textarea
-                name="mensagem"
-                rows={4}
-                maxLength={3000}
-                placeholder="Conte um pouco sobre a rede, as escolas ou o programa."
-              />
-            </label>
-            <fieldset className={s.docs}>
-              <legend>Quer receber algum documento junto com a proposta?</legend>
-              <div>
-                {quote.docs.map((d) => (
-                  <label key={d}>
-                    <input type="checkbox" name="documentos" value={d} />
-                    <span>{d}</span>
+            <details ref={extra} className={s.extra}>
+              <summary>Mais detalhes (opcional)</summary>
+              <div className={s.extraBody}>
+                <div className={s.row3}>
+                  <label className={s.field}>
+                    <span>CNPJ</span>
+                    <input name="cnpj" autoCapitalize="characters" maxLength={30} placeholder="00.000.000/0000-00" />
                   </label>
-                ))}
+                  <label className={s.field}>
+                    <span>Cargo</span>
+                    <input name="cargo" maxLength={120} autoComplete="organization-title" />
+                  </label>
+                  <label className={s.field}>
+                    <span>Quantidade estimada</span>
+                    <input
+                      name="quantidade"
+                      type="number"
+                      inputMode="numeric"
+                      min={1}
+                      max={99999}
+                      placeholder="Ex.: 1 por escola"
+                    />
+                  </label>
+                </div>
+                <label className={s.field}>
+                  <span>Mensagem</span>
+                  <textarea
+                    name="mensagem"
+                    rows={3}
+                    maxLength={3000}
+                    placeholder="Conte um pouco sobre a rede, as escolas ou o programa."
+                  />
+                </label>
+                <fieldset className={s.docs}>
+                  <legend>Quer receber algum documento junto com a proposta?</legend>
+                  <div>
+                    {quote.docs.map((d) => (
+                      <label key={d}>
+                        <input type="checkbox" name="documentos" value={d} />
+                        <span>{d}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
               </div>
-            </fieldset>
+            </details>
             <input className={s.hp} name="hp_x7" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <label className={s.consent}>
               <input type="checkbox" name="consentimento" value="sim" required />
@@ -309,7 +331,7 @@ export default function Quote() {
               </p>
             </div>
             <p className={s.next}>{quote.next}</p>
-            <p className={s.required}>* Campos obrigatórios</p>
+            <p className={s.required}>* Obrigatório · ** Preencha pelo menos um</p>
           </form>
         )}
       </div>

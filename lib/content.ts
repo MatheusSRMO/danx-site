@@ -22,11 +22,10 @@ export const site = {
 
 export const nav = [
   { href: "#tecnologia", label: "Tecnologia" },
-  { href: "#avaliacoes", label: "Avaliações" },
-  { href: "#relatorio", label: "Relatório" },
   { href: "#para-quem", label: "Para quem" },
+  { href: "#relatorio", label: "Relatório" },
   { href: "#especificacoes", label: "Especificações" },
-  { href: "#investimento", label: "Investimento" },
+  { href: "#como-comprar", label: "Como comprar" },
   { href: "#faq", label: "Dúvidas" },
 ];
 
@@ -39,9 +38,10 @@ export const hero = {
 };
 
 export const manifesto = {
-  text: "Crescer é rápido. Perceber o que muda, nem sempre. A DANX transforma uma passagem pela estação em dados que escola, família e gestão conseguem acompanhar, ano após ano.",
+  title: "Crescer é rápido. Perceber o que muda, nem sempre.",
+  text: "A DANX transforma uma passagem pela estação em dados que escola, família e gestão acompanham, ano após ano.",
   bridge:
-    "A estação acompanha, aluno a aluno e ano a ano, os indicadores ligados a esses números: postura, composição corporal, equilíbrio e agilidade.",
+    "A estação acompanha, aluno a aluno e ano a ano, os indicadores ligados a esses números: postura, composição corporal, equilíbrio e agilidade. São dados que apoiam ações do Programa Saúde na Escola, como alimentação saudável, atividade física e saúde ocular.",
   stats: [
     {
       value: 55.7,
@@ -90,24 +90,13 @@ export const management = {
       text: "A evolução dos alunos ano a ano, útil para prestar contas e divulgar o programa.",
     },
     {
-      title: "Proximidade com as famílias",
-      text: "Cada família recebe um retorno concreto sobre cada estudante, o que aproxima a escola das famílias.",
+      title: "Famílias por perto",
+      text: "Cada família recebe o relatório individual do próprio filho, com o nome e o contato da escola.",
     },
     {
-      title: "Diferencial para escolas particulares",
-      text: "Um cuidado com a saúde que as famílias enxergam no relatório de cada filho, e que a escola pode usar na matrícula e na rematrícula.",
+      title: "Uma medida comum",
+      text: "O mesmo protocolo em todas as escolas, para comparar turmas e acompanhar cada programa com a mesma régua.",
     },
-  ],
-  programs: [
-    "Saúde escolar",
-    "Prevenção da obesidade",
-    "Incentivo à atividade física",
-    "Acompanhamento do crescimento",
-    "Avaliação postural",
-    "Desenvolvimento motor",
-    "Programas esportivos",
-    "Relatório para as famílias",
-    "Matrícula e rematrícula",
   ],
 };
 
@@ -134,7 +123,7 @@ export const audience = {
       sub: "Educação infantil, ensino fundamental e médio",
       cta: "Solicitar cotação para a sua escola",
       tipo: "Escola particular",
-      text: "Um cuidado que as famílias enxergam, com relatório individual, acompanhamento anual e o nome da escola no relatório.",
+      text: "Um cuidado que as famílias enxergam, com relatório individual, acompanhamento anual e o nome da escola no relatório. Um diferencial para a matrícula e a rematrícula.",
     },
   ],
   exclusive: {
@@ -200,7 +189,7 @@ export const pricing = {
   // Enquanto o preço não é confirmado (produção)
   pending: {
     title: "Proposta formal para a sua rede ou escola.",
-    lead: "Informe a instituição e a quantidade de estações. Você recebe valor, condições de pagamento e prazo em uma proposta pronta para o processo de compra.",
+    lead: "Cada proposta é montada para a sua instituição. Valor, condições de pagamento e prazo chegam por escrito, prontos para o processo de compra.",
     includesTitle: "Na proposta detalhamos",
   },
   // Como a compra acontece (só passos que não dependem de dado a confirmar)
@@ -233,12 +222,18 @@ export const docs = [
 
 export const faq = [
   {
-    q: "Quais documentos a DANX fornece?",
-    a: "Ficha técnica, proposta comercial modelo, declaração de exclusividade e um relatório de exemplo. Marque os que precisa no formulário de cotação e eles seguem junto com a proposta.",
+    id: "lgpd",
+    open: true,
+    q: "Como ficam os dados das crianças (LGPD)?",
+    a: "Os dados são armazenados com criptografia e acesso por permissão. A política de consentimento dos responsáveis e o tratamento de dados de crianças, conforme o art. 14 da LGPD, serão detalhados aqui.",
+    tbc: true,
+    // Na produção, enquanto a resposta completa não é confirmada: só o que o produto já mostra
+    pub: "Antes de cada avaliação, a estação pede o consentimento na própria tela. Fale com a nossa equipe para conhecer como os dados são guardados e quem tem acesso a eles na sua instituição.",
   },
   {
-    q: "Quem recebe o relatório e em que formato?",
-    a: "O relatório aparece na tela da estação logo após a avaliação, pode ser impresso em A4 em impressora laser ou jato de tinta e chega à família no celular, pelo QR code. Ele traz o nome e o contato da instituição.",
+    open: true,
+    q: "A estação faz diagnóstico?",
+    a: "Não. A Estação de Saúde DANX faz triagem e avaliação: identifica sinais de atenção e apoia o encaminhamento para profissionais de saúde. O diagnóstico é sempre feito por um profissional habilitado.",
   },
   {
     q: "Como funciona a compra por órgãos públicos?",
@@ -259,18 +254,6 @@ export const faq = [
   {
     q: "Precisa de internet para funcionar?",
     a: "Não. As avaliações ficam salvas no próprio equipamento, com capacidade para mais de 100 mil registros, e são sincronizadas com a nuvem quando há conexão.",
-  },
-  {
-    id: "lgpd",
-    q: "Como ficam os dados das crianças (LGPD)?",
-    a: "Os dados são armazenados com criptografia e acesso por permissão. A política de consentimento dos responsáveis e o tratamento de dados de crianças, conforme o art. 14 da LGPD, serão detalhados aqui.",
-    tbc: true,
-    // Na produção, enquanto a resposta completa não é confirmada: só o que o produto já mostra
-    pub: "Antes de cada avaliação, a estação pede o consentimento na própria tela. Fale com a nossa equipe para conhecer como os dados são guardados e quem tem acesso a eles na sua instituição.",
-  },
-  {
-    q: "A estação faz diagnóstico?",
-    a: "Não. A Estação de Saúde DANX faz triagem e avaliação: identifica sinais de atenção e apoia o encaminhamento para profissionais de saúde. O diagnóstico é sempre feito por um profissional habilitado.",
   },
   {
     q: "Para qual faixa etária ela serve?",

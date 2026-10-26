@@ -28,22 +28,22 @@ const KEYS: Key[] = [
   { p: 0.0, rot: -2.3, dist: 9.6, y: 1.05, elev: 0.5, explode: 0, glow: 0, ultra: 0, cx: 0 },
   { p: 0.05, rot: -0.7, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Identificação: a câmera chega à tela enquanto a matrícula é digitada e o termo é aceito
-  { p: 0.135, rot: -0.3, dist: 1.9, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.185, rot: -0.22, dist: 1.85, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.135, rot: -0.3, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.185, rot: -0.22, dist: 2.25, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Altura: ondas do sensor descem do dossel
   { p: 0.235, rot: -0.42, dist: 3.6, y: 1.72, elev: 0.15, explode: 0, glow: 0, ultra: 1, cx: 0 },
   // Composição corporal: eletrodos acesos na plataforma e o gráfico da composição na tela
   { p: 0.315, rot: -0.8, dist: 5.6, y: 0.95, elev: 0.95, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
   { p: 0.335, rot: -0.74, dist: 5.5, y: 0.97, elev: 0.9, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
   // Do equilíbrio à postura, a tela é a protagonista: a câmera orbita devagar diante dela
-  { p: 0.4, rot: -0.2, dist: 1.9, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.48, rot: -0.08, dist: 1.85, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.56, rot: 0.06, dist: 1.9, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.655, rot: 0.16, dist: 1.9, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.745, rot: 0.24, dist: 1.95, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.4, rot: -0.2, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.48, rot: -0.08, dist: 2.25, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.56, rot: 0.06, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.655, rot: 0.16, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.745, rot: 0.24, dist: 2.35, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Resultado: a tela em destaque
-  { p: 0.835, rot: -0.15, dist: 2.1, y: 1.38, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.865, rot: -0.15, dist: 2.1, y: 1.38, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.835, rot: -0.15, dist: 2.4, y: 1.4, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.865, rot: -0.15, dist: 2.4, y: 1.4, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Instalação: vista explodida
   { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0 },
   { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
@@ -97,20 +97,23 @@ const CHAPTERS = [
     at: 0.135,
     kicker: "Identificação",
     title: "Começa com o número do aluno.",
-    text: "O aluno digita o número de matrícula na tela. A partir daí a estação conduz cada etapa, na tela e por voz.",
+    text: "O aluno digita o número de matrícula, e a tela exibe o aviso de coleta de dados antes de começar. A partir daí a estação conduz cada etapa, na tela e por voz.",
+    screen: "teclado da matrícula e aviso de coleta de dados.",
   },
   {
     at: 0.235,
     kicker: "Altura",
     title: "Sem régua, sem toque.",
     text: "O sensor ultrassônico no topo mede a altura em segundos. Cada avaliação vira um ponto na curva de crescimento.",
+    screen: "a altura é a primeira medida da análise corporal.",
     stat: { v: "148", u: "cm" },
   },
   {
     at: 0.315,
     kicker: "Composição corporal",
-    title: "Uma corrente que ninguém sente.",
-    text: "Quatro eletrodos de aço inox 304 e corrente abaixo de 280 µA. A bioimpedância separa água, proteína, gordura e minerais.",
+    title: "Quatro eletrodos sob os pés.",
+    text: "Placas de aço inox 304 e corrente de baixa intensidade, abaixo de 280 µA. A bioimpedância separa água, proteína, gordura e minerais.",
+    screen: "anel de indicadores e barras com a faixa de referência.",
     stat: { v: "21,3%", u: "de gordura" },
   },
   {
@@ -119,6 +122,7 @@ const CHAPTERS = [
     title: "Numa perna só, de olhos fechados.",
     text: "Mãos juntas, olhos fechados, dez segundos sobre a plataforma. A tela mostra a capacidade de equilíbrio.",
     stat: { v: "88%", u: "capacidade de equilíbrio" },
+    screen: "cronômetro de 10 segundos e a capacidade de equilíbrio.",
   },
   {
     at: 0.48,
@@ -126,6 +130,7 @@ const CHAPTERS = [
     title: "Cinco toques, contra o relógio.",
     text: "O botão acende cinco vezes na tela e o aluno toca o mais rápido que puder. O tempo médio de reação sai em milissegundos.",
     stat: { v: "412", u: "ms de tempo médio de reação" },
+    screen: "o botão que acende e o tempo médio de reação.",
   },
   {
     at: 0.56,
@@ -133,18 +138,21 @@ const CHAPTERS = [
     title: "Um sopro no espirômetro.",
     text: "Espirômetro sem fio com bocal descartável. A tela mostra a capacidade vital em mililitros enquanto o aluno sopra.",
     stat: { v: "1.650", u: "mL de capacidade vital" },
+    screen: "a capacidade vital subindo enquanto o aluno sopra.",
   },
   {
     at: 0.655,
     kicker: "Acuidade visual",
     title: "A 2,5 metros da tela.",
     text: "Cobrindo um olho de cada vez, o aluno indica para onde aponta o E. A tela registra a acuidade de cada olho.",
+    screen: "o E em tamanhos decrescentes, um olho de cada vez.",
   },
   {
     at: 0.745,
     kicker: "Postura",
     title: "De frente e de lado para a câmera.",
     text: "A visão computacional marca os pontos do corpo e aponta sinais de atenção postural, com medidas como a inclinação dos ombros e do quadril.",
+    screen: "os pontos do corpo, de frente e de lado.",
   },
   {
     at: 0.845,
@@ -152,6 +160,7 @@ const CHAPTERS = [
     title: "Pontuação, curva e relatório na hora.",
     text: "Ao final, a tela mostra a pontuação de saúde e a curva de crescimento. O relatório sai impresso ou pelo QR code, para a família.",
     stat: { v: "86", u: "pontuação de saúde" },
+    screen: "pontuação de saúde, curva de crescimento e relatório.",
   },
   {
     at: 0.92,
@@ -163,7 +172,7 @@ const CHAPTERS = [
     at: 0.985,
     kicker: "Pronta para a escola",
     title: "Pequena no espaço. Grande no cuidado.",
-    text: "Cabe em um canto da escola e recebe uma turma depois da outra.",
+    text: "Pronta para receber a escola inteira, turma após turma.",
     cta: true,
   },
 ];
@@ -401,6 +410,11 @@ export default function ProductStory() {
                 <h3 className={s.title}>{c.title}</h3>
               )}
               <p className={s.text}>{c.text}</p>
+              {c.screen && (
+                <p className={s.onScreen}>
+                  <b>Na tela:</b> {c.screen}
+                </p>
+              )}
               {c.stat && (
                 <p className={s.stat}>
                   <span>{c.stat.v}</span> {c.stat.u}

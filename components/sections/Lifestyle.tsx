@@ -7,7 +7,7 @@ import s from "./Lifestyle.module.css";
 const POINTS = [
   {
     t: "Ocupa pouco espaço",
-    d: "Base de 48 × 93,5 cm. Cabe em um canto do ginásio, da biblioteca ou da sala de saúde.",
+    d: "Base de 48 × 93,5 cm e 2,1 m de altura. Na triagem de acuidade visual, o aluno fica a 2,5 m da tela.",
   },
   {
     t: "Funciona sem internet",

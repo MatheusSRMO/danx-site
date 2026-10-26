@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { pricing, REVISAO, site } from "@/lib/content";
+import { docs, pricing, REVISAO, site } from "@/lib/content";
 import s from "./Pricing.module.css";
 
 const Check = () => (
@@ -15,7 +15,7 @@ export default function Pricing() {
   const conditions = pricing.conditions.filter((c) => REVISAO || !c.tbc);
   const includesPending = !REVISAO && pricing.includes.every((i) => i.tbc);
   return (
-    <section id="investimento" className="section alt" aria-labelledby="preco-kicker preco-title">
+    <section id="como-comprar" className="section alt" aria-labelledby="preco-kicker preco-title">
       <div className="container-wide">
         <div className={s.box}>
           <div className={s.media} data-reveal>
@@ -29,7 +29,7 @@ export default function Pricing() {
           </div>
           <div className={s.info}>
             <p id="preco-kicker" className={s.kicker}>
-              Investimento
+              Como comprar
             </p>
             <h2 id="preco-title" className={s.name}>
               {pending ? pricing.pending.title : "Estação de Saúde DANX"}
@@ -91,6 +91,25 @@ export default function Pricing() {
                 Falar no WhatsApp
               </a>
             </div>
+          </div>
+          <div className={s.docs}>
+            <div>
+              <h3 className={s.h3}>Documentos para o processo de compra</h3>
+              <p>A cotação pode vir acompanhada de:</p>
+              <ul>
+                {docs
+                  .filter((d) => REVISAO || !d.hide)
+                  .map((d) => (
+                    <li key={d.title}>
+                      {d.title}
+                      {d.tbc && REVISAO && <span className="tbc">A confirmar</span>}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            <a className="btn btn-secondary" href="#cotacao" data-doc="todos">
+              Solicitar cotação com documentos
+            </a>
           </div>
         </div>
       </div>

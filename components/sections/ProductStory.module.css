@@ -24,9 +24,6 @@
 .canvas {
   position: absolute;
   inset: 0;
-  /* Nos closes, o alto da torre some suavemente sob a barra em vez de ser cortado por ela */
-  -webkit-mask-image: linear-gradient(to bottom, transparent 52px, #000 150px);
-  mask-image: linear-gradient(to bottom, transparent 52px, #000 150px);
 }
 
 /* Capítulos empilhados na mesma célula; alternam por opacidade */
@@ -226,8 +223,8 @@
     inset: 52px 0 40% 0;
   }
   .canvas {
-    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 48px, #000 80%, transparent);
-    mask-image: linear-gradient(to bottom, transparent, #000 48px, #000 80%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent);
+    mask-image: linear-gradient(to bottom, #000 80%, transparent);
   }
   .layer {
     align-items: end;
@@ -299,5 +296,22 @@
   .staticGrid,
   .staticList {
     grid-template-columns: 1fr;
+  }
+}
+
+/* O que aparece na tela da estação em cada etapa (a interface é pequena demais para ler no 3D) */
+.onScreen {
+  margin-top: 14px;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+.onScreen b {
+  font-weight: 600;
+  color: var(--ink);
+}
+@media (max-width: 900px) {
+  .onScreen {
+    margin-top: 8px;
+    font-size: 0.85rem;
   }
 }

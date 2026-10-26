@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { report } from "@/lib/content";
+import Insights from "./Insights";
 import s from "./Report.module.css";
 
 function Rings() {
@@ -90,6 +91,10 @@ export default function Report() {
         </div>
       </div>
 
+      <div className="container-wide">
+        <Insights />
+      </div>
+
       <div className={`container-wide ${s.points}`}>
         {report.points.map((p) => (
           <div key={p.k} data-reveal>
@@ -98,14 +103,30 @@ export default function Report() {
           </div>
         ))}
       </div>
-      <div className={`container-wide ${s.more}`} data-reveal>
-        <a className="link" href="#cotacao" data-doc="Relatório de exemplo">
-          Pedir um relatório de exemplo
-        </a>
-        <a className="link" href="#lgpd">
-          Dados das crianças e LGPD
-        </a>
+      <div className={`container-wide ${s.after}`}>
+        <div className={s.data} data-reveal>
+          <h3>Dados das crianças</h3>
+          <p>
+            O aluno é identificado pelo número de matrícula, e a estação exibe o aviso de coleta de dados antes de cada
+            avaliação. As avaliações ficam salvas no próprio equipamento e são sincronizadas com a nuvem quando há
+            conexão.
+          </p>
+          <a className="link" href="#lgpd">
+            LGPD nas perguntas frequentes
+          </a>
+        </div>
+        <div className={s.sample} data-reveal>
+          <h3>Veja um relatório completo</h3>
+          <p>Peça um relatório de exemplo junto com a cotação, como a família recebe.</p>
+          <a className="link" href="#cotacao" data-doc="Relatório de exemplo">
+            Pedir um relatório de exemplo
+          </a>
+        </div>
       </div>
+      <p className={`container-wide ${s.footnote}`}>
+        Valores ilustrativos: peso, gordura, músculo, IMC, altura e idade vêm de um relatório de exemplo (aluno de 10
+        anos, 148 cm); as curvas são demonstrativas. A estação faz triagem e avaliação, não diagnóstico.
+      </p>
     </section>
   );
 }

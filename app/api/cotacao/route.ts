@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 // Recebe o pedido de cotação.
 // Para entregar por e-mail/CRM, defina QUOTE_WEBHOOK_URL (ex.: Zapier, Make, n8n ou um endpoint próprio):
 // o JSON do pedido é repassado para essa URL.
-const REQUIRED = ["instituicao", "tipo", "cidade", "uf", "nome", "email", "telefone", "consentimento"];
+const REQUIRED = ["instituicao", "tipo", "cidade", "uf", "nome", "consentimento"];
 // Só estes campos seguem adiante, com tamanho máximo de cada um
 const FIELDS: Record<string, number> = {
   instituicao: 200,
@@ -43,10 +43,12 @@ export async function POST(req: Request) {
     if (v) data[k] = v;
   }
   const missing = REQUIRED.filter((k) => !data[k]);
+  // Basta um meio de contato: e-mail ou telefone
+  if (!data.email && !data.telefone) missing.push("contato");
   if (missing.length) return NextResponse.json({ ok: false, missing }, { status: 422 });
   if (tooLong.length)
     return NextResponse.json({ ok: false, error: "Campo longo demais", fields: tooLong }, { status: 422 });
-  if (!EMAIL.test(data.email))
+  if (data.email && !EMAIL.test(data.email))
     return NextResponse.json({ ok: false, error: "E-mail inválido", fields: ["email"] }, { status: 422 });
   if (!["sim", "on", "true"].includes(data.consentimento.toLowerCase())) {
     return NextResponse.json(

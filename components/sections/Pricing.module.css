@@ -168,3 +168,37 @@
   font-size: 0.92rem;
   color: var(--ink-2);
 }
+
+/* Documentos: faixa que fecha o bloco de compra */
+.docs {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px 32px;
+  padding-top: clamp(24px, 3vw, 36px);
+  border-top: 1px solid var(--line);
+}
+.docs .h3 {
+  margin-top: 0;
+}
+.docs p {
+  margin-top: 6px;
+  color: var(--ink-2);
+}
+.docs ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.docs li {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  font-size: 0.92rem;
+  font-weight: 500;
+}

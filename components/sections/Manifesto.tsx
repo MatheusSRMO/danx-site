@@ -6,7 +6,7 @@ import s from "./Manifesto.module.css";
 
 export default function Manifesto() {
   const root = useRef<HTMLElement>(null);
-  const words = manifesto.text.split(" ");
+  const words = manifesto.title.split(" ");
 
   useGSAP(
     () => {
@@ -49,15 +49,15 @@ export default function Manifesto() {
     <section ref={root} className={`section ${s.manifesto}`} aria-labelledby="manifesto-title">
       <div className="container-wide">
         <p className={`eyebrow ${s.label}`}>Por que na escola</p>
-        <h2 id="manifesto-title" className="sr-only">
-          Por que avaliar a saúde dos alunos dentro da escola
-        </h2>
-        <p className={s.text}>
+        <h2 id="manifesto-title" className={s.text}>
           {words.map((w, i) => (
             <span key={i} className={s.word}>
               {w}{" "}
             </span>
           ))}
+        </h2>
+        <p className={`lead ${s.sub}`} data-reveal>
+          {manifesto.text}
         </p>
         <div className={s.stats}>
           {manifesto.stats.map((st) => (

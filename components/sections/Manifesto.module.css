@@ -19,6 +19,10 @@
 .word {
   display: inline;
 }
+.sub {
+  margin-top: 24px;
+  max-width: 34em;
+}
 
 .stats {
   display: grid;

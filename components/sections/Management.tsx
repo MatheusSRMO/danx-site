@@ -102,12 +102,6 @@ export default function Management() {
         </div>
 
         <div className={s.programs} data-reveal>
-          <h3>Onde a estação entra na rotina da escola e da rede</h3>
-          <ul>
-            {management.programs.map((p) => (
-              <li key={p}>{p}</li>
-            ))}
-          </ul>
           <a className="btn btn-primary" href="#cotacao">
             Solicitar cotação
           </a>

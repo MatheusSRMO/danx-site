@@ -6,11 +6,24 @@ import s from "./WhatsAppButton.module.css";
 const TEXT = "Olá! Quero saber mais sobre a Estação de Saúde DANX para a minha escola ou rede.";
 
 /**
- * Atalho fixo para o WhatsApp no celular. Some onde já há chamadas ou texto embaixo da tela: no topo, na história 3D,
- * no formulário de cotação e no rodapé.
+ * Atalho fixo para o WhatsApp no celular. Aparece quando a pessoa volta a rolar para cima (enquanto lê, descendo, não
+ * cobre o texto) e some no topo, na história 3D, no formulário de cotação e no rodapé.
  */
 export default function WhatsAppButton() {
-  const [hidden, setHidden] = useState(true);
+  const [inZone, setInZone] = useState(true);
+  const [down, setDown] = useState(true);
+  const hidden = inZone || down;
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (Math.abs(y - last) < 12) return;
+      setDown(y > last);
+      last = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   useEffect(() => {
     const targets = ["topo", "tecnologia", "cotacao"]
       .map((id) => document.getElementById(id))
@@ -24,7 +37,7 @@ export default function WhatsAppButton() {
         if (e.isIntersecting) seen.add(e.target);
         else seen.delete(e.target);
       }
-      setHidden(seen.size > 0);
+      setInZone(seen.size > 0);
     });
     targets.forEach((el) => io.observe(el));
     return () => io.disconnect();

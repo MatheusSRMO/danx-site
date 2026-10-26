@@ -12,7 +12,12 @@ export default function Faq() {
           {faq
             .filter((f) => REVISAO || !f.tbc || f.pub)
             .map((f) => (
-              <details key={f.q} id={"id" in f ? f.id : undefined} className={s.item}>
+              <details
+                key={f.q}
+                id={"id" in f ? f.id : undefined}
+                open={"open" in f ? f.open : undefined}
+                className={s.item}
+              >
                 <summary>
                   <span>
                     {f.q}
