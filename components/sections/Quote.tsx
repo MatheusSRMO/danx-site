@@ -242,7 +242,7 @@ export default function Quote() {
                     </select>
                   </label>
                 </div>
-                <div className={s.row3}>
+                <div className={`${s.row3} ${s.place}`}>
                   <label className={s.field}>
                     <span>Seu nome *</span>
                     <input

@@ -28,22 +28,22 @@ const KEYS: Key[] = [
   { p: 0.0, rot: -2.3, dist: 9.6, y: 1.05, elev: 0.5, explode: 0, glow: 0, ultra: 0, cx: 0 },
   { p: 0.05, rot: -0.7, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Identificação: a câmera chega à tela enquanto a matrícula é digitada e o aviso aparece
-  { p: 0.135, rot: -0.3, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.185, rot: -0.22, dist: 2.25, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.135, rot: -0.3, dist: 2.0, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.185, rot: -0.22, dist: 1.96, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Altura: o dossel e a tela, com as ondas do sensor descendo
   { p: 0.235, rot: -0.45, dist: 4.2, y: 1.55, elev: 0.2, explode: 0, glow: 0, ultra: 1, cx: 0 },
   // Composição corporal: a estação inteira, com os eletrodos acesos na plataforma
   { p: 0.315, rot: -0.8, dist: 6.6, y: 1.02, elev: 0.95, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
   { p: 0.335, rot: -0.74, dist: 6.5, y: 1.04, elev: 0.9, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
   // Do equilíbrio à postura, a tela é a protagonista: a câmera orbita devagar diante dela
-  { p: 0.4, rot: -0.2, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.48, rot: -0.08, dist: 2.25, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.56, rot: 0.06, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.655, rot: 0.16, dist: 2.3, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.745, rot: 0.24, dist: 2.35, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.4, rot: -0.2, dist: 2.0, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.48, rot: -0.08, dist: 1.96, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.56, rot: 0.06, dist: 2.0, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.655, rot: 0.16, dist: 2.0, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.745, rot: 0.24, dist: 2.04, y: 1.4, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Resultado: a tela em destaque
-  { p: 0.835, rot: -0.15, dist: 2.4, y: 1.4, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.865, rot: -0.15, dist: 2.4, y: 1.4, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.835, rot: -0.15, dist: 2.1, y: 1.4, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.865, rot: -0.15, dist: 2.1, y: 1.4, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Instalação: vista explodida
   { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0 },
   { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
@@ -165,12 +165,12 @@ const CHAPTERS = [
   {
     at: 0.92,
     kicker: "Instalação",
-    title: "Chega desmontada. Montada no local.",
-    text: "Torre com tela, plataforma de medição e dossel ultrassônico chegam separados e são montados na escola.",
+    title: "Montada na sua escola.",
+    text: "Torre com tela, plataforma de medição e dossel ultrassônico chegam separados e são montados no local.",
   },
   {
     at: 0.985,
-    kicker: "Pronta para a escola",
+    kicker: "Próximo passo",
     title: "Pronta para a sua escola.",
     text: "Peça a cotação: a proposta formal detalha entrega, instalação e treinamento da equipe.",
     cta: true,
@@ -234,7 +234,7 @@ export default function ProductStory() {
 
   // No desktop o produto fica à direita do texto; no celular, centralizado (vale também ao redimensionar)
   useEffect(() => {
-    const place = () => void (state.viewX = window.innerWidth > 900 ? 0.17 : 0);
+    const place = () => void (state.viewX = window.innerWidth > 900 ? 0.15 : 0);
     place();
     window.addEventListener("resize", place);
     return () => window.removeEventListener("resize", place);
@@ -465,7 +465,9 @@ export default function ProductStory() {
         <p className={s.sample}>
           <span>Números de um aluno de exemplo</span>
           <span className={s.sep}> · </span>
-          <a href="#para-quem">Pular a apresentação</a>
+          <a href="#para-quem" aria-label="Pular a apresentação">
+            Pular<span className={s.long}> a apresentação</span>
+          </a>
         </p>
         <p className={s.hint} aria-hidden="true">
           {touch ? "Arraste para girar" : "Clique e arraste para girar"}

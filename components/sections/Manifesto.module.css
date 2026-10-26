@@ -99,3 +99,10 @@
   font-weight: 600;
   color: var(--accent);
 }
+.bridge p + p {
+  margin-top: 12px;
+}
+.bridge p:first-child {
+  font-weight: 600;
+  color: var(--ink);
+}

@@ -21,7 +21,7 @@ function Dashboard() {
     <div
       className={s.window}
       role="img"
-      aria-label="Exemplo de painel da gestão com dados fictícios: alunos avaliados, escolas, avaliações no ano e percentual de alunos com sinais de atenção postural por ano escolar"
+      aria-label="Exemplo de painel da gestão com dados fictícios: alunos avaliados, escolas, turmas e percentual de alunos com sinais de atenção postural por ano escolar"
     >
       <div className={s.chrome} aria-hidden="true">
         <span />
@@ -46,8 +46,8 @@ function Dashboard() {
             <b className="num">12</b>
           </div>
           <div>
-            <p>Avaliações no ano</p>
-            <b className="num">2.410</b>
+            <p>Turmas</p>
+            <b className="num">52</b>
           </div>
         </div>
         <div className={s.chart}>

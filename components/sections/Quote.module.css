@@ -271,3 +271,12 @@
     margin-top: 0;
   }
 }
+/* Celular: nome na linha toda; cidade e UF lado a lado */
+@media (max-width: 720px) {
+  .place {
+    grid-template-columns: 2fr 1fr;
+  }
+  .place > :first-child {
+    grid-column: 1 / -1;
+  }
+}

@@ -39,17 +39,19 @@ export const hero = {
 };
 
 export const manifesto = {
-  title: "Muita coisa muda sem ninguém notar.",
+  title: "Os sinais aparecem antes de alguém medir.",
   text: "Na escola, a triagem chega a todos os alunos, com o mesmo protocolo, todo ano. A família recebe o resultado e a gestão enxerga a tendência.",
-  bridge:
-    "Sem uma medida anual, a escola não sabe em quais turmas agir. Postura, composição corporal, equilíbrio e agilidade mudam aos poucos, e o problema costuma aparecer só quando vira queixa. A estação registra cada medida, aluno a aluno, para a escola ver a tendência cedo. É triagem: indica sinais de atenção e apoia as ações do Programa Saúde na Escola.",
+  bridge: [
+    "Sem uma medida anual, a escola não sabe em quais turmas agir.",
+    "A estação registra cada medida, aluno a aluno, para a escola ver a tendência cedo. É triagem: indica sinais de atenção e apoia as ações do Programa Saúde na Escola.",
+  ],
   stats: [
     {
       value: 84,
       decimals: 0,
       suffix: "%",
       label: "dos adolescentes brasileiros de 11 a 17 anos não faziam, em 2016, os 60 minutos diários de atividade física recomendados.",
-      link: "Na estação: composição corporal, agilidade e capacidade pulmonar.",
+      link: "O que a estação mede sobre isso: composição corporal, agilidade e capacidade pulmonar.",
       source: "Guthold et al. (OMS), The Lancet Child & Adolescent Health, 2019",
     },
     {
@@ -58,7 +60,7 @@ export const manifesto = {
       suffix: "%",
       label:
         "dos alunos do 5º ao 8º ano relataram dor nas costas nos últimos três meses, em um estudo regional com 1.597 estudantes de Teutônia (RS).",
-      link: "Na estação: postura.",
+      link: "O que a estação mede sobre isso: postura.",
       source: "Noll et al., Revista Brasileira de Ciências do Esporte, 2016",
     },
   ],
@@ -67,8 +69,8 @@ export const manifesto = {
 export const report = {
   points: [
     { k: "62", v: "indicadores por avaliação" },
-    { k: "Impresso", v: "em A4, direto na impressora da rede" },
-    { k: "No celular", v: "pelo QR code, para a família" },
+    { k: "Impresso em A4,", v: "direto na impressora da rede" },
+    { k: "No celular,", v: "pelo QR code, para a família" },
   ],
   student: { age: "10 anos", sex: "Masculino", height: "148 cm", score: 86 },
   bars: [
@@ -225,6 +227,10 @@ export const docs = [
 
 export const faq = [
   {
+    q: "Quanto custa?",
+    a: "O valor depende da quantidade de estações e das condições de contratação, e chega por escrito na proposta formal.",
+  },
+  {
     id: "lgpd",
     open: true,
     q: "Como ficam os dados das crianças (LGPD)?",
@@ -250,9 +256,10 @@ export const faq = [
     pub: "A estação chega desmontada e é montada no local: torre com tela, plataforma de medição e dossel ultrassônico. Ocupa uma base de 48 × 93,5 cm; os detalhes de entrega e instalação vêm na proposta.",
   },
   {
-    q: "Qual é a garantia e como funciona a manutenção?",
+    q: "E a garantia e a manutenção?",
     a: "Garantia, assistência técnica e manutenção preventiva serão detalhadas aqui.",
     tbc: true,
+    pub: "Garantia, assistência técnica e manutenção constam da proposta formal.",
   },
   {
     q: "Como é a higiene?",

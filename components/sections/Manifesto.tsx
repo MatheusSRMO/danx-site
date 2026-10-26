@@ -76,9 +76,11 @@ export default function Manifesto() {
             </figure>
           ))}
         </div>
-        <p className={s.bridge} data-reveal>
-          {manifesto.bridge}
-        </p>
+        <div className={s.bridge} data-reveal>
+          {manifesto.bridge.map((b) => (
+            <p key={b}>{b}</p>
+          ))}
+        </div>
 
       </div>
     </section>

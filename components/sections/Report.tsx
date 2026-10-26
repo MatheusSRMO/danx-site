@@ -100,12 +100,20 @@ export default function Report() {
       </div>
 
       <div className={`container-wide ${s.points}`}>
-        {report.points.map((p) => (
-          <div key={p.k} data-reveal>
-            <p className={s.k}>{p.k}</p>
-            <p className={s.v}>{p.v}</p>
-          </div>
-        ))}
+        <div className={s.metric} data-reveal>
+          <p className={s.k}>{report.points[0].k}</p>
+          <p className={s.v}>{report.points[0].v}</p>
+        </div>
+        <div className={s.delivery} data-reveal>
+          <p className={s.deliveryTitle}>Como o relatório chega</p>
+          <ul>
+            {report.points.slice(1).map((p) => (
+              <li key={p.k}>
+                <b>{p.k}</b> {p.v}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
       <p className={`container-wide ${s.pointsNote}`}>
         Os 62 indicadores cobrem composição corporal, medidas do corpo, postura, equilíbrio, agilidade, capacidade
