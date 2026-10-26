@@ -1,21 +1,25 @@
 .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
   margin-top: clamp(40px, 6vw, 72px);
 }
 .frame {
   position: relative;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 4 / 5;
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--bg-2);
 }
 .frame img {
   object-fit: cover;
+  object-position: 50% 30%;
 }
 .points {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(20px, 4vw, 56px);
-  margin: clamp(40px, 5vw, 64px) 0 0;
+  gap: clamp(24px, 3vw, 40px);
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -28,10 +32,7 @@
   color: var(--ink-2);
 }
 @media (max-width: 760px) {
-  .frame {
-    aspect-ratio: 4 / 5;
-  }
-  .points {
+  .wrap {
     grid-template-columns: 1fr;
   }
 }

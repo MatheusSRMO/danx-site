@@ -2,7 +2,7 @@
 import { getImageProps } from "next/image";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { hero } from "@/lib/content";
+import { hero, site } from "@/lib/content";
 import s from "./Hero.module.css";
 
 // Uma foto larga no desktop e uma vertical no celular: com <picture>, cada aparelho baixa só a sua
@@ -78,6 +78,16 @@ export default function Hero() {
         </div>
         <p className={s.note} data-in>
           {hero.note}
+        </p>
+        <p className={s.talk} data-in>
+          Prefere conversar?{" "}
+          <a
+            href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Olá! Quero conhecer a Estação de Saúde DANX.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            WhatsApp {site.phone}
+          </a>
         </p>
       </div>
     </section>

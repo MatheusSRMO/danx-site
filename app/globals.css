@@ -123,8 +123,8 @@ h2,
 h3 {
   font-family: var(--f-display);
   font-weight: 650;
-  letter-spacing: -0.03em;
-  line-height: 1.04;
+  letter-spacing: -0.022em;
+  line-height: 1.06;
   text-wrap: balance;
 }
 
@@ -254,6 +254,11 @@ p {
 }
 .center .lead {
   margin-inline: auto;
+}
+/* Título seguido do texto de apoio: sempre um respiro entre os dois */
+.headline + .lead,
+.headline-2 + .lead {
+  margin-top: 20px;
 }
 
 .num {

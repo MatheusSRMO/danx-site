@@ -136,3 +136,9 @@
     transition: none;
   }
 }
+
+.legend {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}

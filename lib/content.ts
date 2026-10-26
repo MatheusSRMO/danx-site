@@ -41,8 +41,15 @@ export const manifesto = {
   title: "Crescer é rápido. Perceber o que muda, nem sempre.",
   text: "A DANX transforma uma passagem pela estação em dados que escola, família e gestão acompanham, ano após ano.",
   bridge:
-    "A estação acompanha, aluno a aluno e ano a ano, os indicadores ligados a esses números: postura, composição corporal, equilíbrio e agilidade. São dados que apoiam ações do Programa Saúde na Escola, como alimentação saudável, atividade física e saúde ocular.",
+    "A estação acompanha esses sinais aluno a aluno, ano a ano: postura, composição corporal, equilíbrio e agilidade. Ela não diagnostica: aponta cedo o que merece atenção e apoia as ações do Programa Saúde na Escola.",
   stats: [
+    {
+      value: 84,
+      decimals: 0,
+      suffix: "%",
+      label: "dos adolescentes brasileiros não praticam os 60 minutos diários de atividade física recomendados.",
+      source: "OMS / The Lancet Child & Adolescent Health, 2019",
+    },
     {
       value: 55.7,
       decimals: 1,
@@ -50,13 +57,6 @@ export const manifesto = {
       label:
         "dos estudantes de 11 a 16 anos avaliados em um estudo em Teutônia (RS) relataram dor nas costas nos últimos três meses.",
       source: "Noll et al., Revista de Saúde Pública (USP), 2016",
-    },
-    {
-      value: 84,
-      decimals: 0,
-      suffix: "%",
-      label: "dos adolescentes brasileiros não praticam os 60 minutos diários de atividade física recomendados.",
-      source: "OMS / The Lancet Child & Adolescent Health, 2019",
     },
   ],
 };
@@ -88,10 +88,6 @@ export const management = {
     {
       title: "Resultados visíveis",
       text: "A evolução dos alunos ano a ano, útil para prestar contas e divulgar o programa.",
-    },
-    {
-      title: "Famílias por perto",
-      text: "Cada família recebe o relatório individual do próprio filho, com o nome e o contato da escola.",
     },
     {
       title: "Uma medida comum",
@@ -175,7 +171,7 @@ export const specs = [
     ],
   },
   {
-    group: "Energia e ambiente",
+    group: "Ambiente de operação",
     rows: [
       ["Alimentação", "220 V, 60 W", true],
       ["Temperatura de operação", "10 a 40 °C"],
@@ -228,10 +224,9 @@ export const faq = [
     a: "Os dados são armazenados com criptografia e acesso por permissão. A política de consentimento dos responsáveis e o tratamento de dados de crianças, conforme o art. 14 da LGPD, serão detalhados aqui.",
     tbc: true,
     // Na produção, enquanto a resposta completa não é confirmada: só o que o produto já mostra
-    pub: "Antes de cada avaliação, a estação pede o consentimento na própria tela. Fale com a nossa equipe para conhecer como os dados são guardados e quem tem acesso a eles na sua instituição.",
+    pub: "Antes de cada avaliação, a estação exibe o aviso de coleta de dados, e o aluno é identificado pelo número de matrícula. Para dados de crianças, a LGPD pede o consentimento de um dos pais ou do responsável legal. Fale com a nossa equipe para alinhar esse fluxo na sua instituição e conhecer como os dados são guardados e quem tem acesso a eles.",
   },
   {
-    open: true,
     q: "A estação faz diagnóstico?",
     a: "Não. A Estação de Saúde DANX faz triagem e avaliação: identifica sinais de atenção e apoia o encaminhamento para profissionais de saúde. O diagnóstico é sempre feito por um profissional habilitado.",
   },
@@ -244,7 +239,7 @@ export const faq = [
     q: "Como é a instalação?",
     a: "A estação chega desmontada (torre com tela, plataforma de medição e dossel ultrassônico) e é montada no local. Acompanham espirômetro e bocais descartáveis. Prazo de entrega e treinamento da equipe serão informados na proposta.",
     tbc: true,
-    pub: "A estação chega desmontada e é montada no local: torre com tela, plataforma de medição e dossel ultrassônico. Ocupa uma base de 48 × 93,5 cm.",
+    pub: "A estação chega desmontada e é montada no local: torre com tela, plataforma de medição e dossel ultrassônico. Ocupa uma base de 48 × 93,5 cm; os detalhes de entrega e instalação vêm na proposta.",
   },
   {
     q: "Qual é a garantia e como funciona a manutenção?",

@@ -165,7 +165,7 @@
 }
 .benefits {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 28px 32px;
   margin: 0;
   padding: 0;
@@ -208,9 +208,9 @@
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 760px) {
   .benefits {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 }
 @media (max-width: 620px) {

@@ -6,8 +6,8 @@ import s from "./Lifestyle.module.css";
 
 const POINTS = [
   {
-    t: "Ocupa pouco espaço",
-    d: "Base de 48 × 93,5 cm e 2,1 m de altura. Na triagem de acuidade visual, o aluno fica a 2,5 m da tela.",
+    t: "Pouco espaço no chão",
+    d: "Base de 48 × 93,5 cm e 2,1 m de altura. Para a triagem de acuidade visual, reserve 2,5 m livres à frente da tela.",
   },
   {
     t: "Funciona sem internet",
@@ -61,10 +61,10 @@ export default function Lifestyle() {
       <div className={`container-wide ${s.wrap}`}>
         <div className={s.frame}>
           <Image
-            src="/media/school-hallway.webp"
-            alt="Estação de Saúde DANX em um corredor de escola claro, com alunos passando ao fundo"
+            src="/media/test-balance.webp"
+            alt="Adolescente em um pé só, de olhos fechados e mãos juntas, sobre a plataforma da estação no teste de equilíbrio"
             fill
-            sizes="(max-width: 1340px) 96vw, 1260px"
+            sizes="(max-width: 760px) 96vw, 560px"
           />
           <span className="illus">Imagem ilustrativa</span>
         </div>

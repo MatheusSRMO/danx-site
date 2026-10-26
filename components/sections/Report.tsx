@@ -21,6 +21,69 @@ function Rings() {
   );
 }
 
+// Prévia da folha A4, com os mesmos números do aluno de exemplo (decorativa: o resumo está no aria-label)
+function A4() {
+  return (
+    <div
+      className={s.a4}
+      role="img"
+      aria-label="Prévia do relatório impresso em A4 do aluno de exemplo: pontuação de saúde 86, composição corporal, curva de crescimento, sinais de atenção postural e resultados dos testes"
+    >
+      <div className={s.a4Head} aria-hidden="true">
+        <b>Relatório de saúde</b>
+        <span>Sua escola · out. 2026</span>
+      </div>
+      <div className={s.a4Body} aria-hidden="true">
+        <p className={s.a4Who}>
+          Aluno de exemplo · {report.student.age} · {report.student.sex} · {report.student.height}
+        </p>
+        <div className={s.a4Row}>
+          <div className={s.a4Score}>
+            <b>{report.student.score}</b>
+            <span>pontuação de saúde</span>
+          </div>
+          <ul className={s.a4Bars}>
+            {report.bars.map((b) => (
+              <li key={b.label}>
+                <span>{b.label}</span>
+                <i>
+                  <em style={{ width: `${b.pct * 100}%` }} />
+                </i>
+                <b>{b.value}</b>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className={s.a4Row}>
+          <div className={s.a4Box}>
+            <p>Crescimento</p>
+            <svg viewBox="0 0 100 44">
+              <path d="M2 40 L30 30 L58 19 L98 6" stroke="#9ec2f2" />
+              <path d="M2 42 L30 34 L58 25 L98 13" stroke="#1f6fd8" />
+              <circle cx="46" cy="22" r="2.6" fill="#1d1d1f" />
+            </svg>
+          </div>
+          <div className={s.a4Box}>
+            <p>Postura</p>
+            <span>Ombros · atenção</span>
+            <span>Pelve · atenção</span>
+          </div>
+        </div>
+        <div className={s.a4Tests}>
+          <span>Equilíbrio 88%</span>
+          <span>Reação 412 ms</span>
+          <span>Capacidade vital 1.650 mL</span>
+          <span>Visão 5,0 | 4,9</span>
+        </div>
+        <div className={s.a4Foot}>
+          <i />
+          <span>Sugestões de atividade física e hábitos alimentares · contato da escola</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Report() {
   return (
     <section id="relatorio" className="section" aria-labelledby="relatorio-title">
@@ -103,24 +166,31 @@ export default function Report() {
           </div>
         ))}
       </div>
+      <p className={`container-wide ${s.pointsNote}`}>
+        Os 62 indicadores cobrem composição corporal, medidas do corpo, postura, equilíbrio, agilidade, capacidade
+        pulmonar, visão e a pontuação de saúde.
+      </p>
       <div className={`container-wide ${s.after}`}>
         <div className={s.data} data-reveal>
           <h3>Dados das crianças</h3>
           <p>
             O aluno é identificado pelo número de matrícula, e a estação exibe o aviso de coleta de dados antes de cada
             avaliação. As avaliações ficam salvas no próprio equipamento e são sincronizadas com a nuvem quando há
-            conexão.
+            conexão. Para dados de crianças, a LGPD pede o consentimento de um dos pais ou do responsável legal.
           </p>
           <a className="link" href="#lgpd">
             LGPD nas perguntas frequentes
           </a>
         </div>
         <div className={s.sample} data-reveal>
-          <h3>Veja um relatório completo</h3>
-          <p>Peça um relatório de exemplo junto com a cotação, como a família recebe.</p>
-          <a className="link" href="#cotacao" data-doc="Relatório de exemplo">
-            Pedir um relatório de exemplo
-          </a>
+          <div>
+            <h3>Impresso em A4</h3>
+            <p>Uma folha por aluno, para a família guardar. Peça o relatório de exemplo completo junto com a cotação.</p>
+            <a className="link" href="#cotacao" data-doc="Relatório de exemplo">
+              Pedir um relatório de exemplo
+            </a>
+          </div>
+          <A4 />
         </div>
       </div>
       <p className={`container-wide ${s.footnote}`}>

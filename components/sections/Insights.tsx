@@ -152,7 +152,10 @@ export default function Insights() {
           <h3>Cada avaliação, um ponto na curva.</h3>
           <p className={s.text}>A altura entra na curva de crescimento por idade e sexo, ano após ano.</p>
         </header>
-        <Growth on={on} />
+        <div>
+          <Growth on={on} />
+          <p className={s.legend}>P3, P50 e P97: faixas de referência de crescimento (percentis).</p>
+        </div>
       </article>
       <article className={s.tile} data-reveal>
         <header>

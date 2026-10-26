@@ -228,9 +228,10 @@ export default function Quote() {
                 </select>
               </label>
             </div>
+            <p className={s.hint}>Para o contato, preencha ao menos um: e-mail ou telefone.</p>
             <div className={s.row}>
               <label className={s.field}>
-                <span>E-mail **</span>
+                <span>E-mail</span>
                 <input
                   ref={email}
                   name="email"
@@ -242,7 +243,7 @@ export default function Quote() {
                 />
               </label>
               <label className={s.field}>
-                <span>Telefone / WhatsApp **</span>
+                <span>Telefone / WhatsApp</span>
                 <input
                   name="telefone"
                   type="tel"
@@ -282,7 +283,7 @@ export default function Quote() {
                     name="mensagem"
                     rows={3}
                     maxLength={3000}
-                    placeholder="Conte um pouco sobre a rede, as escolas ou o programa."
+                    placeholder="Quantas escolas ou alunos? Prazo previsto para a compra?"
                   />
                 </label>
                 <fieldset className={s.docs}>
@@ -331,7 +332,7 @@ export default function Quote() {
               </p>
             </div>
             <p className={s.next}>{quote.next}</p>
-            <p className={s.required}>* Obrigatório · ** Preencha pelo menos um</p>
+            <p className={s.required}>* Campos obrigatórios</p>
           </form>
         )}
       </div>
