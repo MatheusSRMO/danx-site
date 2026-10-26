@@ -451,7 +451,7 @@ export default function StationModel({ state: station, low = false }: { state: S
     };
   }, [screen]);
 
-  useFrame((_, dt) => {
+  useFrame((st, dt) => {
     const k = 1 - Math.pow(0.0008, dt);
     station.rotSmooth += (station.rotY + station.drag - station.rotSmooth) * k;
     station.explodeSmooth += (station.explode - station.explodeSmooth) * k;
@@ -464,7 +464,8 @@ export default function StationModel({ state: station, low = false }: { state: S
     tower.current!.position.y = e * 0.2;
     canopy.current!.position.y = e * 0.52;
     // Eletrodos acendem quando o assunto é bioimpedância
-    m.steel.emissiveIntensity = station.glowSmooth * (0.55 + 0.25 * Math.sin(performance.now() / 260));
+    // Pulso pelo relógio da cena (determinístico quando os quadros são renderizados um a um, como no vídeo)
+    m.steel.emissiveIntensity = station.glowSmooth * (0.55 + 0.25 * Math.sin((st.clock.elapsedTime * 1000) / 260));
 
     if (screen.ready) {
       const id = THREE.MathUtils.clamp(Math.round(station.screen), 0, SCREENS.length - 1);
