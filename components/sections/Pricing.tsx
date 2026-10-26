@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { pricing, site } from "@/lib/content";
+import { pricing, REVISAO, site } from "@/lib/content";
 import s from "./Pricing.module.css";
 
 const Check = () => (
@@ -10,6 +10,10 @@ const Check = () => (
 
 export default function Pricing() {
   const wa = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Olá! Quero saber o valor e as condições da Estação de Saúde DANX.")}`;
+  // Sem preço confirmado, a produção mostra "sob proposta" e só lista os temas da proposta (sem afirmar o que inclui)
+  const pending = pricing.price.tbc && !REVISAO;
+  const conditions = pricing.conditions.filter((c) => REVISAO || !c.tbc);
+  const includesPending = !REVISAO && pricing.includes.every((i) => i.tbc);
   return (
     <section id="investimento" className="section alt" aria-labelledby="preco-kicker preco-title">
       <div className="container-wide">
@@ -30,33 +34,43 @@ export default function Pricing() {
             <h2 id="preco-title" className={s.name}>
               Estação de Saúde DANX
             </h2>
-            <p className={s.price}>
-              <span className="num">{pricing.price.value}</span>
-              {pricing.price.tbc && <span className="tbc">Preço a confirmar</span>}
-            </p>
-            <p className={s.per}>{pricing.price.per}</p>
-            <p className={s.lead}>{pricing.lead}</p>
+            {pending ? (
+              <p className={`${s.price} ${s.onRequest}`}>{pricing.pending.price}</p>
+            ) : (
+              <>
+                <p className={s.price}>
+                  <span className="num">{pricing.price.value}</span>
+                  {pricing.price.tbc && REVISAO && <span className="tbc">Preço a confirmar</span>}
+                </p>
+                <p className={s.per}>{pricing.price.per}</p>
+              </>
+            )}
+            <p className={s.lead}>{pending ? pricing.pending.lead : pricing.lead}</p>
 
-            <h3 className={s.h3}>Condições comerciais</h3>
-            <ul className={s.conditions}>
-              {pricing.conditions.map((c) => (
-                <li key={c.title}>
-                  <b>
-                    {c.title}
-                    {c.tbc && <span className="tbc">A confirmar</span>}
-                  </b>
-                  <span>{c.text}</span>
-                </li>
-              ))}
-            </ul>
+            {conditions.length > 0 && (
+              <>
+                <h3 className={s.h3}>Condições comerciais</h3>
+                <ul className={s.conditions}>
+                  {conditions.map((c) => (
+                    <li key={c.title}>
+                      <b>
+                        {c.title}
+                        {c.tbc && REVISAO && <span className="tbc">A confirmar</span>}
+                      </b>
+                      <span>{c.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-            <h3 className={s.h3}>O que está incluído</h3>
-            <ul className={s.includes}>
+            <h3 className={s.h3}>{includesPending ? pricing.pending.includesTitle : "O que está incluído"}</h3>
+            <ul className={`${s.includes} ${includesPending ? s.topics : ""}`}>
               {pricing.includes.map((i) => (
                 <li key={i.text}>
-                  <Check />
+                  {!includesPending && <Check />}
                   {i.text}
-                  {i.tbc && <span className="tbc">A confirmar</span>}
+                  {i.tbc && REVISAO && <span className="tbc">A confirmar</span>}
                 </li>
               ))}
             </ul>

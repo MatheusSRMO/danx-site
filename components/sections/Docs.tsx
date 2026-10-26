@@ -1,4 +1,4 @@
-import { docs } from "@/lib/content";
+import { docs, REVISAO } from "@/lib/content";
 import s from "./Docs.module.css";
 
 export default function Docs() {
@@ -9,10 +9,12 @@ export default function Docs() {
           Documentos para gestores.
         </h2>
         <p className="lead" data-reveal>
-          O que o processo de compra costuma pedir, reunido em um só lugar.
+          {REVISAO
+            ? "O que o processo de compra costuma pedir, reunido em um só lugar."
+            : "Peça junto com a cotação o que o processo de compra costuma exigir."}
         </p>
         <ul className={s.list}>
-          {docs.map((d) => (
+          {docs.filter((d) => REVISAO || !d.hide).map((d) => (
             <li key={d.title} data-reveal>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M7 3h7l5 5v13H7z" />
@@ -22,7 +24,7 @@ export default function Docs() {
                 <h3>{d.title}</h3>
                 <p>{d.text}</p>
               </div>
-              <span className={s.status}>{d.tbc ? <span className="tbc">A confirmar</span> : "Em breve"}</span>
+              <span className={s.status}>{d.tbc && REVISAO ? <span className="tbc">A confirmar</span> : "Sob pedido"}</span>
             </li>
           ))}
         </ul>

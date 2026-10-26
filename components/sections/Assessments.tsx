@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { REVISAO } from "@/lib/content";
 import s from "./Assessments.module.css";
 
 function useInView<T extends Element>(threshold = 0.25) {
@@ -454,7 +455,7 @@ export default function Assessments() {
           </p>
         </div>
         <div ref={ref} className={s.grid}>
-          {TILES.map((t) =>
+          {TILES.filter((t) => REVISAO || !t.tbc).map((t) =>
             t.photo ? (
               <article key={t.id} className={`${s.tile} ${s.photoTile}`} data-reveal>
                 <Image

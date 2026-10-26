@@ -14,8 +14,8 @@ const POINTS = [
     d: "Guarda mais de 100 mil avaliações e sincroniza com a nuvem quando a conexão volta.",
   },
   {
-    t: "Pronta para o dia a dia",
-    d: "Teste guiado na tela e por voz. O aluno sobe, segue as instruções e o relatório sai na hora.",
+    t: "Guiada na tela e por voz",
+    d: "O aluno sobe na plataforma e segue as instruções da própria estação. O relatório sai na hora.",
   },
 ];
 

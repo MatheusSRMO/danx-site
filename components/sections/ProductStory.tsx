@@ -28,21 +28,21 @@ const KEYS: Key[] = [
   { p: 0.0, rot: -2.3, dist: 9.6, y: 1.05, elev: 0.5, explode: 0, glow: 0, ultra: 0, cx: 0 },
   { p: 0.05, rot: -0.7, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Identificação: a câmera chega à tela enquanto a matrícula é digitada e o termo é aceito
-  { p: 0.135, rot: -0.34, dist: 2.75, y: 1.36, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.185, rot: -0.26, dist: 2.65, y: 1.37, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.135, rot: -0.3, dist: 1.9, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.185, rot: -0.22, dist: 1.85, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Altura: ondas do sensor descem do dossel
   { p: 0.235, rot: -0.42, dist: 3.6, y: 1.72, elev: 0.15, explode: 0, glow: 0, ultra: 1, cx: 0 },
   // Composição corporal: eletrodos acesos na plataforma e o gráfico da composição na tela
   { p: 0.315, rot: -0.8, dist: 4.6, y: 0.78, elev: 0.75, explode: 0, glow: 1, ultra: 0, cx: -0.1 },
   // Do equilíbrio à postura, a tela é a protagonista: a câmera orbita devagar diante dela
-  { p: 0.4, rot: -0.2, dist: 2.7, y: 1.37, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.48, rot: -0.08, dist: 2.6, y: 1.35, elev: 0.05, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.56, rot: 0.06, dist: 2.7, y: 1.38, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.655, rot: 0.16, dist: 2.75, y: 1.38, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.745, rot: 0.24, dist: 2.75, y: 1.36, elev: 0.06, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.4, rot: -0.2, dist: 1.9, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.48, rot: -0.08, dist: 1.85, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.56, rot: 0.06, dist: 1.9, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.655, rot: 0.16, dist: 1.9, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.745, rot: 0.24, dist: 1.95, y: 1.38, elev: 0.03, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Resultado: a tela em destaque
-  { p: 0.835, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0 },
-  { p: 0.865, rot: -0.15, dist: 3.3, y: 1.34, elev: 0.08, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.835, rot: -0.15, dist: 2.1, y: 1.38, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
+  { p: 0.865, rot: -0.15, dist: 2.1, y: 1.38, elev: 0.04, explode: 0, glow: 0, ultra: 0, cx: 0 },
   // Instalação: vista explodida
   { p: 0.92, rot: -0.62, dist: 9.6, y: 1.3, elev: 0.5, explode: 1, glow: 0, ultra: 0, cx: 0 },
   { p: 1.0, rot: -0.38, dist: 6.6, y: 1.05, elev: 0.55, explode: 0, glow: 0, ultra: 0, cx: 0 },
@@ -119,13 +119,13 @@ const CHAPTERS = [
   },
   {
     at: 0.56,
-    kicker: "Fôlego",
+    kicker: "Capacidade pulmonar",
     title: "Um sopro no espirômetro.",
     text: "Espirômetro sem fio com bocal descartável. A tela mostra a capacidade vital em mililitros enquanto o aluno sopra.",
   },
   {
     at: 0.655,
-    kicker: "Visão",
+    kicker: "Acuidade visual",
     title: "A 2,5 metros da tela.",
     text: "Cobrindo um olho de cada vez, o aluno indica para onde aponta o E. A tela registra a acuidade de cada olho.",
   },
@@ -317,7 +317,7 @@ export default function ProductStory() {
             const prev = CHAPTERS[i - 1]?.at ?? -0.2;
             const start = (prev + c.at) / 2;
             const end = (c.at + next) / 2;
-            const w = sm(p, start, start + 0.03) * (1 - sm(p, end - 0.03, end));
+            const w = sm(p, start, start + 0.018) * (1 - sm(p, end - 0.018, end));
             const el = chapters[i];
             el.style.opacity = String(w);
             el.style.transform = `translateY(${(1 - w) * 24}px)`;

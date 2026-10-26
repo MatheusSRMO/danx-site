@@ -52,9 +52,10 @@
 .title {
   margin-top: 12px;
   font-family: var(--f-display);
-  font-size: clamp(3.2rem, 7vw, 6.6rem);
+  max-width: 11.5em;
+  font-size: clamp(2.6rem, 5.2vw, 4.9rem);
   font-weight: 650;
-  line-height: 0.98;
+  line-height: 1;
   letter-spacing: -0.045em;
   text-wrap: balance;
 }
@@ -104,7 +105,7 @@
     height: auto;
   }
   .title {
-    font-size: clamp(2.8rem, 12vw, 4.4rem);
+    font-size: clamp(2.2rem, 9vw, 3.4rem);
   }
   .ctas {
     justify-content: center;

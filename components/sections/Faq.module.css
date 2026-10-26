@@ -51,3 +51,12 @@
   color: var(--ink-2);
   font-size: 1.05rem;
 }
+
+.more {
+  margin-top: 28px;
+  color: var(--ink-2);
+  text-align: center;
+}
+.more a {
+  color: var(--accent);
+}

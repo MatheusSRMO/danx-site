@@ -62,7 +62,7 @@ export default function Hero() {
           {hero.product}
         </h1>
         <p className={s.title} data-in>
-          Saúde em <span className="grad-text">alta definição.</span>
+          {hero.title} <span className="grad-text">{hero.titleEnd}</span>
         </p>
         <p className={`lead ${s.lead}`} data-in>
           {hero.lead}

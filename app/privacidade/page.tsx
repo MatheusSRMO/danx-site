@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
+import { REVISAO } from "@/lib/content";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default function Privacidade() {
         <div className="container" style={{ maxWidth: 760 }}>
           <h1 className="headline-2">Política de Privacidade</h1>
           <p className="lead" style={{ marginTop: 20 }}>
-            Texto em revisão. <span className="tbc">A confirmar</span>
+            Texto em revisão.{REVISAO && <span className="tbc">A confirmar</span>}
           </p>
           <p style={{ marginTop: 28, color: "var(--ink-2)" }}>
             A política de privacidade da DANX está em revisão e será publicada em breve. Ela vai explicar como tratamos
@@ -28,7 +29,7 @@ export default function Privacidade() {
             Termos de uso
           </h2>
           <p style={{ marginTop: 16, color: "var(--ink-2)" }}>
-            Texto em revisão. <span className="tbc">A confirmar</span>
+            Texto em revisão.{REVISAO && <span className="tbc">A confirmar</span>}
           </p>
         </div>
       </main>

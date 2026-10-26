@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { quote, site } from "@/lib/content";
+import { quote, REVISAO, site } from "@/lib/content";
 import s from "./Quote.module.css";
 
 const UFS = [
@@ -119,8 +119,8 @@ export default function Quote() {
             {quote.title}
           </h2>
           <p className="lead" data-reveal>
-            {quote.lead}
-            {quote.leadTbc && <span className="tbc">Prazo a confirmar</span>}
+            {quote.leadTbc && !REVISAO ? quote.leadPub : quote.lead}
+            {quote.leadTbc && REVISAO && <span className="tbc">Prazo a confirmar</span>}
           </p>
         </div>
 
@@ -200,8 +200,8 @@ export default function Quote() {
                 <input name="nome" required maxLength={160} autoComplete="name" />
               </label>
               <label className={s.field}>
-                <span>Cargo *</span>
-                <input name="cargo" required maxLength={120} autoComplete="organization-title" />
+                <span>Cargo</span>
+                <input name="cargo" maxLength={120} autoComplete="organization-title" />
               </label>
             </div>
             <div className={s.row3}>
@@ -229,7 +229,7 @@ export default function Quote() {
                 />
               </label>
               <label className={s.field}>
-                <span>Quantidade de estações</span>
+                <span>Quantidade estimada</span>
                 <input name="quantidade" type="number" min={1} max={99999} defaultValue={1} />
               </label>
             </div>
@@ -262,10 +262,14 @@ export default function Quote() {
               <button ref={send} className="btn btn-primary" type="submit" disabled={status === "sending"}>
                 {status === "sending" ? "Enviando…" : "Solicitar cotação"}
               </button>
+              <a className="link" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener noreferrer">
+                Falar no WhatsApp
+              </a>
               <p>
                 Ou ligue: <a href={`tel:+${site.whatsapp}`}>{site.phone}</a>
               </p>
             </div>
+            <p className={s.next}>{quote.next}</p>
             <p className={s.required}>* Campos obrigatórios</p>
           </form>
         )}

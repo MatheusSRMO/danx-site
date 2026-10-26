@@ -113,3 +113,22 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Enquanto o preço não é confirmado */
+.onRequest {
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+}
+.topics li {
+  padding-left: 18px;
+  position: relative;
+}
+.topics li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}

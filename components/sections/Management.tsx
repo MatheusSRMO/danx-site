@@ -1,18 +1,17 @@
-import Image from "next/image";
 import { management } from "@/lib/content";
 import s from "./Management.module.css";
 
-// Dados fictícios, só para ilustrar o painel da gestão.
+// Dados fictícios, só para ilustrar o painel da gestão (sem tendência, para não sugerir um resultado real).
 const BY_GRADE = [
-  { g: "1º", v: 9 },
+  { g: "1º", v: 14 },
   { g: "2º", v: 11 },
-  { g: "3º", v: 12 },
-  { g: "4º", v: 14 },
-  { g: "5º", v: 17 },
-  { g: "6º", v: 21 },
-  { g: "7º", v: 24 },
-  { g: "8º", v: 26 },
-  { g: "9º", v: 23 },
+  { g: "3º", v: 16 },
+  { g: "4º", v: 13 },
+  { g: "5º", v: 18 },
+  { g: "6º", v: 12 },
+  { g: "7º", v: 15 },
+  { g: "8º", v: 17 },
+  { g: "9º", v: 13 },
 ];
 
 function Dashboard() {
@@ -21,13 +20,14 @@ function Dashboard() {
     <div
       className={s.window}
       role="img"
-      aria-label="Exemplo de painel da gestão com dados fictícios: alunos avaliados, escolas, avaliações no ano e percentual de alunos com sinais de atenção postural por ano escolar, que cresce do 1º ao 8º ano"
+      aria-label="Exemplo de painel da gestão com dados fictícios: alunos avaliados, escolas, avaliações no ano e percentual de alunos com sinais de atenção postural por ano escolar"
     >
       <div className={s.chrome} aria-hidden="true">
         <span />
         <span />
         <span />
         <em>Painel da gestão</em>
+        <b className={s.sample}>Exemplo · dados fictícios</b>
       </div>
       <div className={s.body} aria-hidden="true">
         <div className={s.filters}>
@@ -62,7 +62,6 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      <p className={s.fake}>Dados fictícios, apenas para ilustração</p>
     </div>
   );
 }
@@ -87,14 +86,6 @@ export default function Management() {
         </div>
 
         <div className={s.split}>
-          <div className={s.photo} data-reveal>
-            <Image
-              src="/media/gestao.webp"
-              alt="Secretária de educação e diretor de escola analisando um painel de indicadores no notebook"
-              fill
-              sizes="(max-width: 900px) 96vw, 620px"
-            />
-          </div>
           <ul className={s.benefits}>
             {management.benefits.map((b) => (
               <li key={b.title} data-reveal>
@@ -112,6 +103,9 @@ export default function Management() {
               <li key={p}>{p}</li>
             ))}
           </ul>
+          <a className="btn btn-primary" href="#cotacao">
+            Solicitar cotação
+          </a>
         </div>
       </div>
     </section>

@@ -6,7 +6,6 @@ import ProductStory from "@/components/sections/ProductStory";
 import Assessments from "@/components/sections/Assessments";
 import Lifestyle from "@/components/sections/Lifestyle";
 import Report from "@/components/sections/Report";
-import Numbers from "@/components/sections/Numbers";
 import Management from "@/components/sections/Management";
 import Audience from "@/components/sections/Audience";
 import Specs from "@/components/sections/Specs";
@@ -24,11 +23,10 @@ export default function Home() {
         <Manifesto />
         <ProductStory />
         <Assessments />
-        <Lifestyle />
         <Report />
-        <Numbers />
         <Management />
         <Audience />
+        <Lifestyle />
         <Specs />
         <Pricing />
         <Docs />

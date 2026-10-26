@@ -1,6 +1,12 @@
 // Textos compartilhados e listas do site (os títulos e textos fixos de cada seção ficam no próprio componente).
-// Itens marcados com `tbc: true` (to be confirmed) aparecem no site com o selo "A CONFIRMAR"
-// e precisam de validação da DANX antes da publicação.
+// Itens marcados com `tbc: true` (to be confirmed) ainda dependem de validação da DANX.
+
+/**
+ * Modo de revisão (NEXT_PUBLIC_REVISAO=1, ligado nas prévias da Vercel): os itens a confirmar aparecem com o selo
+ * "A CONFIRMAR". Na produção eles ficam de fora, ou dão lugar a um texto provisório que não afirma nada que a DANX
+ * ainda não confirmou (ex.: preço "sob proposta").
+ */
+export const REVISAO = process.env.NEXT_PUBLIC_REVISAO === "1";
 
 export const site = {
   product: "Estação de Saúde DANX",
@@ -26,19 +32,22 @@ export const nav = [
 
 export const hero = {
   product: "Estação de Saúde DANX",
-  lead: "Avaliação corporal inteligente para crianças e adolescentes, dentro da escola.",
+  title: "Triagem de saúde de cada aluno,",
+  titleEnd: "dentro da escola.",
+  lead: "Altura, composição corporal, postura, equilíbrio, agilidade, capacidade pulmonar e acuidade visual em uma só estação, com relatório para a família e dados para a gestão.",
   note: "Exclusiva para redes públicas, Sistema S e escolas particulares.",
 };
 
 export const manifesto = {
   text: "Crescer é rápido. Perceber o que muda, nem sempre. A DANX transforma uma passagem pela estação em dados que escola, família e gestão conseguem acompanhar, ano após ano.",
+  bridge: "A estação mede, em cada aluno e todo ano, o que esses números apontam: postura, composição corporal, equilíbrio e agilidade.",
   stats: [
     {
       value: 55.7,
       decimals: 1,
       suffix: "%",
       label:
-        "dos estudantes de 11 a 16 anos avaliados em um estudo no Rio Grande do Sul relataram dor nas costas nos últimos três meses.",
+        "dos estudantes de 11 a 16 anos avaliados em um estudo em Teutônia (RS) relataram dor nas costas nos últimos três meses.",
       source: "Noll et al., Revista de Saúde Pública (USP), 2016",
     },
     {
@@ -54,8 +63,8 @@ export const manifesto = {
 export const report = {
   points: [
     { k: "62", v: "indicadores por avaliação" },
-    { k: "A4", v: "impressão direta em rede" },
-    { k: "QR", v: "acesso pelo celular" },
+    { k: "Impresso", v: "em A4, direto na impressora da rede" },
+    { k: "No celular", v: "pelo QR code, para a família" },
   ],
   student: { age: "10 anos", sex: "Masculino", height: "148 cm", score: 86 },
   bars: [
@@ -85,7 +94,7 @@ export const management = {
     },
     {
       title: "Diferencial para escolas particulares",
-      text: "Tecnologia de ponta e cuidado visível, que também viram argumento de matrícula e rematrícula.",
+      text: "Um cuidado com a saúde que as famílias enxergam no relatório de cada filho, e que pesa na matrícula e na rematrícula.",
     },
   ],
   programs: [
@@ -106,7 +115,7 @@ export const audience = {
     {
       title: "Prefeituras e secretarias",
       sub: "Saúde e Educação",
-      text: "Uma linha de base anual da saúde dos alunos da rede, alinhada aos temas do Programa Saúde na Escola: alimentação saudável, atividade física e saúde ocular.",
+      text: "Uma linha de base anual da saúde dos alunos da rede, para apoiar ações de alimentação saudável, atividade física e saúde ocular, temas do Programa Saúde na Escola.",
     },
     {
       title: "Sistema S",
@@ -179,6 +188,12 @@ export const specs = [
 
 export const pricing = {
   lead: "Preço público, para que gestores encontrem o valor na pesquisa de preços. Emitimos proposta comercial formal para processos de compra.",
+  // Enquanto o preço não é confirmado (produção)
+  pending: {
+    price: "Valor sob proposta",
+    lead: "Informe a sua rede ou escola e receba o valor, as condições de pagamento e o prazo em uma proposta comercial formal, pronta para o processo de compra.",
+    includesTitle: "Na proposta detalhamos",
+  },
   price: { value: "R$ 00.000,00", per: "por estação", tbc: true },
   conditions: [
     { title: "À vista", text: "Condição especial para pagamento à vista.", tbc: true },
@@ -197,7 +212,7 @@ export const docs = [
   { title: "Ficha técnica", text: "Especificações completas do equipamento.", tbc: true },
   { title: "Proposta comercial modelo", text: "Base para o processo de compra.", tbc: true },
   { title: "Declaração de exclusividade", text: "Documento do canal exclusivo de venda.", tbc: true },
-  { title: "Registros e certificações", text: "Registros e certificações aplicáveis ao equipamento.", tbc: true },
+  { title: "Registros e certificações", text: "Registros e certificações aplicáveis ao equipamento.", tbc: true, hide: true },
 ];
 
 export const faq = [
@@ -217,6 +232,8 @@ export const faq = [
     q: "Como ficam os dados das crianças (LGPD)?",
     a: "Os dados são armazenados com criptografia e acesso por permissão. A política de consentimento dos responsáveis e o tratamento de dados de crianças, conforme o art. 14 da LGPD, serão detalhados aqui.",
     tbc: true,
+    // Na produção, enquanto a resposta completa não é confirmada: só o que o produto já mostra
+    pub: "Antes de cada avaliação, a estação pede o consentimento na própria tela. Fale com a nossa equipe para conhecer como os dados são guardados e quem tem acesso a eles na sua instituição.",
   },
   {
     q: "Como funciona a compra por órgãos públicos?",
@@ -227,6 +244,7 @@ export const faq = [
     q: "Como é a instalação?",
     a: "A estação chega desmontada (torre com tela, plataforma de medição e dossel ultrassônico) e é montada no local. Acompanham espirômetro e bocais descartáveis. Prazo de entrega e treinamento da equipe serão informados na proposta.",
     tbc: true,
+    pub: "A estação chega desmontada e é montada no local: torre com tela, plataforma de medição e dossel ultrassônico. Ocupa uma base de 48 × 93,5 cm.",
   },
   {
     q: "Qual é a garantia e como funciona a manutenção?",
@@ -239,6 +257,8 @@ export const quote = {
   title: "Leve a DANX para a sua escola ou rede.",
   lead: "Receba o valor, as condições e uma proposta formal. Respondemos em até um dia útil.",
   leadTbc: true,
+  leadPub: "Receba o valor, as condições e uma proposta comercial formal.",
+  next: "Depois do envio, a equipe da DANX entra em contato com a proposta.",
   types: [
     "Prefeitura / Secretaria de Saúde",
     "Prefeitura / Secretaria de Educação",

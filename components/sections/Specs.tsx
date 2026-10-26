@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { specs } from "@/lib/content";
+import { REVISAO, specs } from "@/lib/content";
 import s from "./Specs.module.css";
 
 export default function Specs() {
@@ -52,6 +52,8 @@ export default function Specs() {
               <dl>
                 {g.rows.map((row) => {
                   const [label, value, tbc] = row as readonly [string, string, boolean?];
+                  // Na produção, só o que a DANX já confirmou
+                  if (tbc && !REVISAO) return null;
                   return (
                     <div key={label}>
                       <dt>{label}</dt>

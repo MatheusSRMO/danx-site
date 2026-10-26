@@ -1,5 +1,5 @@
 import Logo from "./Logo";
-import { nav, site } from "@/lib/content";
+import { nav, REVISAO, site } from "@/lib/content";
 import s from "./Footer.module.css";
 
 /** `base` prefixa as âncoras quando o rodapé aparece fora da página inicial. */
@@ -48,19 +48,25 @@ export default function Footer({ base = "", notes = true }: { base?: string; not
               WhatsApp {site.phone}
             </a>
             <a href="https://www.danx.com.br">www.danx.com.br</a>
-            <span>
-              {site.email.value}
-              {site.email.tbc && <span className="tbc">A confirmar</span>}
-            </span>
+            {(REVISAO || !site.email.tbc) && (
+              <span>
+                {site.email.value}
+                {site.email.tbc && <span className="tbc">A confirmar</span>}
+              </span>
+            )}
           </div>
         </div>
 
         <div className={s.legal}>
-          <p>
-            © 2026 DANX. {site.razaoSocial.value}
-            {site.razaoSocial.tbc && <span className="tbc">A confirmar</span>} · CNPJ {site.cnpj.value}
-            {site.cnpj.tbc && <span className="tbc">A confirmar</span>}
-          </p>
+          {REVISAO || !(site.razaoSocial.tbc || site.cnpj.tbc) ? (
+            <p>
+              © 2026 DANX. {site.razaoSocial.value}
+              {site.razaoSocial.tbc && <span className="tbc">A confirmar</span>} · CNPJ {site.cnpj.value}
+              {site.cnpj.tbc && <span className="tbc">A confirmar</span>}
+            </p>
+          ) : (
+            <p>© 2026 DANX.</p>
+          )}
           <div>
             <a href="/privacidade">Política de Privacidade</a>
             <a href="/privacidade#termos">Termos de uso</a>

@@ -46,9 +46,9 @@ export default function Manifesto() {
   return (
     <section ref={root} className={`section ${s.manifesto}`} aria-labelledby="manifesto-title">
       <div className="container-wide">
-        <p className={`eyebrow ${s.label}`}>Por que agora</p>
+        <p className={`eyebrow ${s.label}`}>Por que na escola</p>
         <h2 id="manifesto-title" className="sr-only">
-          Por que avaliar a saúde dos alunos agora
+          Por que avaliar a saúde dos alunos dentro da escola
         </h2>
         <p className={s.text}>
           {words.map((w, i) => (
@@ -73,6 +73,9 @@ export default function Manifesto() {
             </figure>
           ))}
         </div>
+        <p className={s.bridge} data-reveal>
+          {manifesto.bridge}
+        </p>
       </div>
     </section>
   );

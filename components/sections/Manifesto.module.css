@@ -73,3 +73,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+.bridge {
+  margin-top: clamp(40px, 5vw, 64px);
+  max-width: 34em;
+  font-size: var(--t-3, 1.35rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
