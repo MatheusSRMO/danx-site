@@ -102,7 +102,7 @@ const LOUPE: Record<ScreenId, Region> = {
   equilibrio: [140, 600, 800, 600],
   agilidade: [194, 280, 693, 520],
   espirometria: [127, 440, 827, 620],
-  visao: [330, 860, 420, 315],
+  visao: [60, 260, 960, 1000],
   postura: [560, 680, 520, 390],
   pontuacao: [140, 250, 800, 600],
   evolucao: [0, 150, 1080, 810],
@@ -200,7 +200,7 @@ const CHAPTERS = [
     at: 0.845,
     kicker: "Resultado",
     title: "Resultado na hora.",
-    text: "A tela mostra a pontuação de saúde e a curva de crescimento. O relatório sai impresso ou pelo QR code.",
+    text: "A tela mostra a pontuação de saúde, que resume os indicadores para facilitar a leitura (não é diagnóstico), e a curva de crescimento. O relatório sai impresso ou pelo QR code.",
     screen: "pontuação de saúde, curva de crescimento e relatório.",
   },
   {
@@ -212,7 +212,7 @@ const CHAPTERS = [
   {
     at: 0.985,
     kicker: "Pronta para a escola",
-    title: "Pronta para a rotina da escola.",
+    title: "Turma após turma.",
     text: "Atende em sequência, turma após turma, e o relatório de cada aluno sai na hora.",
     cta: true,
   },

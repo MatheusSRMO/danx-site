@@ -12,8 +12,8 @@ export default function Footer({ base = "", notes = true }: { base?: string; not
           <ol className={s.notes}>
             <li>
               Estatísticas: Guthold et al. (OMS), The Lancet Child &amp; Adolescent Health, 2019 (atividade física de
-              adolescentes no Brasil); Noll et al., Revista de Saúde Pública, 2016 (dor nas costas em estudantes de 11
-              a 16 anos de Teutônia, RS).
+              adolescentes no Brasil, dados de 2016); Noll et al., Revista Brasileira de Ciências do Esporte, 2016 (dor
+              nas costas em alunos do 5º ao 8º ano de Teutônia, RS).
             </li>
             <li>
               Valores de avaliação exibidos no site são ilustrativos. Peso, gordura, músculo e IMC vêm de um relatório

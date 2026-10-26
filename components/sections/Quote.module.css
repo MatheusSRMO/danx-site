@@ -143,15 +143,9 @@
   color: var(--ink-2);
 }
 
-.row4 {
-  display: grid;
-  grid-template-columns: 1.3fr 0.6fr 1.2fr 0.9fr;
-  gap: 16px;
-}
 @media (max-width: 720px) {
   .row,
-  .row3,
-  .row4 {
+  .row3 {
     grid-template-columns: 1fr;
   }
 }

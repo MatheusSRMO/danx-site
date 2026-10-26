@@ -57,6 +57,15 @@ function A4({ big = false }: { big?: boolean }) {
           <span>Capacidade vital 1.650 mL</span>
           <span>Visão 5,0 | 4,9</span>
         </div>
+        <div className={s.a4Notes}>
+          <p>Sugestões para a família</p>
+          <i />
+          <i />
+          <i />
+          <p>Observações da escola</p>
+          <i />
+          <i />
+        </div>
         <div className={s.a4Foot}>
           <i />
           <span>Sugestões e contato da escola</span>
@@ -101,8 +110,8 @@ export default function ReportSheet() {
   return (
     <div className={s.sample} data-reveal>
       <div>
-        <h3>Impresso em A4</h3>
-        <p>Uma folha por aluno, para a família guardar. Receba o relatório de exemplo completo no seu e-mail.</p>
+        <h3>Veja um relatório completo.</h3>
+        <p>Uma folha A4 por aluno, para a família guardar. Receba o exemplo completo no seu e-mail.</p>
         {status === "ok" ? (
           <p className={s.sent} role="status">
             Pedido recebido. A equipe da DANX envia o relatório de exemplo para o seu e-mail.
@@ -148,7 +157,7 @@ export default function ReportSheet() {
       <button type="button" className={s.zoom} onClick={() => dialog.current?.showModal()} aria-label="Ampliar a prévia do relatório em A4">
         <A4 />
         <span className={s.zoomHint} aria-hidden="true">
-          Ampliar
+          Ampliar a prévia
         </span>
       </button>
       <dialog ref={dialog} className={s.dialog} onClick={(e) => e.target === dialog.current && dialog.current?.close()}>

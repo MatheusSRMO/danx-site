@@ -48,7 +48,7 @@ export const manifesto = {
       value: 84,
       decimals: 0,
       suffix: "%",
-      label: "dos adolescentes brasileiros não praticam os 60 minutos diários de atividade física recomendados.",
+      label: "dos adolescentes brasileiros de 11 a 17 anos não faziam, em 2016, os 60 minutos diários de atividade física recomendados.",
       link: "Na estação: composição corporal, agilidade e capacidade pulmonar.",
       source: "Guthold et al. (OMS), The Lancet Child & Adolescent Health, 2019",
     },
@@ -57,9 +57,9 @@ export const manifesto = {
       decimals: 1,
       suffix: "%",
       label:
-        "dos estudantes de 11 a 16 anos relataram dor nas costas nos últimos três meses, em um estudo regional em Teutônia (RS).",
+        "dos alunos do 5º ao 8º ano relataram dor nas costas nos últimos três meses, em um estudo regional com 1.597 estudantes de Teutônia (RS).",
       link: "Na estação: postura.",
-      source: "Noll et al., Revista de Saúde Pública, 2016",
+      source: "Noll et al., Revista Brasileira de Ciências do Esporte, 2016",
     },
   ],
 };
@@ -253,6 +253,10 @@ export const faq = [
     q: "Qual é a garantia e como funciona a manutenção?",
     a: "Garantia, assistência técnica e manutenção preventiva serão detalhadas aqui.",
     tbc: true,
+  },
+  {
+    q: "Como é a higiene?",
+    a: "O bocal do espirômetro é descartável, um por aluno. As orientações de uso e limpeza da estação constam da proposta.",
   },
   {
     q: "Quem opera a estação?",

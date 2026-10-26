@@ -79,12 +79,7 @@ export default function Manifesto() {
         <p className={s.bridge} data-reveal>
           {manifesto.bridge}
         </p>
-        <nav className={s.who} aria-label="Para quem é a estação" data-reveal>
-          <span>Para quem é:</span>
-          <a href="#para-quem">Redes públicas</a>
-          <a href="#para-quem">Sistema S</a>
-          <a href="#para-quem">Escolas particulares</a>
-        </nav>
+
       </div>
     </section>
   );

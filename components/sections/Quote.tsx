@@ -241,7 +241,7 @@ export default function Quote() {
                     </select>
                   </label>
                 </div>
-                <div className={s.row}>
+                <div className={s.row3}>
                   <label className={s.field}>
                     <span>Seu nome *</span>
                     <input
@@ -252,12 +252,21 @@ export default function Quote() {
                     />
                   </label>
                   <label className={s.field}>
-                    <span>Cargo</span>
+                    <span>Cidade</span>
                     <input
-                      name="cargo"
+                      name="cidade"
                       maxLength={120}
-                      autoComplete="organization-title"
+                      autoComplete="address-level2"
                     />
+                  </label>
+                  <label className={s.field}>
+                    <span>UF</span>
+                    <select name="uf" defaultValue="">
+                      <option value="">UF</option>
+                      {UFS.map((u) => (
+                        <option key={u}>{u}</option>
+                      ))}
+                    </select>
                   </label>
                 </div>
                 <p className={s.hint}>
@@ -301,23 +310,14 @@ export default function Quote() {
                 <details ref={extra} className={s.extra}>
                   <summary>Mais detalhes (opcional)</summary>
                   <div className={s.extraBody}>
-                    <div className={s.row4}>
+                    <div className={s.row3}>
                       <label className={s.field}>
-                        <span>Cidade</span>
+                        <span>Cargo</span>
                         <input
-                          name="cidade"
+                          name="cargo"
                           maxLength={120}
-                          autoComplete="address-level2"
+                          autoComplete="organization-title"
                         />
-                      </label>
-                      <label className={s.field}>
-                        <span>UF</span>
-                        <select name="uf" defaultValue="">
-                          <option value="">UF</option>
-                          {UFS.map((u) => (
-                            <option key={u}>{u}</option>
-                          ))}
-                        </select>
                       </label>
                       <label className={s.field}>
                         <span>CNPJ</span>

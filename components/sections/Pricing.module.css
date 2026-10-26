@@ -200,3 +200,8 @@
 .docs li::marker {
   color: var(--accent);
 }
+.docs .docsHint {
+  margin: 0;
+  font-weight: 500;
+  color: var(--ink-2);
+}

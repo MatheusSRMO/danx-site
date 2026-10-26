@@ -87,30 +87,6 @@
   color: var(--ink-2);
 }
 
-/* Atalho para os cartões de cada comprador */
-.who {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-top: 28px;
-}
-.who span {
-  font-weight: 500;
-  color: var(--ink-2);
-}
-.who a {
-  padding: 9px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--line-2);
-  background: #fff;
-  font-weight: 500;
-  color: var(--ink);
-  transition: border-color 0.2s;
-}
-.who a:hover {
-  border-color: var(--accent);
-}
 @media (max-width: 620px) {
   .bridge {
     font-size: 1.15rem;

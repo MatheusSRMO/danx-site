@@ -7,12 +7,11 @@
     right: 16px;
     bottom: calc(16px + env(safe-area-inset-bottom));
     z-index: 40;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 44px;
-    padding: 0 14px 0 11px;
-    border-radius: 999px;
+    display: inline-grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
     background: #146c43;
     color: #fff;
     font-size: 0.88rem;
@@ -23,8 +22,8 @@
       transform 0.3s var(--ease-out);
   }
   .fab svg {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.8;

@@ -162,7 +162,8 @@ export default function Insights() {
         <div>
           <Growth on={on} />
           <p className={s.legend}>
-            Faixa azul: referência de crescimento entre os percentis 3 e 97. O aluno de exemplo está dentro dela.
+            Faixa azul: referência entre os percentis 3 e 97. O aluno de exemplo (10 anos, 148 cm) está dentro dela,
+            perto do topo: é alto para a idade.
           </p>
         </div>
       </article>

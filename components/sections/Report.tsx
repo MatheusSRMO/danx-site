@@ -111,6 +111,7 @@ export default function Report() {
         pulmonar, visão e a pontuação de saúde.
       </p>
       <div className={`container-wide ${s.after}`}>
+        <ReportSheet />
         <div className={s.data} data-reveal>
           <h3>Dados das crianças</h3>
           <p>
@@ -120,7 +121,6 @@ export default function Report() {
             Resposta completa sobre LGPD
           </a>
         </div>
-        <ReportSheet />
       </div>
       <p className={`container-wide ${s.footnote}`}>
         Valores ilustrativos: peso, gordura, músculo, IMC, altura e idade vêm de um relatório de exemplo (aluno de 10

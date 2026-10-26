@@ -107,9 +107,7 @@ export default function Pricing() {
                   ))}
               </ul>
             </div>
-            <a className="btn btn-secondary" href="#cotacao" data-doc="todos">
-              Solicitar cotação com documentos
-            </a>
+            <p className={s.docsHint}>Marque no formulário os documentos que deseja receber.</p>
           </div>
         </div>
       </div>
